@@ -1,100 +1,430 @@
-/* ==========================================
-   APEXFIT – HAUPTSKRIPT (app.js)
-   ========================================== */
+/* =========================================================
+   APEXFIT – APP.JS (LOGIK, FIREBASE, I18N, THEMES & ICONS)
+   ========================================================= */
 
 const FIREBASE_DB_URL = "https://apexfit-4c49a-default-rtdb.europe-west1.firebasedatabase.app";
 const XP_PER_WORKOUT_SET = 50;
 const XP_PER_LEVEL = 250;
 const MAX_LEVEL = 75;
 
-/* --- ZUSÄTZLICHE FLEX-SOLID SYMBOLE IN DAS SVG-SPRITE LADEN --- */
-function injectAdditionalFlexIcons() {
-    const sprite = document.getElementById('flex-solid-sprites');
-    if (!sprite) return;
-    sprite.insertAdjacentHTML('beforeend', `
-        <!-- Kapsel / Supplements -->
-        <symbol id="fx-pill" viewBox="0 0 24 24">
-            <path fill="currentColor" fill-rule="evenodd" d="M14.8 3.5C16.8 1.5 20.1 1.5 22.1 3.5C24.1 5.5 24.1 8.8 22.1 10.8L10.8 22.1C8.8 24.1 5.5 24.1 3.5 22.1C1.5 20.1 1.5 16.8 3.5 14.8L14.8 3.5ZM10.2 11.6L12.4 13.8L18.8 7.4C19.4 6.8 19.4 5.8 18.8 5.2C18.2 4.6 17.2 4.6 16.6 5.2L10.2 11.6Z"/>
-        </symbol>
-        <!-- Herz / Cardio -->
-        <symbol id="fx-heart" viewBox="0 0 24 24">
-            <path fill="currentColor" fill-rule="evenodd" d="M12 21.3C11.4 21.3 10.8 21.1 10.3 20.7C5.4 16.8 2 13.2 2 8.8C2 5.4 4.6 3 7.8 3C9.6 3 11.1 3.8 12 5.1C12.9 3.8 14.4 3 16.2 3C19.4 3 22 5.4 22 8.8C22 13.2 18.6 16.8 13.7 20.7C13.2 21.1 12.6 21.3 12 21.3ZM8.5 7.5C7.7 7.5 7 8.2 7 9C7 9.8 7.7 10.5 8.5 10.5H15.5C16.3 10.5 17 9.8 17 9C17 8.2 16.3 7.5 15.5 7.5H8.5Z"/>
-        </symbol>
-        <!-- Code / Fokus -->
-        <symbol id="fx-code" viewBox="0 0 24 24">
-            <path fill="currentColor" fill-rule="evenodd" d="M3 12C3 5.8 5.8 3 12 3C18.2 3 21 5.8 21 12C21 18.2 18.2 21 12 21C5.8 21 3 18.2 3 12ZM9.7 8.8C10.3 8.2 10.3 7.3 9.7 6.7C9.1 6.1 8.2 6.1 7.6 6.7L4.8 9.5C4.2 10.1 4.2 11 4.8 11.6L7.6 14.4C8.2 15 9.1 15 9.7 14.4C10.3 13.8 10.3 12.9 9.7 12.3L7.9 10.5L9.7 8.8ZM14.3 8.8L16.1 10.5L14.3 12.3C13.7 12.9 13.7 13.8 14.3 14.4C14.9 15 15.8 15 16.4 14.4L19.2 11.6C19.8 11 19.8 10.1 19.2 9.5L16.4 6.7C15.8 6.1 14.9 6.1 14.3 6.7C13.7 7.3 13.7 8.2 14.3 8.8Z"/>
-        </symbol>
-        <!-- Mond / Schlaf -->
-        <symbol id="fx-moon" viewBox="0 0 24 24">
-            <path fill="currentColor" fill-rule="evenodd" d="M11.8 2.2C12.6 2.1 13.2 2.9 12.8 3.6C11.9 5.1 11.5 6.9 11.8 8.8C12.3 12.1 15 14.7 18.3 15.2C19.4 15.4 20.5 15.2 21.4 14.8C22.1 14.5 22.9 15.2 22.6 15.9C21.1 19.6 17.4 22.1 13.1 22.1C7.4 22.1 2.8 17.5 2.8 11.8C2.8 6.8 6.5 2.7 11.8 2.2ZM8.5 13.5C7.7 13.5 7 14.2 7 15C7 15.8 7.7 16.5 8.5 16.5H11.5C12.3 16.5 13 15.8 13 15C13 14.2 12.3 13.5 11.5 13.5H8.5Z"/>
-        </symbol>
-        <!-- Faust / Power -->
-        <symbol id="fx-fist" viewBox="0 0 24 24">
-            <path fill="currentColor" fill-rule="evenodd" d="M6.5 3.5C7.6 3.5 8.5 4.4 8.5 5.5V4.5C8.5 3.4 9.4 2.5 10.5 2.5C11.6 2.5 12.5 3.4 12.5 4.5V4C12.5 2.9 13.4 2 14.5 2C15.6 2 16.5 2.9 16.5 4V5.5C16.5 4.4 17.4 3.5 18.5 3.5C19.6 3.5 20.5 4.4 20.5 5.5V12.5C20.5 17.8 17.2 21.5 12 21.5C6.8 21.5 3.5 17.8 3.5 12.5V8.5C3.5 7.4 4.4 6.5 5.5 6.5H6.5V3.5ZM8.5 12C7.7 12 7 12.7 7 13.5C7 14.3 7.7 15 8.5 15H15.5C16.3 15 17 14.3 17 13.5C17 12.7 16.3 12 15.5 12H8.5Z"/>
-        </symbol>
-        <!-- Sonne / Energie -->
-        <symbol id="fx-sun" viewBox="0 0 24 24">
-            <path fill="currentColor" fill-rule="evenodd" d="M12 2C12.8 2 13.5 2.7 13.5 3.5V4.5C13.5 5.3 12.8 6 12 6C11.2 6 10.5 5.3 10.5 4.5V3.5C10.5 2.7 11.2 2 12 2ZM12 7.2C14.7 7.2 16.8 9.3 16.8 12C16.8 14.7 14.7 16.8 12 16.8C9.3 16.8 7.2 14.7 7.2 12C7.2 9.3 9.3 7.2 12 7.2ZM12 10.2C11 10.2 10.2 11 10.2 12C10.2 13 11 13.8 12 13.8C13 13.8 13.8 13 13.8 12C13.8 11 13 10.2 12 10.2ZM12 18C12.8 18 13.5 18.7 13.5 19.5V20.5C13.5 21.3 12.8 22 12 22C11.2 22 10.5 21.3 10.5 20.5V19.5C10.5 18.7 11.2 18 12 18ZM4.5 10.5C5.3 10.5 6 11.2 6 12C6 12.8 5.3 13.5 4.5 13.5H3.5C2.7 13.5 2 12.8 2 12C2 11.2 2.7 10.5 3.5 10.5H4.5ZM20.5 10.5C21.3 10.5 22 11.2 22 12C22 12.8 21.3 13.5 20.5 13.5H19.5C18.7 13.5 18 12.8 18 12C18 11.2 18.7 10.5 19.5 10.5H20.5Z"/>
-        </symbol>
-    `);
-}
-
-/* --- FARBEN & FLEX-SOLID ICONS PALETTEN --- */
-const ACCENT_COLORS = [
+/* --- FARBPALETTEN (STANDARD & MONOCHROM WEISS-SCHWARZ TÖNE) --- */
+const DEFAULT_COLORS = [
     '#0a84ff', '#30d158', '#5e5ce6', '#ff9f0a',
     '#ff375f', '#64d2ff', '#bf5af2', '#ffd60a',
     '#10b981', '#f43f5e', '#8b5cf6', '#14b8a6',
     '#f97316', '#8e8e93', '#ffffff', '#111216'
 ];
 
-const FLEX_ICON_LIST = [
-    'fx-dumbbell', 'fx-bolt', 'fx-flame', 'fx-fist', 'fx-heart',
-    'fx-shield', 'fx-trophy', 'fx-target', 'fx-rocket', 'fx-star',
-    'fx-pill', 'fx-drop', 'fx-nutrition', 'fx-code', 'fx-calendar',
-    'fx-chart', 'fx-moon', 'fx-sun', 'fx-gem', 'fx-crown'
+const MONOCHROME_COLORS = [
+    '#ffffff', '#f4f4f5', '#e4e4e7', '#d4d4d8',
+    '#bdbdc2', '#a1a1aa', '#8a8a93', '#71717a',
+    '#52525b', '#3f3f46', '#2e2e33', '#27272a',
+    '#1f1f23', '#18181b', '#121215', '#09090b'
 ];
 
-// Hilfsfunktion: Rendert ein Flex-Solid SVG-Icon (optional als schwebendes Card-Corner-Icon)
-function renderFlexIcon(iconId, colorHex = 'currentColor', sizePx = 22, isCornerFloating = false) {
-    let cleanId = iconId || 'fx-bolt';
-    // Fallback, falls aus älteren Speicherständen noch ein Material-Name hinterlegt ist
-    if (!cleanId.startsWith('fx-')) {
-        const map = {
-            'fitness_center': 'fx-dumbbell',
-            'bolt': 'fx-bolt',
-            'local_fire_department': 'fx-flame',
-            'medication': 'fx-pill',
-            'water_drop': 'fx-drop',
-            'favorite': 'fx-heart',
-            'shield': 'fx-shield',
-            'trophy': 'fx-trophy',
-            'code': 'fx-code',
-            'nutrition': 'fx-nutrition'
-        };
-        cleanId = map[cleanId] || 'fx-bolt';
+/* --- ÜBERARBEITETE ICON-AUSWAHL (INKL. NEUER HANTEL, KATZE, SUPPLEMENT, SCHLOSS, ORDNER, LISTE, RUCKSACK, ROUTINE) --- */
+const CUSTOM_SVG_ICONS = {
+    // Komplett neu designte Pro-Kurzhantel (Dumbbell)
+    custom_dumbbell: `<svg viewBox="0 0 24 24"><path d="M20.5 7.5a1 1 0 0 0-1 1v1h-1V6a1.5 1.5 0 0 0-3 0v4.5h-7V6a1.5 1.5 0 0 0-3 0v3.5h-1v-1a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0v-1h1V18a1.5 1.5 0 0 0 3 0v-4.5h7V18a1.5 1.5 0 0 0 3 0v-3.5h1v1a1 1 0 0 0 2 0v-7a1 1 0 0 0-1-1Z"/></svg>`,
+    // Eigenes Katzen-Icon (Haustier)
+    custom_cat: `<svg viewBox="0 0 24 24"><path d="M12 5c-1.6 0-3.1.5-4.3 1.4L4.5 3.8A1 1 0 0 0 3 4.6v5.8C2.4 11.5 2 12.7 2 14c0 4.4 4.5 8 10 8s10-3.6 10-8c0-1.3-.4-2.5-1-3.6V4.6a1 1 0 0 0-1.5-.8l-3.2 2.6C15.1 5.5 13.6 5 12 5Zm-3.5 7a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-3.5 3.2c1.1 0 2 .6 2.4 1.5h-4.8c.4-.9 1.3-1.5 2.4-1.5Z"/></svg>`,
+    // Supplement Kapsel / Dose
+    custom_supp: `<svg viewBox="0 0 24 24"><path d="M16.2 3.8a4.5 4.5 0 0 0-6.4 0l-6 6a4.5 4.5 0 0 0 6.4 6.4l6-6a4.5 4.5 0 0 0 0-6.4Zm-5 5 2.1-2.1a2.5 2.5 0 0 1 3.6 3.6L14.8 12.4 11.2 8.8ZM19 14a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2h-2v2a1 1 0 1 1-2 0v-2h-2a1 1 0 1 1 0-2h2v-2a1 1 0 0 1 1-1Z"/></svg>`
+};
+
+const APP_ICONS = [
+    'custom_dumbbell',       // Überarbeitete Hantel
+    'custom_supp',           // Supplement Kapsel
+    'medication',            // Supplement Dose / Pillen
+    'description',           // Dokument
+    'Format_list_bulleted',  // Liste / Checkliste
+    'fact_check',            // Dokument-Check
+    'lock',                  // Schloss
+    'folder',                // Ordner (Folder)
+    'event_repeat',          // Routine / Wiederholung
+    'custom_cat',            // Haustier (Katze)
+    'pets',                  // Pfote / Haustier
+    'backpack',              // Rucksack
+    'bolt',                  // Energie
+    'local_fire_department', // Flamme
+    'directions_run',        // Cardio / Laufen
+    'shield',                // Brust / Schutz
+    'sports_mma',            // Kampfsport / Kraft
+    'self_improvement',      // Fokus / Recovery
+    'water_drop',            // Hydration
+    'bedtime'                // Schlaf
+];
+
+function renderIconMarkup(iconKey, sizePx = 22) {
+    if (CUSTOM_SVG_ICONS[iconKey]) {
+        return `<span style="display:inline-flex; width:${sizePx}px; height:${sizePx}px; align-items:center; justify-content:center;">${CUSTOM_SVG_ICONS[iconKey]}</span>`;
     }
-    const cornerClass = isCornerFloating ? 'card-corner-icon' : '';
-    return `<svg class="flex-solid-icon ${cornerClass}" style="width:${sizePx}px; height:${sizePx}px; color:${colorHex};"><use href="#${cleanId}"/></svg>`;
+    const cleanName = iconKey ? iconKey.toLowerCase() : 'bolt';
+    return `<span class="material-symbols-rounded" style="font-size:${sizePx}px;">${cleanName}</span>`;
 }
 
+/* --- 16 EIGENE SEPARATE LEVEL-ICONS MIT INDIVIDUELLEN LOOP-ANIMATIONEN (ALLE 5 LVL NEU BIS LVL 75) --- */
+const LEVEL_TIERS = [
+    { min: 1,  title: 'Rookie',       fx: 'lvl-fx-1',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,4 30,18 18,32 6,18" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
+    { min: 5,  title: 'Starter',      fx: 'lvl-fx-2',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L29 9.5V22.5L18 29L7 22.5V9.5L18 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M13 20L18 13L23 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 10, title: 'Striver',      fx: 'lvl-fx-3',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="6 3"/><path d="M11 21L18 12L25 21M13 25L18 18L23 25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>` },
+    { min: 15, title: 'Challenger',   fx: 'lvl-fx-4',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L31 8V18C31 26 18 33 18 33C18 33 5 26 5 18V8L18 3Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,9 22,18 18,27 14,18" fill="currentColor"/></svg>` },
+    { min: 20, title: 'Hustler',      fx: 'lvl-fx-5',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 23,13 34,14 26,22 28,33 18,27 8,33 10,22 2,14 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
+    { min: 25, title: 'Warrior',      fx: 'lvl-fx-6',  svg: `<svg viewBox="0 0 36 36"><path d="M7 7L29 29M29 7L7 29" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><polygon points="18,4 26,18 18,32 10,18" fill="var(--bg-main)" stroke="currentColor" stroke-width="2.4"/></svg>` },
+    { min: 30, title: 'Vanguard',     fx: 'lvl-fx-7',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,11 33,25 18,34 3,25 3,11" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 14L18 24L26 14M13 10L18 16L23 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 35, title: 'Spartan',      fx: 'lvl-fx-8',  svg: `<svg viewBox="0 0 36 36"><path d="M8 28L12 10L18 4L24 10L28 28L18 23L8 28Z" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="18" y1="4" x2="18" y2="23" stroke="currentColor" stroke-width="2.4"/></svg>` },
+    { min: 40, title: 'Gladiator',    fx: 'lvl-fx-9',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,5 22,14 31,18 22,22 18,31 14,22 5,18 14,14" fill="currentColor"/></svg>` },
+    { min: 45, title: 'Commander',    fx: 'lvl-fx-10', svg: `<svg viewBox="0 0 36 36"><path d="M4 18L11 7H25L32 18L25 29H11L4 18Z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M11 22L18 14L25 22M11 16L18 8L25 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 50, title: 'Master',       fx: 'lvl-fx-11', svg: `<svg viewBox="0 0 36 36"><path d="M5 26L8 12L14 18L18 8L22 18L28 12L31 26H5Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="5" r="2" fill="currentColor"/></svg>` },
+    { min: 55, title: 'Grandmaster',  fx: 'lvl-fx-12', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4"/><polygon points="18,4 28,24 8,24" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,32 28,12 8,12" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>` },
+    { min: 60, title: 'Titan',        fx: 'lvl-fx-13', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 32,9 32,27 18,34 4,27 4,9" fill="none" stroke="currentColor" stroke-width="2.5"/><polygon points="18,8 26,18 18,28 10,18" fill="currentColor"/><circle cx="18" cy="18" r="3" fill="var(--bg-main)"/></svg>` },
+    { min: 65, title: 'Immortal',     fx: 'lvl-fx-14', svg: `<svg viewBox="0 0 36 36"><path d="M18 6C11 6 3 12 3 18C3 24 11 30 18 30C25 30 33 24 33 18C33 12 25 6 18 6Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,10 24,18 18,26 12,18" fill="currentColor"/></svg>` },
+    { min: 70, title: 'Olympian',     fx: 'lvl-fx-15', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="7" fill="currentColor"/><path d="M18 2V7M18 29V34M2 18H7M29 18H34M6.7 6.7L10.2 10.2M25.8 25.8L29.3 29.3M29.3 6.7L25.8 10.2M10.2 25.8L6.7 29.3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>` },
+    { min: 75, title: 'Apex Legend',  fx: 'lvl-fx-16', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,10 33,26 18,34 3,26 3,10" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M9 24L12 13L18 18L24 13L27 24H9Z" fill="currentColor"/><circle cx="18" cy="8" r="2.5" fill="currentColor"/></svg>` }
+];
+
+function getLevelTierData(level) {
+    let chosen = LEVEL_TIERS[0];
+    for (const t of LEVEL_TIERS) {
+        if (level >= t.min) chosen = t;
+    }
+    return chosen;
+}
+
+function getLevelFromXP(xp) {
+    const rawLvl = Math.floor(xp / XP_PER_LEVEL) + 1;
+    return Math.min(MAX_LEVEL, rawLvl);
+}
+
+/* --- MEHRSPRACHIGKEIT (DE, EN, FR, ES) --- */
+const TRANSLATIONS = {
+    de: {
+        greeting: "Guten Tag",
+        daily_focus: "Daily Focus",
+        today: "Heute",
+        consistency: "Consistency",
+        seven_days: "7 Tage",
+        show_graphs: "Performance-Graphen anzeigen",
+        graphs_sub: "7-Tage XP-Trend & Fitness-Sätze",
+        xp_curve_title: "7-Tage XP & Aktivitäts-Kurve",
+        habit_matrix_title: "7-Tage Habit Matrix",
+        habit_matrix_sub: "Jeder Haken bringt bis zu 50 XP",
+        fitness_matrix_title: "7-Tage Fitness-Matrix & Verlauf",
+        fitness_matrix_sub: "Absolvierte Sätze pro Muskelgruppe",
+        nav_home: "Home",
+        nav_fitness: "Fitness",
+        nav_habits: "Habits",
+        nav_journal: "Journal",
+        nav_more: "Mehr",
+        nav_ranking: "Ranking",
+        nav_settings: "Einstellungen",
+        start_workout: "Training starten",
+        habits_sub: "Tägliche Ziele (Max. 50 XP)",
+        btn_add_category: "+ Kategorie",
+        btn_add_goal: "+ Neues Ziel",
+        journal_sub: "Fortschritt & Trainings-Zeiten",
+        strength_prog_title: "Kraft- & Satz-Entwicklung",
+        strength_prog_sub: "Maximalgewicht (kg) der letzten Workouts",
+        tracker_sub: "Ernährung, Wasser & Schritte",
+        daily_balance: "Heutige Tagesbilanz",
+        protein: "Eiweiß",
+        fat: "Fett",
+        carbs: "Kohlenhydrate",
+        food_section_title: "Essen • Mahlzeit eintragen",
+        food_section_sub: "Nährwerte direkt untereinander eingeben",
+        meal_name: "Mahlzeit",
+        calories: "Kalorien",
+        btn_save_meal: "+ Mahlzeit zum Tag speichern",
+        water_section_title: "Trinken • Wasser hinzufügen",
+        water_section_sub: "Schnellauswahl oder Eingabe in ml / Liter",
+        steps_section_title: "Schrittzähler • Tägliche Bewegung",
+        btn_show_history: "History • Letzte Tagesergebnisse vergleichen",
+        btn_invite: "Einladen (Link/Code)",
+        btn_add_friend: "+ Freundes-Code",
+        settings_profile_title: "Profil & Körperdaten",
+        settings_profile_sub: "Name, Profilbild, Gewicht & Fokus-Ziel",
+        upload_avatar: "Profilbild hochladen",
+        remove_avatar: "Bild entfernen",
+        label_username: "Dein Name",
+        label_bodyweight: "Körpergewicht (kg)",
+        label_fitness_goal: "Dein Ziel",
+        goal_lose: "Abnehmen",
+        goal_maintain: "Gewicht halten",
+        goal_diet: "Diät / Definition",
+        goal_muscle: "Muskelaufbau",
+        settings_targets_title: "Tagesziele (FitTracker)",
+        settings_targets_sub: "Schrittziel, Kalorien- & Wasserbedarf",
+        label_step_goal: "Schritte-Ziel",
+        label_kcal_goal: "Kalorien (kcal)",
+        label_water_goal: "Wasser (Liter)",
+        settings_appearance_title: "Design, Effekte & Sprache",
+        settings_appearance_sub: "App-Theme, Icon-Glow & Sprachauswahl",
+        label_language: "Sprache / Language",
+        label_theme: "App-Design (Hintergrund & Farbwelt)",
+        label_icon_glow: "Icon Glow-Effekt aktivieren",
+        sub_icon_glow: "Leuchtender Schein um Kategorien- & Card-Icons",
+        label_auto_pause: "Auto-Pausen-Timer im Gym",
+        sub_auto_pause: "Startet die Pause automatisch nach jedem abgehakten Satz",
+        settings_backup_title: "Daten & Backup",
+        btn_save_settings: "Einstellungen speichern",
+        more_menu_title: "Mehr auswählen",
+        more_tracker_sub: "Kalorien, Wasser, Schrittzähler & History",
+        more_ranking_sub: "Vergleiche Lvl & XP in Echtzeit mit Freunden",
+        more_settings_sub: "Profilbild, Name, Gewicht, Ziele, Sprache & Design",
+        btn_close: "Schließen"
+    },
+    en: {
+        greeting: "Welcome back",
+        daily_focus: "Daily Focus",
+        today: "Today",
+        consistency: "Consistency",
+        seven_days: "7 Days",
+        show_graphs: "Show Performance Graphs",
+        graphs_sub: "7-Day XP Trend & Workout Sets",
+        xp_curve_title: "7-Day XP & Activity Curve",
+        habit_matrix_title: "7-Day Habit Matrix",
+        habit_matrix_sub: "Every check-in grants up to 50 XP",
+        fitness_matrix_title: "7-Day Fitness Matrix & Trend",
+        fitness_matrix_sub: "Completed sets per muscle group",
+        nav_home: "Home",
+        nav_fitness: "Fitness",
+        nav_habits: "Habits",
+        nav_journal: "Journal",
+        nav_more: "More",
+        nav_ranking: "Ranking",
+        nav_settings: "Settings",
+        start_workout: "Start Workout",
+        habits_sub: "Daily Goals (Max. 50 XP)",
+        btn_add_category: "+ Category",
+        btn_add_goal: "+ New Goal",
+        journal_sub: "Progress & Workout Times",
+        strength_prog_title: "Strength & Set Progression",
+        strength_prog_sub: "Max weight (kg) of recent workouts",
+        tracker_sub: "Nutrition, Water & Steps",
+        daily_balance: "Today's Daily Balance",
+        protein: "Protein",
+        fat: "Fat",
+        carbs: "Carbs",
+        food_section_title: "Food • Log Meal",
+        food_section_sub: "Enter nutrition values stacked below",
+        meal_name: "Meal",
+        calories: "Calories",
+        btn_save_meal: "+ Save Meal to Today",
+        water_section_title: "Hydration • Add Water",
+        water_section_sub: "Quick buttons or custom ml / Liters",
+        steps_section_title: "Step Counter • Daily Activity",
+        btn_show_history: "History • Compare Past Daily Results",
+        btn_invite: "Invite (Link/Code)",
+        btn_add_friend: "+ Friend Code",
+        settings_profile_title: "Profile & Body Metrics",
+        settings_profile_sub: "Name, Avatar, Bodyweight & Goal",
+        upload_avatar: "Upload Avatar",
+        remove_avatar: "Remove photo",
+        label_username: "Your Name",
+        label_bodyweight: "Bodyweight (kg)",
+        label_fitness_goal: "Your Goal",
+        goal_lose: "Lose Weight",
+        goal_maintain: "Maintain Weight",
+        goal_diet: "Cut / Diet",
+        goal_muscle: "Build Muscle",
+        settings_targets_title: "Daily Targets (FitTracker)",
+        settings_targets_sub: "Step target, calorie & water goals",
+        label_step_goal: "Steps Goal",
+        label_kcal_goal: "Calories (kcal)",
+        label_water_goal: "Water (Liters)",
+        settings_appearance_title: "Design, Effects & Language",
+        settings_appearance_sub: "App Theme, Icon Glow & Language",
+        label_language: "Language",
+        label_theme: "App Theme (Background & Colors)",
+        label_icon_glow: "Enable Icon Glow Effect",
+        sub_icon_glow: "Glowing aura around category & card icons",
+        label_auto_pause: "Auto Rest Timer in Gym",
+        sub_auto_pause: "Automatically starts rest timer after checking a set",
+        settings_backup_title: "Data & Backup",
+        btn_save_settings: "Save Settings",
+        more_menu_title: "More Options",
+        more_tracker_sub: "Calories, Water, Step Counter & History",
+        more_ranking_sub: "Compare Lvl & XP live with friends",
+        more_settings_sub: "Avatar, Name, Weight, Goals, Language & Theme",
+        btn_close: "Close"
+    },
+    fr: {
+        greeting: "Bonjour",
+        daily_focus: "Focus du Jour",
+        today: "Auj.",
+        consistency: "Régularité",
+        seven_days: "7 Jours",
+        show_graphs: "Afficher les graphiques",
+        graphs_sub: "Tendance XP & séries sur 7 jours",
+        xp_curve_title: "Courbe XP & Activité (7j)",
+        habit_matrix_title: "Matrice d'Habitudes (7j)",
+        habit_matrix_sub: "Chaque validation rapporte jusqu'à 50 XP",
+        fitness_matrix_title: "Matrice Fitness & Séries (7j)",
+        fitness_matrix_sub: "Séries complétées par groupe musculaire",
+        nav_home: "Accueil",
+        nav_fitness: "Fitness",
+        nav_habits: "Habitudes",
+        nav_journal: "Journal",
+        nav_more: "Plus",
+        nav_ranking: "Classement",
+        nav_settings: "Réglages",
+        start_workout: "Démarrer séance",
+        habits_sub: "Objectifs quotidiens (Max. 50 XP)",
+        btn_add_category: "+ Catégorie",
+        btn_add_goal: "+ Objectif",
+        journal_sub: "Progrès & Durées d'entraînement",
+        strength_prog_title: "Progression Force & Séries",
+        strength_prog_sub: "Poids max (kg) des dernières séances",
+        tracker_sub: "Nutrition, Eau & Pas",
+        daily_balance: "Bilan du Jour",
+        protein: "Protéines",
+        fat: "Lipides",
+        carbs: "Glucides",
+        food_section_title: "Repas • Ajouter un plat",
+        food_section_sub: "Saisir les valeurs nutritionnelles",
+        meal_name: "Repas",
+        calories: "Calories",
+        btn_save_meal: "+ Enregistrer le repas",
+        water_section_title: "Hydratation • Eau",
+        water_section_sub: "Ajout rapide ou en ml / Litres",
+        steps_section_title: "Podomètre • Pas quotidiens",
+        btn_show_history: "Historique • Comparer les derniers jours",
+        btn_invite: "Inviter (Lien/Code)",
+        btn_add_friend: "+ Code Ami",
+        settings_profile_title: "Profil & Corps",
+        settings_profile_sub: "Nom, Photo, Poids & Objectif",
+        upload_avatar: "Charger une photo",
+        remove_avatar: "Supprimer la photo",
+        label_username: "Votre Nom",
+        label_bodyweight: "Poids corporel (kg)",
+        label_fitness_goal: "Objectif",
+        goal_lose: "Perdre du poids",
+        goal_maintain: "Maintenir le poids",
+        goal_diet: "Sèche / Diète",
+        goal_muscle: "Prise de masse",
+        settings_targets_title: "Objectifs du Jour (FitTracker)",
+        settings_targets_sub: "Pas, calories & eau par jour",
+        label_step_goal: "Objectif Pas",
+        label_kcal_goal: "Calories (kcal)",
+        label_water_goal: "Eau (Litres)",
+        settings_appearance_title: "Design, Effets & Langue",
+        settings_appearance_sub: "Thème, lueur des icônes & langue",
+        label_language: "Langue / Language",
+        label_theme: "Thème de l'application",
+        label_icon_glow: "Effet lumineux des icônes",
+        sub_icon_glow: "Aura lumineuse sur les icônes des cartes",
+        label_auto_pause: "Minuteur de repos auto",
+        sub_auto_pause: "Lance la pause après chaque série validée",
+        settings_backup_title: "Données & Sauvegarde",
+        btn_save_settings: "Enregistrer les réglages",
+        more_menu_title: "Plus d'options",
+        more_tracker_sub: "Calories, Eau, Podomètre & Historique",
+        more_ranking_sub: "Comparez Lvl & XP en direct",
+        more_settings_sub: "Photo, Nom, Poids, Objectifs, Langue & Thème",
+        btn_close: "Fermer"
+    },
+    es: {
+        greeting: "Hola",
+        daily_focus: "Enfoque Diario",
+        today: "Hoy",
+        consistency: "Constancia",
+        seven_days: "7 Días",
+        show_graphs: "Mostrar gráficos de rendimiento",
+        graphs_sub: "Tendencia de XP y series (7 días)",
+        xp_curve_title: "Curva de XP y Actividad (7d)",
+        habit_matrix_title: "Matriz de Hábitos (7d)",
+        habit_matrix_sub: "Cada tarea suma hasta 50 XP",
+        fitness_matrix_title: "Matriz de Fitness y Series",
+        fitness_matrix_sub: "Series completadas por grupo muscular",
+        nav_home: "Inicio",
+        nav_fitness: "Fitness",
+        nav_habits: "Hábitos",
+        nav_journal: "Diario",
+        nav_more: "Más",
+        nav_ranking: "Ranking",
+        nav_settings: "Ajustes",
+        start_workout: "Iniciar entreno",
+        habits_sub: "Metas diarias (Máx. 50 XP)",
+        btn_add_category: "+ Categoría",
+        btn_add_goal: "+ Nueva Meta",
+        journal_sub: "Progreso y Tiempos de Entreno",
+        strength_prog_title: "Progreso de Fuerza y Series",
+        strength_prog_sub: "Peso máximo (kg) en últimos entrenos",
+        tracker_sub: "Nutrición, Agua y Pasos",
+        daily_balance: "Balance Diario de Hoy",
+        protein: "Proteína",
+        fat: "Grasas",
+        carbs: "Carbohidratos",
+        food_section_title: "Comida • Registrar plato",
+        food_section_sub: "Introduce los valores nutricionales",
+        meal_name: "Comida",
+        calories: "Calorías",
+        btn_save_meal: "+ Guardar comida de hoy",
+        water_section_title: "Hidratación • Añadir agua",
+        water_section_sub: "Botones rápidos o en ml / Litros",
+        steps_section_title: "Podómetro • Pasos diarios",
+        btn_show_history: "Historial • Comparar días anteriores",
+        btn_invite: "Invitar (Enlace/Código)",
+        btn_add_friend: "+ Código Amigo",
+        settings_profile_title: "Perfil y Datos Corporales",
+        settings_profile_sub: "Nombre, Foto, Peso y Objetivo",
+        upload_avatar: "Subir foto de perfil",
+        remove_avatar: "Eliminar foto",
+        label_username: "Tu Nombre",
+        label_bodyweight: "Peso corporal (kg)",
+        label_fitness_goal: "Tu Objetivo",
+        goal_lose: "Perder peso",
+        goal_maintain: "Mantener peso",
+        goal_diet: "Definición / Dieta",
+        goal_muscle: "Ganar músculo",
+        settings_targets_title: "Metas Diarias (FitTracker)",
+        settings_targets_sub: "Meta de pasos, calorías y agua",
+        label_step_goal: "Meta de Pasos",
+        label_kcal_goal: "Calorías (kcal)",
+        label_water_goal: "Agua (Litros)",
+        settings_appearance_title: "Diseño, Efectos e Idioma",
+        settings_appearance_sub: "Tema, brillo de iconos e idioma",
+        label_language: "Idioma / Language",
+        label_theme: "Diseño de la App",
+        label_icon_glow: "Activar brillo en iconos (Glow)",
+        sub_icon_glow: "Efecto luminoso en los iconos de tarjetas",
+        label_auto_pause: "Temporizador de descanso auto",
+        sub_auto_pause: "Inicia el descanso al completar una serie",
+        settings_backup_title: "Datos y Copia de Seguridad",
+        btn_save_settings: "Guardar ajustes",
+        more_menu_title: "Más opciones",
+        more_tracker_sub: "Calorías, Agua, Pasos e Historial",
+        more_ranking_sub: "Compara Lvl y XP en vivo con amigos",
+        more_settings_sub: "Foto, Nombre, Peso, Metas, Idioma y Diseño",
+        btn_close: "Cerrar"
+    }
+};
+
+/* --- HILFSFUNKTIONEN FÜR FARBEN & ZEIT --- */
 function getContrastText(hex) {
     if (!hex) return '#ffffff';
     const c = hex.toLowerCase();
-    if (c === '#ffffff' || c === '#ffd60a' || c === '#64d2ff') return '#000000';
+    if (['#ffffff', '#f4f4f5', '#e4e4e7', '#d4d4d8', '#ffd60a', '#64d2ff'].includes(c)) {
+        return '#000000';
+    }
     return '#ffffff';
 }
 
 function getBorderForColor(hex) {
     if (!hex) return 'transparent';
-    if (hex.toLowerCase() === '#111216' || hex.toLowerCase() === '#000000') {
-        return 'rgba(255, 255, 255, 0.42)';
+    const c = hex.toLowerCase();
+    if (['#111216', '#09090b', '#121215', '#18181b', '#000000'].includes(c)) {
+        return 'rgba(255, 255, 255, 0.45)';
     }
     return hex;
 }
 
-function getGlowColor(hex) {
+function getEffectiveIconColor(hex) {
+    if (userSettings && userSettings.theme === 'monochrome') {
+        return '#ffffff';
+    }
     if (!hex) return '#0a84ff';
-    if (hex.toLowerCase() === '#111216' || hex.toLowerCase() === '#000000') {
+    if (['#111216', '#09090b', '#000000'].includes(hex.toLowerCase())) {
         return '#f5f7fa';
     }
     return hex;
@@ -106,231 +436,6 @@ function formatSecondsMMSS(totalSec) {
     return `${m}:${s}`;
 }
 
-/* --- MEHRSPRACHIGKEIT (DE, EN, FR, ES) --- */
-const TRANSLATIONS = {
-    de: {
-        greeting: "Guten Tag",
-        daily_focus: "Daily Focus",
-        today: "Heute",
-        consistency: "Consistency",
-        days_7: "7 Tage",
-        show_graphs: "Performance-Graphen anzeigen",
-        graphs_sub: "7-Tage XP-Trend & Fitness-Sätze",
-        xp_curve_title: "7-Tage XP & Aktivitäts-Kurve",
-        habit_matrix_title: "7-Tage Habit Matrix",
-        habit_matrix_sub: "Jeder Haken bringt bis zu 50 XP",
-        fit_matrix_title: "7-Tage Fitness-Matrix & Verlauf",
-        fit_matrix_sub: "Absolvierte Sätze pro Muskelgruppe",
-        nav_home: "Home",
-        nav_fitness: "Fitness",
-        nav_habits: "Habits",
-        nav_journal: "Journal",
-        nav_more: "Mehr",
-        nav_ranking: "Ranking",
-        start_workout: "Training starten",
-        habits_subtitle: "Tägliche Ziele (Max. 50 XP)",
-        add_category: "+ Kategorie",
-        add_goal: "+ Neues Ziel",
-        journal_subtitle: "Fortschritt & Trainings-Zeiten",
-        strength_curve_title: "Kraft- & Satz-Entwicklung",
-        strength_curve_sub: "Maximalgewicht (kg) der letzten Workouts",
-        daily_balance: "Heutige Tagesbilanz",
-        protein: "Eiweiß",
-        fat: "Fett",
-        carbs: "Kohlenhydrate",
-        food_scanner_title: "Essen • KI Foto-Scanner",
-        upload_meal_photo: "Mahlzeit fotografieren oder Bild wählen",
-        meal: "Mahlzeit",
-        calories: "Kalorien",
-        save_meal_btn: "+ Mahlzeit zum heutigen Tag speichern",
-        water_title: "Trinken • Wasser hinzufügen",
-        show_history_btn: "History • Letzte Tagesergebnisse vergleichen",
-        invite_btn: "Einladen (Link/Code)",
-        add_friend_btn: "+ Freundes-Code",
-        settings_title: "Einstellungen",
-        profile_and_goals: "Profil & Körperziel",
-        your_name: "Dein Name",
-        body_weight: "Körpergewicht (kg)",
-        goal_label: "Dein Ziel",
-        goal_lose: "Abnehmen",
-        goal_maintain: "Gewicht halten",
-        goal_diet: "Diät (Defizit)",
-        goal_bulk: "Muskelaufbau",
-        save_profile_btn: "Profil & Ziel speichern",
-        language_title: "Sprache / Language",
-        daily_targets_title: "Tagesziele (FitTracker)",
-        save_targets_btn: "Richtwerte aktualisieren",
-        more_menu_title: "Mehr auswählen",
-        close_btn: "Schließen"
-    },
-    en: {
-        greeting: "Hello",
-        daily_focus: "Daily Focus",
-        today: "Today",
-        consistency: "Consistency",
-        days_7: "7 Days",
-        show_graphs: "Show Performance Graphs",
-        graphs_sub: "7-Day XP Trend & Workout Sets",
-        xp_curve_title: "7-Day XP & Activity Curve",
-        habit_matrix_title: "7-Day Habit Matrix",
-        habit_matrix_sub: "Each check-in grants up to 50 XP",
-        fit_matrix_title: "7-Day Fitness Matrix & Trend",
-        fit_matrix_sub: "Completed sets per muscle group",
-        nav_home: "Home",
-        nav_fitness: "Fitness",
-        nav_habits: "Habits",
-        nav_journal: "Journal",
-        nav_more: "More",
-        nav_ranking: "Ranking",
-        start_workout: "Start Workout",
-        habits_subtitle: "Daily Goals (Max. 50 XP)",
-        add_category: "+ Category",
-        add_goal: "+ New Goal",
-        journal_subtitle: "Progress & Workout Times",
-        strength_curve_title: "Strength & Set Progression",
-        strength_curve_sub: "Max weight (kg) of recent workouts",
-        daily_balance: "Today's Nutrition Summary",
-        protein: "Protein",
-        fat: "Fat",
-        carbs: "Carbs",
-        food_scanner_title: "Food • AI Photo Scanner",
-        upload_meal_photo: "Take a photo or upload meal image",
-        meal: "Meal",
-        calories: "Calories",
-        save_meal_btn: "+ Save meal to today's log",
-        water_title: "Hydration • Add Water",
-        show_history_btn: "History • Compare past daily results",
-        invite_btn: "Invite (Link/Code)",
-        add_friend_btn: "+ Friend Code",
-        settings_title: "Settings",
-        profile_and_goals: "Profile & Body Goal",
-        your_name: "Your Name",
-        body_weight: "Body Weight (kg)",
-        goal_label: "Your Goal",
-        goal_lose: "Lose Weight",
-        goal_maintain: "Maintain Weight",
-        goal_diet: "Diet (Deficit)",
-        goal_bulk: "Muscle Gain",
-        save_profile_btn: "Save Profile & Goal",
-        language_title: "Language",
-        daily_targets_title: "Daily Targets (FitTracker)",
-        save_targets_btn: "Update Targets",
-        more_menu_title: "More Options",
-        close_btn: "Close"
-    },
-    fr: {
-        greeting: "Bonjour",
-        daily_focus: "Focus du Jour",
-        today: "Aujourd'hui",
-        consistency: "Régularité",
-        days_7: "7 Jours",
-        show_graphs: "Afficher les graphiques",
-        graphs_sub: "Tendance XP & séries sur 7 jours",
-        xp_curve_title: "Courbe XP & Activité (7j)",
-        habit_matrix_title: "Matrice d'Habitudes (7j)",
-        habit_matrix_sub: "Chaque coche rapporte jusqu'à 50 XP",
-        fit_matrix_title: "Matrice Fitness & Séries (7j)",
-        fit_matrix_sub: "Séries complétées par groupe musculaire",
-        nav_home: "Accueil",
-        nav_fitness: "Fitness",
-        nav_habits: "Habitudes",
-        nav_journal: "Journal",
-        nav_more: "Plus",
-        nav_ranking: "Classement",
-        start_workout: "Démarrer",
-        habits_subtitle: "Objectifs quotidiens (Max. 50 XP)",
-        add_category: "+ Catégorie",
-        add_goal: "+ Nouvel Objectif",
-        journal_subtitle: "Progrès & Durées",
-        strength_curve_title: "Progression de Force",
-        strength_curve_sub: "Poids max (kg) des dernières séances",
-        daily_balance: "Bilan du Jour",
-        protein: "Protéines",
-        fat: "Lipides",
-        carbs: "Glucides",
-        food_scanner_title: "Repas • Scanner Photo IA",
-        upload_meal_photo: "Prendre une photo du repas",
-        meal: "Repas",
-        calories: "Calories",
-        save_meal_btn: "+ Ajouter le repas à aujourd'hui",
-        water_title: "Hydratation • Eau",
-        show_history_btn: "Historique • Comparer les derniers jours",
-        invite_btn: "Inviter (Lien/Code)",
-        add_friend_btn: "+ Code Ami",
-        settings_title: "Paramètres",
-        profile_and_goals: "Profil & Objectif Corporel",
-        your_name: "Ton Nom",
-        body_weight: "Poids (kg)",
-        goal_label: "Ton Objectif",
-        goal_lose: "Perdre du poids",
-        goal_maintain: "Maintenir le poids",
-        goal_diet: "Régime (Déficit)",
-        goal_bulk: "Prise de masse",
-        save_profile_btn: "Enregistrer le profil",
-        language_title: "Langue / Language",
-        daily_targets_title: "Objectifs Journaliers",
-        save_targets_btn: "Mettre à jour",
-        more_menu_title: "Plus d'options",
-        close_btn: "Fermer"
-    },
-    es: {
-        greeting: "Hola",
-        daily_focus: "Enfoque Diario",
-        today: "Hoy",
-        consistency: "Constancia",
-        days_7: "7 Días",
-        show_graphs: "Mostrar gráficos de rendimiento",
-        graphs_sub: "Tendencia de XP y series (7 días)",
-        xp_curve_title: "Curva de XP y Actividad (7d)",
-        habit_matrix_title: "Matriz de Hábitos (7d)",
-        habit_matrix_sub: "Cada tarea suma hasta 50 XP",
-        fit_matrix_title: "Matriz de Fitness y Series (7d)",
-        fit_matrix_sub: "Series completadas por grupo muscular",
-        nav_home: "Inicio",
-        nav_fitness: "Fitness",
-        nav_habits: "Hábitos",
-        nav_journal: "Diario",
-        nav_more: "Más",
-        nav_ranking: "Ranking",
-        start_workout: "Entrenar",
-        habits_subtitle: "Metas diarias (Máx. 50 XP)",
-        add_category: "+ Categoría",
-        add_goal: "+ Nueva Meta",
-        journal_subtitle: "Progreso y Tiempos",
-        strength_curve_title: "Evolución de Fuerza",
-        strength_curve_sub: "Peso máximo (kg) en entrenamientos",
-        daily_balance: "Balance Diario",
-        protein: "Proteína",
-        fat: "Grasa",
-        carbs: "Carbohidratos",
-        food_scanner_title: "Comida • Escáner Foto IA",
-        upload_meal_photo: "Tomar foto o subir imagen de comida",
-        meal: "Comida",
-        calories: "Calorías",
-        save_meal_btn: "+ Guardar comida en el día de hoy",
-        water_title: "Hidratación • Añadir Agua",
-        show_history_btn: "Historial • Comparar días anteriores",
-        invite_btn: "Invitar (Enlace/Código)",
-        add_friend_btn: "+ Código Amigo",
-        settings_title: "Ajustes",
-        profile_and_goals: "Perfil y Objetivo Físico",
-        your_name: "Tu Nombre",
-        body_weight: "Peso corporal (kg)",
-        goal_label: "Tu Objetivo",
-        goal_lose: "Perder peso",
-        goal_maintain: "Mantener peso",
-        goal_diet: "Dieta (Déficit)",
-        goal_bulk: "Ganar músculo",
-        save_profile_btn: "Guardar perfil y objetivo",
-        language_title: "Idioma / Language",
-        daily_targets_title: "Metas Diarias (FitTracker)",
-        save_targets_btn: "Actualizar metas",
-        more_menu_title: "Más opciones",
-        close_btn: "Cerrar"
-    }
-};
-
-/* --- DATUMS-HELFER --- */
 function getDateKey(dateObj) {
     const y = dateObj.getFullYear();
     const m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -348,7 +453,7 @@ function getMondayKey(dateObj) {
 
 function getLast7Days() {
     const days = [];
-    const lang = appSettings.language || 'de';
+    const lang = (userSettings && userSettings.lang) ? userSettings.lang : 'de';
     const dayNamesMap = {
         de: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
         en: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
@@ -369,7 +474,7 @@ function getLast7Days() {
     return days;
 }
 
-/* --- BENUTZERDATEN & EINSTELLUNGEN INITIALISIEREN --- */
+/* --- APP-STATUS & LOCALSTORAGE INITIALISIERUNG --- */
 const todayKey = getDateKey(new Date());
 const currentMondayKey = getMondayKey(new Date());
 
@@ -384,26 +489,28 @@ if (!myUserId) {
 
 let userName = localStorage.getItem('apexfit_username') || 'Marlii';
 
-// Kein voreingestellter fremder Token mehr – der User trägt seinen eigenen ein
-let geminiApiKey = localStorage.getItem('apexfit_gemini_key') || '';
-
-let appSettings = JSON.parse(localStorage.getItem('apexfit_settings')) || {
-    bodyWeight: 75.0,
-    goal: 'maintain',
-    language: 'de',
-    kcalGoal: 2400,
-    waterGoalLiters: 3.0
+let userSettings = JSON.parse(localStorage.getItem('apexfit_settings')) || {
+    weight: 75,
+    fitnessGoal: 'muscle',
+    stepGoal: 10000,
+    kcalGoal: 2500,
+    waterGoal: 3.0,
+    lang: 'de',
+    theme: 'default',
+    iconGlow: false, // Standardmäßig ausgeschaltet
+    autoPause: true,
+    avatarDataUrl: ''
 };
 
 let showHomeGraphs = localStorage.getItem('apexfit_show_graphs') === 'true';
 let showTrackerHistory = false;
 
 let habitCategories = JSON.parse(localStorage.getItem('marlii_habit_cats')) || [
-    { id: 'hcat_1', name: 'Supplements', color: '#0a84ff', icon: 'fx-pill' },
-    { id: 'hcat_2', name: 'Daily Routine & Focus', color: '#30d158', icon: 'fx-bolt' }
+    { id: 'hcat_1', name: 'Supplements', color: '#0a84ff', icon: 'custom_supp' },
+    { id: 'hcat_2', name: 'Daily Routine & Focus', color: '#30d158', icon: 'event_repeat' }
 ];
 habitCategories.forEach(c => {
-    if (!c.icon || !c.icon.startsWith('fx-')) c.icon = 'fx-bolt';
+    if (!c.icon) c.icon = 'bolt';
     if (!c.color) c.color = '#0a84ff';
 });
 
@@ -421,7 +528,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     {
         id: 'cat_1',
         name: 'Brust',
-        icon: 'fx-dumbbell',
+        icon: 'custom_dumbbell',
         color: '#0a84ff',
         exercises: [
             { id: 'ex_1', name: 'Bankdrücken', sets: 4, reps: 8, weight: 70 },
@@ -431,7 +538,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     {
         id: 'cat_2',
         name: 'Arme',
-        icon: 'fx-fist',
+        icon: 'bolt',
         color: '#5e5ce6',
         exercises: [
             { id: 'ex_3', name: 'Kurzhantel Curls', sets: 3, reps: 10, weight: 16 },
@@ -440,7 +547,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     }
 ];
 fitnessData.forEach(c => {
-    if (!c.icon || !c.icon.startsWith('fx-')) c.icon = 'fx-dumbbell';
+    if (!c.icon || c.icon === 'fitness_center') c.icon = 'custom_dumbbell';
     if (!c.color) c.color = '#0a84ff';
 });
 
@@ -449,7 +556,7 @@ let friendIds = JSON.parse(localStorage.getItem('apexfit_friend_ids')) || [];
 
 let nutritionData = JSON.parse(localStorage.getItem('apexfit_nutrition')) || {};
 if (!nutritionData[todayKey]) {
-    nutritionData[todayKey] = { meals: [], waterMl: 0, waterLogs: [] };
+    nutritionData[todayKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0 };
 }
 
 let notesData = JSON.parse(localStorage.getItem('apexfit_notes')) || {
@@ -463,17 +570,18 @@ let notesData = JSON.parse(localStorage.getItem('apexfit_notes')) || {
 let currentNotesTab = 'daily';
 let currentFitCategoryId = null;
 let selectedHabitColor = '#0a84ff';
-let selectedHabitIcon = 'fx-bolt';
+let selectedHabitIcon = 'custom_supp';
 let selectedFitColor = '#0a84ff';
-let selectedFitIcon = 'fx-dumbbell';
+let selectedFitIcon = 'custom_dumbbell';
 let selectedJournalFilter = 'ALL';
+let currentSharedCategory = null;
 
 let activeWorkout = null;
 let workoutTimerInterval = null;
 
 function saveAll() {
     localStorage.setItem('apexfit_username', userName);
-    localStorage.setItem('apexfit_settings', JSON.stringify(appSettings));
+    localStorage.setItem('apexfit_settings', JSON.stringify(userSettings));
     localStorage.setItem('marlii_habit_cats', JSON.stringify(habitCategories));
     localStorage.setItem('marlii_habits_list', JSON.stringify(habitsList));
     localStorage.setItem('marlii_fitness_data', JSON.stringify(fitnessData));
@@ -484,7 +592,95 @@ function saveAll() {
     syncMyProfileToFirebase();
 }
 
-/* --- NOTIZEN AUTO-CLEANUP --- */
+/* --- FARB- & ICON-PICKER INITIALISIEREN (PASST SICH DEM GEWÄHLTEN THEME AN) --- */
+function initPickers() {
+    const fitIconContainer = document.getElementById('fit-icon-picker');
+    const habitIconContainer = document.getElementById('habit-icon-picker');
+    if (!fitIconContainer || !habitIconContainer) return;
+
+    fitIconContainer.innerHTML = '';
+    habitIconContainer.innerHTML = '';
+
+    APP_ICONS.forEach((ic, idx) => {
+        fitIconContainer.innerHTML += `
+            <div class="icon-option ${idx === 0 ? 'selected' : ''}" data-icon="${ic}" onclick="selectFitIcon(this)">
+                ${renderIconMarkup(ic, 22)}
+            </div>`;
+        habitIconContainer.innerHTML += `
+            <div class="icon-option ${idx === 1 ? 'selected' : ''}" data-icon="${ic}" onclick="selectHabitIcon(this)">
+                ${renderIconMarkup(ic, 22)}
+            </div>`;
+    });
+
+    const palette = (userSettings.theme === 'monochrome') ? MONOCHROME_COLORS : DEFAULT_COLORS;
+    selectedFitColor = palette[0];
+    selectedHabitColor = palette[0];
+
+    const fitColorContainer = document.getElementById('fit-color-picker');
+    const habitColorContainer = document.getElementById('habit-color-picker');
+    fitColorContainer.innerHTML = '';
+    habitColorContainer.innerHTML = '';
+
+    palette.forEach((col, idx) => {
+        const extraBorder = ['#111216', '#09090b', '#121215'].includes(col) ? 'border-color: rgba(255,255,255,0.45);' : '';
+        fitColorContainer.innerHTML += `
+            <div class="color-swatch ${idx === 0 ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectFitColor(this)"></div>`;
+        habitColorContainer.innerHTML += `
+            <div class="color-swatch ${idx === 0 ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectHabitColor(this)"></div>`;
+    });
+}
+
+/* --- LEVEL & XP BERECHNUNG (MIT 16 EIGENEN ANIMIERTEN LEVEL-ICONS) --- */
+function calculateTotalXP() {
+    let totalXP = 0;
+    habitsList.forEach(h => {
+        const xpVal = Math.min(50, Number(h.xp) || 25);
+        if (h.history) {
+            const completedDaysCount = Object.keys(h.history).filter(k => h.history[k]).length;
+            totalXP += completedDaysCount * xpVal;
+        }
+    });
+    journalData.forEach(entry => {
+        if (entry.exercises) {
+            entry.exercises.forEach(ex => {
+                totalXP += (ex.sets ? ex.sets.length : 0) * XP_PER_WORKOUT_SET;
+            });
+        }
+    });
+    return totalXP;
+}
+
+function renderLevelCard() {
+    const totalXP = calculateTotalXP();
+    const currentLevel = getLevelFromXP(totalXP);
+    const tierData = getLevelTierData(currentLevel);
+
+    const slotEl = document.getElementById('lvl-unique-icon-slot');
+    if (slotEl) {
+        slotEl.innerHTML = `<div class="lvl-badge-wrap ${tierData.fx}">${tierData.svg}</div>`;
+    }
+
+    document.getElementById('lvl-number').innerText = `Lvl ${currentLevel}`;
+    document.getElementById('lvl-rank-title').innerText = `• ${tierData.title}`;
+    document.getElementById('total-xp-badge').innerText = `${totalXP} XP`;
+
+    if (currentLevel >= MAX_LEVEL) {
+        document.getElementById('lvl-progress-bar').style.width = '100%';
+        document.getElementById('lvl-progress-text').innerText = 'MAX LVL 75 ERREICHT';
+        document.getElementById('lvl-next-hint').innerText = 'Apex Legend Status';
+    } else {
+        const xpIntoLevel = totalXP % XP_PER_LEVEL;
+        const xpMissing = XP_PER_LEVEL - xpIntoLevel;
+        const pct = Math.round((xpIntoLevel / XP_PER_LEVEL) * 100);
+        const nextMilestoneLvl = Math.floor(currentLevel / 5) * 5 + 5;
+
+        document.getElementById('lvl-progress-bar').style.width = `${pct}%`;
+        document.getElementById('lvl-progress-text').innerText = `${xpIntoLevel} / ${XP_PER_LEVEL} XP (${pct}%)`;
+        document.getElementById('lvl-next-hint').innerText = `Noch ${xpMissing} XP bis Lvl ${currentLevel + 1} (Rang: Lvl ${nextMilestoneLvl})`;
+    }
+}
+
+/* --- NOTIZEN SYSTEM (TÄGLICH, WÖCHENTLICH MO-SO, GENERELL) --- */
 function checkNotesAutoCleanup() {
     let changed = false;
     const nowDayKey = getDateKey(new Date());
@@ -515,136 +711,6 @@ function updateNotesBadge() {
     }
 }
 
-/* --- PICKER FÜR FLEX-SOLID ICONS & 16 FARBEN INITIALISIEREN --- */
-function initPickers() {
-    const fitIconContainer = document.getElementById('fit-icon-picker');
-    const habitIconContainer = document.getElementById('habit-icon-picker');
-    if (!fitIconContainer || !habitIconContainer) return;
-
-    fitIconContainer.innerHTML = '';
-    habitIconContainer.innerHTML = '';
-
-    FLEX_ICON_LIST.forEach((ic, idx) => {
-        fitIconContainer.innerHTML += `
-            <div class="icon-option ${idx === 0 ? 'selected' : ''}" data-icon="${ic}" onclick="selectFitIcon(this)">
-                ${renderFlexIcon(ic, 'currentColor', 22, false)}
-            </div>`;
-        habitIconContainer.innerHTML += `
-            <div class="icon-option ${idx === 1 ? 'selected' : ''}" data-icon="${ic}" onclick="selectHabitIcon(this)">
-                ${renderFlexIcon(ic, 'currentColor', 22, false)}
-            </div>`;
-    });
-
-    const fitColorContainer = document.getElementById('fit-color-picker');
-    const habitColorContainer = document.getElementById('habit-color-picker');
-    fitColorContainer.innerHTML = '';
-    habitColorContainer.innerHTML = '';
-
-    ACCENT_COLORS.forEach((col, idx) => {
-        const extraBorder = col === '#111216' ? 'border-color: rgba(255,255,255,0.4);' : '';
-        fitColorContainer.innerHTML += `
-            <div class="color-swatch ${idx === 0 ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectFitColor(this)"></div>`;
-        habitColorContainer.innerHTML += `
-            <div class="color-swatch ${idx === 0 ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectHabitColor(this)"></div>`;
-    });
-}
-
-/* --- LEVEL & XP SYSTEM (BIS LVL 75 MIT FLEX-SOLID ANIMATIONS-ICONS) --- */
-function getLevelFromXP(xp) {
-    const rawLvl = Math.floor(xp / XP_PER_LEVEL) + 1;
-    return Math.min(MAX_LEVEL, rawLvl);
-}
-
-function getRankTitle(level) {
-    if (level >= 75) return 'Apex Legend';
-    if (level >= 70) return 'Olympian';
-    if (level >= 65) return 'Immortal';
-    if (level >= 60) return 'Titan';
-    if (level >= 55) return 'Grandmaster';
-    if (level >= 50) return 'Master';
-    if (level >= 45) return 'Commander';
-    if (level >= 40) return 'Gladiator';
-    if (level >= 35) return 'Spartan';
-    if (level >= 30) return 'Vanguard';
-    if (level >= 25) return 'Warrior';
-    if (level >= 20) return 'Hustler';
-    if (level >= 15) return 'Challenger';
-    if (level >= 10) return 'Striver';
-    if (level >= 5)  return 'Starter';
-    return 'Rookie';
-}
-
-function getLevelIconInfo(level) {
-    if (level >= 75) return { icon: 'fx-crown', tierClass: 'lvl-tier-5' };
-    if (level >= 70) return { icon: 'fx-trophy', tierClass: 'lvl-tier-5' };
-    if (level >= 65) return { icon: 'fx-gem', tierClass: 'lvl-tier-5' };
-    if (level >= 60) return { icon: 'fx-sun', tierClass: 'lvl-tier-4' };
-    if (level >= 55) return { icon: 'fx-star', tierClass: 'lvl-tier-4' };
-    if (level >= 50) return { icon: 'fx-crown', tierClass: 'lvl-tier-4' };
-    if (level >= 45) return { icon: 'fx-rocket', tierClass: 'lvl-tier-4' };
-    if (level >= 40) return { icon: 'fx-flame', tierClass: 'lvl-tier-3' };
-    if (level >= 35) return { icon: 'fx-shield', tierClass: 'lvl-tier-3' };
-    if (level >= 30) return { icon: 'fx-fist', tierClass: 'lvl-tier-3' };
-    if (level >= 25) return { icon: 'fx-target', tierClass: 'lvl-tier-2' };
-    if (level >= 20) return { icon: 'fx-rocket', tierClass: 'lvl-tier-2' };
-    if (level >= 15) return { icon: 'fx-shield', tierClass: 'lvl-tier-2' };
-    if (level >= 10) return { icon: 'fx-dumbbell', tierClass: 'lvl-tier-1' };
-    if (level >= 5)  return { icon: 'fx-flame', tierClass: 'lvl-tier-1' };
-    return { icon: 'fx-bolt', tierClass: 'lvl-tier-1' };
-}
-
-function calculateTotalXP() {
-    let totalXP = 0;
-    habitsList.forEach(h => {
-        const xpVal = Math.min(50, Number(h.xp) || 25);
-        if (h.history) {
-            const completedDaysCount = Object.keys(h.history).filter(k => h.history[k]).length;
-            totalXP += completedDaysCount * xpVal;
-        }
-    });
-    journalData.forEach(entry => {
-        if (entry.exercises) {
-            entry.exercises.forEach(ex => {
-                totalXP += (ex.sets ? ex.sets.length : 0) * XP_PER_WORKOUT_SET;
-            });
-        }
-    });
-    return totalXP;
-}
-
-function renderLevelCard() {
-    const totalXP = calculateTotalXP();
-    const currentLevel = getLevelFromXP(totalXP);
-    const rankName = getRankTitle(currentLevel);
-    const iconInfo = getLevelIconInfo(currentLevel);
-
-    const iconWrapper = document.getElementById('lvl-icon-wrapper');
-    if (iconWrapper) {
-        iconWrapper.className = `lvl-anim-wrapper ${iconInfo.tierClass}`;
-        iconWrapper.innerHTML = `<svg viewBox="0 0 24 24"><use href="#${iconInfo.icon}"/></svg>`;
-    }
-
-    document.getElementById('lvl-number').innerText = `Lvl ${currentLevel}`;
-    document.getElementById('lvl-rank-title').innerText = `• ${rankName}`;
-    document.getElementById('total-xp-badge').innerText = `${totalXP} XP`;
-
-    if (currentLevel >= MAX_LEVEL) {
-        document.getElementById('lvl-progress-bar').style.width = '100%';
-        document.getElementById('lvl-progress-text').innerText = 'MAX LVL 75 ERREICHT';
-        document.getElementById('lvl-next-hint').innerText = 'Apex Legend Status';
-    } else {
-        const xpIntoLevel = totalXP % XP_PER_LEVEL;
-        const xpMissing = XP_PER_LEVEL - xpIntoLevel;
-        const pct = Math.round((xpIntoLevel / XP_PER_LEVEL) * 100);
-        const nextMilestoneLvl = Math.floor(currentLevel / 5) * 5 + 5;
-
-        document.getElementById('lvl-progress-bar').style.width = `${pct}%`;
-        document.getElementById('lvl-progress-text').innerText = `${xpIntoLevel} / ${XP_PER_LEVEL} XP (${pct}%)`;
-        document.getElementById('lvl-next-hint').innerText = `Noch ${xpMissing} XP bis Lvl ${currentLevel + 1} (Rang: Lvl ${nextMilestoneLvl})`;
-    }
-}
-
-/* --- NOTIZEN MODAL --- */
 function openNotesModal() {
     checkNotesAutoCleanup();
     renderNotesModal();
@@ -712,121 +778,9 @@ function deleteNoteItem(noteId) {
     renderNotesModal();
 }
 
-/* --- PROFIL & EINSTELLUNGEN (SPRACHE, GEWICHT, ZIEL, BACKUP) --- */
-function openProfileModal() {
-    document.getElementById('input-username').value = userName;
-    document.getElementById('modal-profile').classList.add('open');
-    setTimeout(() => document.getElementById('input-username').focus(), 100);
-}
-
-function saveUsername() {
-    const val = document.getElementById('input-username').value.trim();
-    if (val) {
-        userName = val;
-        document.getElementById('display-username').innerText = userName;
-        const setInp = document.getElementById('settings-input-name');
-        if (setInp) setInp.value = userName;
-        saveAll();
-        syncAndLoadLeaderboard();
-    }
-    closeModals();
-}
-
-function renderSettingsView() {
-    document.getElementById('settings-input-name').value = userName;
-    document.getElementById('settings-input-weight').value = appSettings.bodyWeight || '';
-    document.getElementById('settings-select-goal').value = appSettings.goal || 'maintain';
-    document.getElementById('settings-select-lang').value = appSettings.language || 'de';
-    document.getElementById('settings-input-kcal-goal').value = appSettings.kcalGoal || 2400;
-    document.getElementById('settings-input-water-goal').value = appSettings.waterGoalLiters || 3.0;
-    document.getElementById('settings-input-apikey').value = geminiApiKey || '';
-}
-
-function saveSettingsProfile() {
-    const newName = document.getElementById('settings-input-name').value.trim();
-    const newWeight = parseFloat(document.getElementById('settings-input-weight').value) || 75.0;
-    const newGoal = document.getElementById('settings-select-goal').value;
-
-    if (newName) {
-        userName = newName;
-        document.getElementById('display-username').innerText = userName;
-    }
-    appSettings.bodyWeight = newWeight;
-    appSettings.goal = newGoal;
-
-    saveAll();
-    renderFitTracker();
-    alert('Profil & Körperziel erfolgreich gespeichert!');
-}
-
-function saveSettingsTargets() {
-    appSettings.kcalGoal = parseInt(document.getElementById('settings-input-kcal-goal').value) || 2400;
-    appSettings.waterGoalLiters = parseFloat(document.getElementById('settings-input-water-goal').value) || 3.0;
-    saveAll();
-    renderFitTracker();
-    alert('Tagesziele für den FitTracker aktualisiert!');
-}
-
-function saveSettingsApiKey() {
-    geminiApiKey = document.getElementById('settings-input-apikey').value.trim();
-    localStorage.setItem('apexfit_gemini_key', geminiApiKey);
-    updateScannerStatusText();
-    alert('Dein KI API-Key wurde lokal gespeichert!');
-}
-
-function changeAppLanguage(langCode) {
-    appSettings.language = langCode || 'de';
-    saveAll();
-    applyTranslations();
-    renderHome();
-    renderFitTracker();
-}
-
-function applyTranslations() {
-    const lang = appSettings.language || 'de';
-    const dict = TRANSLATIONS[lang] || TRANSLATIONS.de;
-
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[key]) {
-            el.innerText = dict[key];
-        }
-    });
-
-    const localeMap = { de: 'de-DE', en: 'en-US', fr: 'fr-FR', es: 'es-ES' };
-    const now = new Date();
-    const options = { weekday: 'short', day: 'numeric', month: 'short' };
-    document.getElementById('current-date-label').innerText = 'APEXFIT • ' + now.toLocaleDateString(localeMap[lang] || 'de-DE', options);
-}
-
-function exportAppData() {
-    const backup = {
-        userName,
-        appSettings,
-        habitCategories,
-        habitsList,
-        fitnessData,
-        journalData,
-        nutritionData,
-        notesData
-    };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ApexFit_Backup_${getDateKey(new Date())}.json`;
-    a.click();
-}
-
-function resetAllAppData() {
-    if (confirm('Möchtest du wirklich alle lokalen Daten von ApexFit zurücksetzen?')) {
-        localStorage.clear();
-        window.location.reload();
-    }
-}
-
 /* --- SVG GRAPH GENERATOR --- */
 function createSmoothSVGChart(labels, values, accentColor, unitSuffix = '') {
+    const chartColor = (userSettings.theme === 'monochrome') ? '#ffffff' : accentColor;
     const w = 340;
     const h = 125;
     const padLeft = 24;
@@ -854,9 +808,9 @@ function createSmoothSVGChart(labels, values, accentColor, unitSuffix = '') {
     let circlesHTML = '';
     pts.forEach(p => {
         circlesHTML += `
-            <circle cx="${p.x}" cy="${p.y}" r="4" fill="${accentColor}" stroke="#fff" stroke-width="1.5" />
-            <text x="${p.x}" y="${p.y - 8}" fill="#f5f7fa" font-size="9.5" font-weight="700" text-anchor="middle">${p.v}${unitSuffix}</text>
-            <text x="${p.x}" y="${h - 6}" fill="#8e93a4" font-size="9.5" font-weight="600" text-anchor="middle">${p.label}</text>
+            <circle cx="${p.x}" cy="${p.y}" r="4" fill="${chartColor}" stroke="#111" stroke-width="1.5" />
+            <text x="${p.x}" y="${p.y - 8}" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle">${p.v}${unitSuffix}</text>
+            <text x="${p.x}" y="${h - 6}" fill="#a1a1aa" font-size="9.5" font-weight="600" text-anchor="middle">${p.label}</text>
         `;
     });
 
@@ -864,13 +818,13 @@ function createSmoothSVGChart(labels, values, accentColor, unitSuffix = '') {
     <svg viewBox="0 0 ${w} ${h}" style="width:100%; height:100%; overflow:visible;">
         <defs>
             <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="${accentColor}" stop-opacity="0.38"/>
-                <stop offset="100%" stop-color="${accentColor}" stop-opacity="0.0"/>
+                <stop offset="0%" stop-color="${chartColor}" stop-opacity="0.42"/>
+                <stop offset="100%" stop-color="${chartColor}" stop-opacity="0.0"/>
             </linearGradient>
         </defs>
-        <line x1="${padLeft}" y1="${padTop + plotH}" x2="${w - padRight}" y2="${padTop + plotH}" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+        <line x1="${padLeft}" y1="${padTop + plotH}" x2="${w - padRight}" y2="${padTop + plotH}" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
         <path d="${areaD}" fill="url(#${gradId})" />
-        <path d="${pathD}" fill="none" stroke="${accentColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="${pathD}" fill="none" stroke="${chartColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
         ${circlesHTML}
     </svg>`;
 }
@@ -920,7 +874,7 @@ function renderHome() {
     const circumference = 276.46;
     document.getElementById('ring-daily').style.strokeDashoffset = circumference - (dailyPct / 100) * circumference;
     document.getElementById('daily-score-val').innerText = `${dailyPct}%`;
-    document.getElementById('daily-score-sub').innerText = `${doneToday} / ${totalHabits} erledigt`;
+    document.getElementById('daily-score-sub').innerText = `${doneToday} / ${totalHabits}`;
 
     document.getElementById('ring-weekly').style.strokeDashoffset = circumference - (weeklyPct / 100) * circumference;
     document.getElementById('weekly-score-val').innerText = `${weeklyPct}%`;
@@ -951,7 +905,7 @@ function renderHome() {
         gWrap.style.display = 'none';
     }
 
-    // 7-Tage Habit Matrix (Statische Zeilen-Icons ohne Schwebe-Effekt, dezenter Glow beim Haken)
+    // 7-Tage Habit Matrix
     const matrixContainer = document.getElementById('matrix-container');
     if (habitsList.length === 0) {
         matrixContainer.innerHTML = `<p class="empty-hint">Noch keine Ziele im Reiter „Habits“ angelegt.</p>`;
@@ -975,9 +929,10 @@ function renderHome() {
 
         habitsList.forEach(h => {
             const cat = habitCategories.find(c => c.id === h.catId);
-            const dotColor = cat ? cat.color : '#0a84ff';
-            const catIcon = cat && cat.icon ? cat.icon : 'fx-bolt';
-            const glowCol = getGlowColor(dotColor);
+            const rawColor = cat ? cat.color : '#0a84ff';
+            const dotColor = (userSettings.theme === 'monochrome') ? '#ffffff' : rawColor;
+            const catIcon = cat && cat.icon ? cat.icon : 'bolt';
+            const iconCol = getEffectiveIconColor(rawColor);
             const dotBorder = getBorderForColor(dotColor);
             const checkTextColor = getContrastText(dotColor);
 
@@ -985,14 +940,16 @@ function renderHome() {
                 <tr class="matrix-row">
                     <td>
                         <div class="matrix-habit-name">
-                            ${renderFlexIcon(catIcon, glowCol, 16, false)}
+                            <span class="card-corner-icon" style="--icon-color:${iconCol};">
+                                ${renderIconMarkup(catIcon, 17)}
+                            </span>
                             <span class="matrix-habit-text">${h.name}</span>
                         </div>
                     </td>`;
 
             last7.forEach(d => {
                 const isDone = h.history && h.history[d.key];
-                const doneStyle = isDone ? `background:${dotColor}; border-color:${dotBorder}; color:${checkTextColor}; box-shadow: 0 2px 5px ${dotColor}33;` : '';
+                const doneStyle = isDone ? `background:${dotColor}; border-color:${dotBorder}; color:${checkTextColor};` : '';
                 tableHTML += `
                     <td class="matrix-cell">
                         <button class="matrix-dot-btn ${isDone ? 'done' : ''}" style="${doneStyle}" onclick="toggleHabitDate('${h.id}', '${d.key}')">
@@ -1011,7 +968,7 @@ function renderHome() {
     renderFitnessMatrixAndChart();
 }
 
-/* --- 2. HABITS REITER RENDERN --- */
+/* --- 2. HABITS REITER RENDERN (NUR CARD-OBEN-LINKS ICON SCHWEBT) --- */
 function renderHabits() {
     const container = document.getElementById('habits-categories-container');
     container.innerHTML = '';
@@ -1025,10 +982,11 @@ function renderHabits() {
     habitCategories.forEach(cat => {
         const catHabits = habitsList.filter(h => h.catId === cat.id);
         const doneCount = catHabits.filter(h => h.history && h.history[tKey]).length;
-        const dotBorder = getBorderForColor(cat.color);
-        const checkColor = getContrastText(cat.color);
-        const glowCol = getGlowColor(cat.color);
-        const cIcon = cat.icon || 'fx-bolt';
+        const activeColor = (userSettings.theme === 'monochrome') ? '#ffffff' : cat.color;
+        const dotBorder = getBorderForColor(activeColor);
+        const checkColor = getContrastText(activeColor);
+        const iconCol = getEffectiveIconColor(cat.color);
+        const cIcon = cat.icon || 'bolt';
 
         let itemsHTML = '';
         if (catHabits.length === 0) {
@@ -1038,7 +996,7 @@ function renderHabits() {
                 const isDone = h.history && h.history[tKey];
                 const streak = calculateStreak(h);
                 const xpVal = Math.min(50, Number(h.xp) || 25);
-                const circleStyle = isDone ? `background:${cat.color}; border-color:${dotBorder}; box-shadow: 0 2px 6px ${cat.color}38;` : '';
+                const circleStyle = isDone ? `background:${activeColor}; border-color:${dotBorder};` : '';
 
                 itemsHTML += `
                 <div class="habit-item-row ${isDone ? 'completed' : ''}">
@@ -1059,12 +1017,14 @@ function renderHabits() {
             });
         }
 
-        // Das Kategorie-Icon oben links in der Liquid-Card bekommt die Schwebe-Animation (true)
         container.innerHTML += `
         <div class="bevel-card">
             <div class="category-header">
                 <div class="category-title-group">
-                    ${renderFlexIcon(cIcon, glowCol, 24, true)}
+                    <!-- Schwebendes Icon links oben im Liquid Glass Element -->
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color:${iconCol};">
+                        ${renderIconMarkup(cIcon, 24)}
+                    </span>
                     <h2 class="category-title">${cat.name}</h2>
                     <span class="badge-count">${doneCount}/${catHabits.length}</span>
                 </div>
@@ -1187,7 +1147,7 @@ function deleteHabit(habitId) {
     renderHome();
 }
 
-/* --- 3. FITNESS REITER & FITNESS-MATRIX (AUF HOME) --- */
+/* --- 3. FITNESS REITER, FITNESS-MATRIX & PLÄNE TEILEN --- */
 function selectFitIcon(el) {
     document.querySelectorAll('#fit-icon-picker .icon-option').forEach(i => i.classList.remove('selected'));
     el.classList.add('selected');
@@ -1231,17 +1191,20 @@ function renderFitnessMatrixAndChart() {
     tableHTML += `</tr></thead><tbody>`;
 
     fitnessData.forEach(cat => {
-        const cColor = cat.color || '#0a84ff';
-        const glowCol = getGlowColor(cColor);
+        const rawColor = cat.color || '#0a84ff';
+        const cColor = (userSettings.theme === 'monochrome') ? '#ffffff' : rawColor;
+        const iconCol = getEffectiveIconColor(rawColor);
         const cBorder = getBorderForColor(cColor);
         const cText = getContrastText(cColor);
-        const cIcon = cat.icon || 'fx-dumbbell';
+        const cIcon = cat.icon || 'custom_dumbbell';
 
         tableHTML += `
             <tr class="matrix-row">
                 <td>
                     <div class="matrix-habit-name">
-                        ${renderFlexIcon(cIcon, glowCol, 16, false)}
+                        <span class="card-corner-icon" style="--icon-color:${iconCol};">
+                            ${renderIconMarkup(cIcon, 17)}
+                        </span>
                         <span class="matrix-habit-text">${cat.name}</span>
                     </div>
                 </td>`;
@@ -1256,7 +1219,7 @@ function renderFitnessMatrixAndChart() {
             });
 
             const isTrained = setsCount > 0;
-            const cellStyle = isTrained ? `background:${cColor}; border-color:${cBorder}; color:${cText}; box-shadow:0 2px 5px ${cColor}33; font-size:10px; font-weight:800;` : '';
+            const cellStyle = isTrained ? `background:${cColor}; border-color:${cBorder}; color:${cText}; font-size:10px; font-weight:800;` : '';
 
             tableHTML += `
                 <td class="matrix-cell">
@@ -1297,17 +1260,18 @@ function renderFitness() {
     if (fitnessData.length === 0) {
         container.innerHTML = `
             <div class="bevel-card" style="text-align:center; padding: 35px 20px;">
-                <p class="empty-hint">Noch keine Muskelgruppen vorhanden.<br>Tippe oben rechts auf das <b>+</b>.</p>
+                <p class="empty-hint">Noch keine Muskelgruppen vorhanden.<br>Tippe oben rechts auf das <b>+</b> oder importiere einen Plan.</p>
             </div>`;
         return;
     }
 
     fitnessData.forEach(cat => {
-        const cColor = cat.color || '#0a84ff';
-        const cIcon = cat.icon || 'fx-dumbbell';
-        const cText = getContrastText(cColor);
-        const cBorder = getBorderForColor(cColor);
-        const glowCol = getGlowColor(cColor);
+        const rawColor = cat.color || '#0a84ff';
+        const btnColor = (userSettings.theme === 'monochrome') ? '#ffffff' : rawColor;
+        const cIcon = cat.icon || 'custom_dumbbell';
+        const cText = getContrastText(btnColor);
+        const cBorder = getBorderForColor(btnColor);
+        const iconCol = getEffectiveIconColor(rawColor);
 
         let exercisesHTML = '';
         if (cat.exercises.length === 0) {
@@ -1343,20 +1307,25 @@ function renderFitness() {
             });
         }
 
-        // Das Eck-Icon oben links in der Muskelgruppen-Karte schwebt (true)
         container.innerHTML += `
         <div class="bevel-card">
             <div class="category-header">
                 <div class="category-title-group">
-                    ${renderFlexIcon(cIcon, glowCol, 25, true)}
+                    <!-- Schwebendes Icon links oben im Liquid Glass Element -->
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color:${iconCol};">
+                        ${renderIconMarkup(cIcon, 25)}
+                    </span>
                     <h2 class="category-title">${cat.name}</h2>
                     <span class="badge-count">${cat.exercises.length}</span>
                 </div>
                 <div class="category-actions">
-                    <button class="btn-pill" style="background:${cColor}; color:${cText}; border-color:${cBorder};" onclick="openFitnessExerciseModal('${cat.id}')">
+                    <button class="btn-pill" style="background:${btnColor}; color:${cText}; border-color:${cBorder};" onclick="openFitnessExerciseModal('${cat.id}')">
                         <span class="material-symbols-rounded" style="font-size:15px;">add</span> Übung
                     </button>
-                    <button class="btn-delete-icon" onclick="deleteFitnessCategory('${cat.id}')">
+                    <button class="btn-share-icon" onclick="openSharePlanModal('${cat.id}')" title="Trainingsplan mit Freunden teilen">
+                        <span class="material-symbols-rounded" style="font-size:19px;">share</span>
+                    </button>
+                    <button class="btn-delete-icon" onclick="deleteFitnessCategory('${cat.id}')" title="Muskelgruppe löschen">
                         <span class="material-symbols-rounded" style="font-size:19px;">delete</span>
                     </button>
                 </div>
@@ -1366,7 +1335,119 @@ function renderFitness() {
     });
 }
 
-/* --- LIVE WORKOUT STARTEN, PAUSEN-TIMER & SÄTZE --- */
+/* --- TRAININGSPLÄNE (MUSKELGRUPPEN) TEILEN & IMPORTIEREN --- */
+function encodePlanPayload(catObj) {
+    const cleanPlan = {
+        name: catObj.name,
+        icon: catObj.icon || 'custom_dumbbell',
+        color: catObj.color || '#0a84ff',
+        exercises: (catObj.exercises || []).map(e => ({
+            name: e.name,
+            sets: e.sets,
+            reps: e.reps,
+            weight: e.weight
+        }))
+    };
+    return 'APEXPLAN:' + btoa(encodeURIComponent(JSON.stringify(cleanPlan)));
+}
+
+function decodePlanPayload(rawStr) {
+    let str = rawStr.trim();
+    if (str.includes('plan=')) {
+        try {
+            const url = new URL(str);
+            str = url.searchParams.get('plan') || str;
+        } catch (e) {
+            const parts = str.split('plan=');
+            if (parts[1]) str = decodeURIComponent(parts[1].split('&')[0]);
+        }
+    }
+    if (str.startsWith('APEXPLAN:')) {
+        str = str.replace('APEXPLAN:', '');
+    }
+    const jsonStr = decodeURIComponent(atob(str));
+    return JSON.parse(jsonStr);
+}
+
+function openSharePlanModal(catId) {
+    const cat = fitnessData.find(c => c.id === catId);
+    if (!cat) return;
+    currentSharedCategory = cat;
+    const code = encodePlanPayload(cat);
+    document.getElementById('share-plan-modal-title').innerText = `Plan teilen: ${cat.name}`;
+    document.getElementById('share-plan-code-output').value = code;
+    document.getElementById('modal-share-plan').classList.add('open');
+}
+
+function copySharedPlanCode() {
+    const code = document.getElementById('share-plan-code-output').value;
+    if (!code) return;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(code);
+        alert('Trainingsplan-Code wurde kopiert! Schicke ihn an deinen Freund.');
+    } else {
+        prompt('Kopiere diesen Plan-Code:', code);
+    }
+}
+
+function sharePlanDirectLink() {
+    if (!currentSharedCategory) return;
+    const code = encodePlanPayload(currentSharedCategory);
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?plan=${encodeURIComponent(code)}`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: `ApexFit Trainingsplan: ${currentSharedCategory.name}`,
+            text: `Importiere meinen Trainingsplan für „${currentSharedCategory.name}“ direkt in ApexFit!`,
+            url: shareUrl
+        }).catch(() => {});
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl);
+        alert(`Direkter Plan-Link kopiert:\n${shareUrl}`);
+    } else {
+        prompt('Kopiere diesen Plan-Link:', shareUrl);
+    }
+}
+
+function openImportPlanModal() {
+    document.getElementById('input-import-plan-code').value = '';
+    document.getElementById('modal-import-plan').classList.add('open');
+    setTimeout(() => document.getElementById('input-import-plan-code').focus(), 100);
+}
+
+function confirmImportFitnessPlan() {
+    const raw = document.getElementById('input-import-plan-code').value;
+    if (!raw.trim()) return;
+    try {
+        const parsed = decodePlanPayload(raw);
+        if (!parsed || !parsed.name) throw new Error('Ungültiges Format');
+
+        fitnessData.push({
+            id: 'cat_' + Date.now(),
+            name: parsed.name,
+            icon: parsed.icon || 'custom_dumbbell',
+            color: parsed.color || '#0a84ff',
+            exercises: (parsed.exercises || []).map((ex, i) => ({
+                id: 'ex_' + Date.now() + '_' + i,
+                name: ex.name || 'Übung',
+                sets: Number(ex.sets) || 3,
+                reps: Number(ex.reps) || 10,
+                weight: Number(ex.weight) || 50
+            }))
+        });
+
+        saveAll();
+        renderFitness();
+        renderHome();
+        closeModals();
+        alert(`Trainingsplan „${parsed.name}“ erfolgreich hinzugefügt!`);
+    } catch (e) {
+        alert('Der eingegebene Plan-Code konnte nicht gelesen werden. Bitte prüfe den Code.');
+    }
+}
+
+/* --- LIVE WORKOUT IM GYM --- */
 function openStartWorkoutModal() {
     const listEl = document.getElementById('start-workout-cat-list');
     listEl.innerHTML = '';
@@ -1375,11 +1456,13 @@ function openStartWorkoutModal() {
         listEl.innerHTML = `<p class="empty-hint">Bitte erstelle zuerst mit dem <b>+</b> eine Muskelgruppe und Übungen.</p>`;
     } else {
         fitnessData.forEach(cat => {
-            const glowCol = getGlowColor(cat.color);
+            const iconCol = getEffectiveIconColor(cat.color);
             listEl.innerHTML += `
             <div class="workout-select-item" onclick="startLiveWorkout('${cat.id}')">
                 <div style="display:flex; align-items:center; gap:14px;">
-                    ${renderFlexIcon(cat.icon || 'fx-dumbbell', glowCol, 26, false)}
+                    <span class="card-corner-icon" style="--icon-color:${iconCol};">
+                        ${renderIconMarkup(cat.icon || 'custom_dumbbell', 26)}
+                    </span>
                     <div>
                         <div style="font-size:16px; font-weight:700;">${cat.name}</div>
                         <div style="font-size:12px; color:var(--text-muted);">${cat.exercises.length} Übungen • +50 XP je Satz</div>
@@ -1417,7 +1500,7 @@ function startLiveWorkout(catId) {
     activeWorkout = {
         catId: cat.id,
         catName: cat.name,
-        catIcon: cat.icon || 'fx-dumbbell',
+        catIcon: cat.icon || 'custom_dumbbell',
         catColor: cat.color || '#0a84ff',
         trainSeconds: 0,
         pauseSeconds: 0,
@@ -1539,6 +1622,9 @@ function toggleWorkoutSet(exIdx, setIdx) {
     if (!activeWorkout) return;
     const s = activeWorkout.exercises[exIdx].sets[setIdx];
     s.done = !s.done;
+    if (s.done && userSettings.autoPause) {
+        activeWorkout.isPaused = true;
+    }
     renderActiveWorkoutBanner();
 }
 
@@ -1812,8 +1898,7 @@ function renderJournal() {
 
     let html = '';
     filtered.forEach(entry => {
-        const cColor = entry.catColor || '#0a84ff';
-        const glowCol = getGlowColor(cColor);
+        const iconCol = getEffectiveIconColor(entry.catColor || '#0a84ff');
 
         let entrySetsCount = 0;
         let exListHTML = '';
@@ -1835,12 +1920,13 @@ function renderJournal() {
             ? `⏱ Training: ${entry.trainTimeStr} • ⏸ Pause: ${entry.pauseTimeStr || '00:00'}`
             : `⏱ ${entry.duration} Min.`;
 
-        // Das Eck-Icon oben links in der Journal-Karte schwebt (true)
         html += `
         <div class="bevel-card">
             <div class="category-header" style="margin-bottom:8px;">
                 <div class="category-title-group">
-                    ${renderFlexIcon(entry.catIcon || 'fx-dumbbell', glowCol, 25, true)}
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color:${iconCol};">
+                        ${renderIconMarkup(entry.catIcon || 'custom_dumbbell', 25)}
+                    </span>
                     <div>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <h2 class="category-title">${entry.catName}</h2>
@@ -1870,29 +1956,19 @@ function deleteJournalEntry(entryId) {
     renderJournal();
 }
 
-/* --- 5. FITTRACKER (KI FOTO-SCANNER + WASSER + HISTORY VERGLEICH UNTEN) --- */
+/* --- 5. FITTRACKER (OHNE KI • ESSEN, WASSER, SCHRITTZÄHLER & TAGESBILANZ-HISTORIE) --- */
 function getTodayNutrition() {
     const tKey = getDateKey(new Date());
     if (!nutritionData[tKey]) {
-        nutritionData[tKey] = { meals: [], waterMl: 0, waterLogs: [] };
+        nutritionData[tKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0 };
+    }
+    if (typeof nutritionData[tKey].steps === 'undefined') {
+        nutritionData[tKey].steps = 0;
     }
     return nutritionData[tKey];
 }
 
-function updateScannerStatusText() {
-    const statusEl = document.getElementById('ai-scan-status');
-    if (!statusEl) return;
-    if (geminiApiKey && geminiApiKey.startsWith('AIza')) {
-        statusEl.innerText = 'KI-Scanner bereit • Foto aufnehmen oder auswählen';
-        statusEl.style.color = 'var(--text-muted)';
-    } else {
-        statusEl.innerText = 'Hinweis: Eigenen API-Key oben rechts (🔑) oder in Einstellungen eintragen';
-        statusEl.style.color = '#fbbf24';
-    }
-}
-
 function renderFitTracker() {
-    updateScannerStatusText();
     const dayLog = getTodayNutrition();
 
     let totalKcal = 0;
@@ -1908,24 +1984,30 @@ function renderFitTracker() {
     });
 
     const liters = ((Number(dayLog.waterMl) || 0) / 1000).toFixed(2);
-    const goalNames = { cut: 'Abnehmen', maintain: 'Gewicht halten', diet: 'Diät (Defizit)', bulk: 'Muskelaufbau' };
+    const stepsToday = Number(dayLog.steps) || 0;
+    const stepGoal = Number(userSettings.stepGoal) || 10000;
+    const kcalGoal = Number(userSettings.kcalGoal) || 2500;
+    const waterGoal = Number(userSettings.waterGoal) || 3.0;
 
-    document.getElementById('daily-total-kcal').innerText = `${Math.round(totalKcal)} kcal`;
-    document.getElementById('daily-kcal-target-lbl').innerText = `Ziel: ${appSettings.kcalGoal || 2400} kcal`;
+    document.getElementById('daily-total-kcal').innerText = `${Math.round(totalKcal)}`;
+    document.getElementById('daily-goal-kcal-lbl').innerText = `/ ${kcalGoal} kcal`;
 
     document.getElementById('daily-total-water').innerText = `${liters} L`;
-    document.getElementById('daily-water-target-lbl').innerText = `Ziel: ${Number(appSettings.waterGoalLiters || 3).toFixed(1)} L`;
+    document.getElementById('daily-goal-water-lbl').innerText = `/ ${waterGoal.toFixed(1)} L Wasser`;
 
-    const subEl = document.getElementById('tracker-goal-Dynamic-sub');
-    if (subEl) {
-        subEl.innerText = `Fokus: ${goalNames[appSettings.goal] || 'Fit'} • ${appSettings.bodyWeight || 75} kg`;
-    }
+    document.getElementById('daily-total-steps').innerText = `${stepsToday.toLocaleString('de-DE')}`;
+    document.getElementById('daily-goal-steps-lbl').innerText = `/ ${stepGoal.toLocaleString('de-DE')} Schritte`;
 
     document.getElementById('daily-total-protein').innerText = `${Math.round(totalPro * 10) / 10} g`;
     document.getElementById('daily-total-fat').innerText = `${Math.round(totalFat * 10) / 10} g`;
     document.getElementById('daily-total-carbs').innerText = `${Math.round(totalCarbs * 10) / 10} g`;
 
-    // Gespeicherte Mahlzeiten heute
+    // Schrittzähler Fortschrittsbalken
+    const stepPct = Math.min(100, Math.round((stepsToday / stepGoal) * 100));
+    document.getElementById('steps-progress-bar').style.width = `${stepPct}%`;
+    document.getElementById('steps-progress-subtitle').innerText = `${stepsToday.toLocaleString('de-DE')} von ${stepGoal.toLocaleString('de-DE')} Schritten (${stepPct}%)`;
+
+    // Heutige Mahlzeiten
     const mealsEl = document.getElementById('today-meals-list');
     if (dayLog.meals.length === 0) {
         mealsEl.innerHTML = `<p class="empty-hint" style="padding:4px 0;">Heute noch keine Mahlzeit gespeichert.</p>`;
@@ -1937,7 +2019,7 @@ function renderFitTracker() {
                 <div>
                     <div style="font-size:14.5px; font-weight:700;">${m.name}</div>
                     <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">
-                        🔥 ${m.kcal} kcal • 🥩 ${m.protein}g E • 🥑 ${m.fat}g F • 🌾 ${m.carbs}g KH
+                        🔥 ${m.kcal} kcal • 🥩 ${m.protein}g E • 💧 ${m.fat}g F • 🌾 ${m.carbs}g KH
                     </div>
                 </div>
                 <button class="btn-delete-icon" onclick="deleteMealItem('${m.id}')">
@@ -1948,7 +2030,7 @@ function renderFitTracker() {
         mealsEl.innerHTML = mHtml;
     }
 
-    // Wasser-Logs heute
+    // Wasser-Logs
     const waterEl = document.getElementById('today-water-logs');
     if (!dayLog.waterLogs || dayLog.waterLogs.length === 0) {
         waterEl.innerHTML = '';
@@ -1967,207 +2049,6 @@ function renderFitTracker() {
 
     if (showTrackerHistory) {
         renderTrackerHistoryCards();
-    }
-}
-
-/* --- HISTORY VERGLEICH UNTEN IM FITTRACKER (OPTIK WIE TAGESBILANZ OBEN) --- */
-function toggleTrackerHistory() {
-    showTrackerHistory = !showTrackerHistory;
-    const histContainer = document.getElementById('tracker-history-container');
-    if (showTrackerHistory) {
-        histContainer.style.display = 'block';
-        renderTrackerHistoryCards();
-    } else {
-        histContainer.style.display = 'none';
-    }
-}
-
-function renderTrackerHistoryCards() {
-    const container = document.getElementById('tracker-history-container');
-    if (!container) return;
-
-    const allDayKeys = Object.keys(nutritionData).sort((a, b) => b.localeCompare(a));
-    if (allDayKeys.length === 0) {
-        container.innerHTML = `<div class="bevel-card"><p class="empty-hint">Noch keine vergangenen Tage gespeichert.</p></div>`;
-        return;
-    }
-
-    let html = '';
-    allDayKeys.slice(0, 10).forEach(dKey => {
-        const entry = nutritionData[dKey];
-        if (!entry) return;
-
-        let kSum = 0, pSum = 0, fSum = 0, cSum = 0;
-        (entry.meals || []).forEach(m => {
-            kSum += Number(m.kcal) || 0;
-            pSum += Number(m.protein) || 0;
-            fSum += Number(m.fat) || 0;
-            cSum += Number(m.carbs) || 0;
-        });
-        const wLiters = ((Number(entry.waterMl) || 0) / 1000).toFixed(2);
-        const isToday = dKey === getDateKey(new Date());
-
-        const dateParts = dKey.split('-');
-        const prettyDate = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : dKey;
-
-        html += `
-        <div class="history-day-card">
-            <div class="card-title-row" style="margin-bottom:12px;">
-                <div>
-                    <h3>${isToday ? 'Heute (' + prettyDate + ')' : prettyDate}</h3>
-                    <span class="card-subtitle">${(entry.meals || []).length} Mahlzeiten protokolliert</span>
-                </div>
-                ${renderFlexIcon('fx-nutrition', 'var(--accent-green)', 22, true)}
-            </div>
-
-            <div class="tracker-hero-grid">
-                <div class="tracker-hero-box">
-                    ${renderFlexIcon('fx-flame', 'var(--accent-orange)', 20, true)}
-                    <div class="tracker-hero-val">${Math.round(kSum)} kcal</div>
-                    <div class="tracker-hero-lbl">Kalorien (${appSettings.kcalGoal || 2400} Ziel)</div>
-                </div>
-                <div class="tracker-hero-box">
-                    ${renderFlexIcon('fx-drop', 'var(--accent-cyan)', 20, true)}
-                    <div class="tracker-hero-val" style="color:var(--accent-cyan);">${wLiters} L</div>
-                    <div class="tracker-hero-lbl">Wasser (${Number(appSettings.waterGoalLiters || 3).toFixed(1)} L Ziel)</div>
-                </div>
-            </div>
-
-            <div class="macro-summary-bar">
-                <div>
-                    <div style="font-size:14px; font-weight:800; color:#30d158;">${Math.round(pSum * 10) / 10} g</div>
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Eiweiß</div>
-                </div>
-                <div>
-                    <div style="font-size:14px; font-weight:800; color:#ff9f0a;">${Math.round(fSum * 10) / 10} g</div>
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Fett</div>
-                </div>
-                <div>
-                    <div style="font-size:14px; font-weight:800; color:#0a84ff;">${Math.round(cSum * 10) / 10} g</div>
-                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Kohlenhydrate</div>
-                </div>
-            </div>
-        </div>`;
-    });
-
-    container.innerHTML = html;
-}
-
-function openApiKeyModal() {
-    document.getElementById('input-gemini-key').value = geminiApiKey;
-    document.getElementById('modal-apikey').classList.add('open');
-}
-
-function saveGeminiKey() {
-    geminiApiKey = document.getElementById('input-gemini-key').value.trim();
-    localStorage.setItem('apexfit_gemini_key', geminiApiKey);
-    const setKeyInp = document.getElementById('settings-input-apikey');
-    if (setKeyInp) setKeyInp.value = geminiApiKey;
-    updateScannerStatusText();
-    closeModals();
-}
-
-// Komprimiert große Handy-Fotos vor dem Senden an die KI auf max. 800px
-function compressImageFile(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const maxDim = 800;
-                let w = img.width;
-                let h = img.height;
-                if (w > h && w > maxDim) {
-                    h = Math.round((h * maxDim) / w);
-                    w = maxDim;
-                } else if (h > maxDim) {
-                    w = Math.round((w * maxDim) / h);
-                    h = maxDim;
-                }
-                canvas.width = w;
-                canvas.height = h;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, w, h);
-                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                resolve({
-                    dataUrl: compressedDataUrl,
-                    base64: compressedDataUrl.split(',')[1],
-                    mimeType: 'image/jpeg'
-                });
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-async function handleFoodPhotoUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const statusEl = document.getElementById('ai-scan-status');
-    const previewImg = document.getElementById('food-preview-image');
-
-    statusEl.innerText = '⏳ Bild wird vorbereitet & mit KI analysiert...';
-    statusEl.style.color = '#64d2ff';
-
-    const compressed = await compressImageFile(file);
-    previewImg.src = compressed.dataUrl;
-    previewImg.style.display = 'block';
-
-    if (!geminiApiKey || !geminiApiKey.startsWith('AIza')) {
-        statusEl.innerText = '⚠️ Bitte trage oben rechts über das Schlüssel-Symbol (🔑) deinen eigenen Google AI Studio Key (AIzaSy...) ein!';
-        statusEl.style.color = '#fbbf24';
-        openApiKeyModal();
-        return;
-    }
-
-    await analyzeFoodImageWithGemini(compressed.base64, compressed.mimeType, file.name);
-}
-
-async function analyzeFoodImageWithGemini(base64Data, mimeType, fileName) {
-    const statusEl = document.getElementById('ai-scan-status');
-    const promptText = 'Analysiere die Mahlzeit auf diesem Foto. Antworte ausschließlich als reines JSON-Objekt ohne Markdown: {"name": "Name des Gerichts auf Deutsch", "kcal": 550, "protein": 35, "fat": 18, "carbs": 55}';
-
-    const requestBody = {
-        contents: [{
-            parts: [
-                { text: promptText },
-                { inline_data: { mime_type: mimeType, data: base64Data } }
-            ]
-        }]
-    };
-
-    try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(geminiApiKey)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestBody)
-        });
-
-        const data = await res.json();
-        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-
-        if (jsonMatch) {
-            const parsed = JSON.parse(jsonMatch[0]);
-            document.getElementById('food-input-name').value = parsed.name || 'Mahlzeit';
-            document.getElementById('food-input-kcal').value = Math.round(Number(parsed.kcal) || 0);
-            document.getElementById('food-input-protein').value = Math.round((Number(parsed.protein) || 0) * 10) / 10;
-            document.getElementById('food-input-fat').value = Math.round((Number(parsed.fat) || 0) * 10) / 10;
-            document.getElementById('food-input-carbs').value = Math.round((Number(parsed.carbs) || 0) * 10) / 10;
-
-            statusEl.innerText = '✅ KI-Analyse abgeschlossen! Werte untereinander eingetragen.';
-            statusEl.style.color = '#30d158';
-            return;
-        }
-        throw new Error('Ungültige KI-Antwort');
-    } catch (err) {
-        const cleanName = (fileName || 'Mahlzeit').replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-        document.getElementById('food-input-name').value = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-        statusEl.innerText = '⚠️ KI-Anfrage fehlgeschlagen. Prüfe deinen API-Key (AIzaSy...) oder trage die Werte manuell ein.';
-        statusEl.style.color = '#ff9f0a';
     }
 }
 
@@ -2193,8 +2074,6 @@ function addMealToDay() {
     document.getElementById('food-input-protein').value = '0';
     document.getElementById('food-input-fat').value = '0';
     document.getElementById('food-input-carbs').value = '0';
-    document.getElementById('food-preview-image').style.display = 'none';
-    updateScannerStatusText();
 
     saveAll();
     renderFitTracker();
@@ -2247,16 +2126,345 @@ function removeWaterLog(wId) {
     }
 }
 
-/* --- 6. LIVE FIREBASE RANKING & INVITE SYSTEM --- */
+/* --- SCHRITTZÄHLER FUNKTIONEN --- */
+function addStepsAmount(stepsToAdd) {
+    const val = parseInt(stepsToAdd) || 0;
+    if (val <= 0) return;
+    const dayLog = getTodayNutrition();
+    dayLog.steps = (Number(dayLog.steps) || 0) + val;
+    saveAll();
+    renderFitTracker();
+}
+
+function addCustomSteps() {
+    const inp = document.getElementById('steps-custom-val');
+    const val = parseInt(inp.value) || 0;
+    if (val <= 0) return;
+    addStepsAmount(val);
+    inp.value = '';
+}
+
+function setExactSteps() {
+    const inp = document.getElementById('steps-custom-val');
+    const val = Math.max(0, parseInt(inp.value) || 0);
+    const dayLog = getTodayNutrition();
+    dayLog.steps = val;
+    inp.value = '';
+    saveAll();
+    renderFitTracker();
+}
+
+/* --- FITTRACKER HISTORY (OPTISCH WIE DIE TAGESBILANZ GANZ OBEN) --- */
+function toggleTrackerHistory() {
+    showTrackerHistory = !showTrackerHistory;
+    const cont = document.getElementById('tracker-history-container');
+    if (showTrackerHistory) {
+        cont.style.display = 'block';
+        renderTrackerHistoryCards();
+    } else {
+        cont.style.display = 'none';
+    }
+}
+
+function renderTrackerHistoryCards() {
+    const cont = document.getElementById('tracker-history-container');
+    const allDateKeys = Object.keys(nutritionData).sort((a, b) => b.localeCompare(a));
+
+    if (allDateKeys.length === 0) {
+        cont.innerHTML = `<div class="bevel-card"><p class="empty-hint">Noch keine vergangenen Tage gespeichert.</p></div>`;
+        return;
+    }
+
+    let html = '';
+    allDateKeys.slice(0, 10).forEach(dKey => {
+        const dLog = nutritionData[dKey];
+        let kcal = 0, pro = 0, fat = 0, carbs = 0;
+        (dLog.meals || []).forEach(m => {
+            kcal += Number(m.kcal) || 0;
+            pro += Number(m.protein) || 0;
+            fat += Number(m.fat) || 0;
+            carbs += Number(m.carbs) || 0;
+        });
+        const liters = ((Number(dLog.waterMl) || 0) / 1000).toFixed(2);
+        const steps = Number(dLog.steps) || 0;
+        const isToday = dKey === getDateKey(new Date());
+
+        const dateObj = new Date(dKey + 'T12:00:00');
+        const readableDate = isNaN(dateObj) ? dKey : dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        html += `
+        <div class="tracker-summary-hero" style="margin-bottom:14px;">
+            <div class="card-title-row" style="margin-bottom:12px;">
+                <div>
+                    <h3>${isToday ? 'Heute (' + readableDate + ')' : readableDate}</h3>
+                    <span class="card-subtitle">${(dLog.meals || []).length} Mahlzeiten protokolliert</span>
+                </div>
+                <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-blue);">
+                    <span class="material-symbols-rounded">calendar_today</span>
+                </span>
+            </div>
+
+            <div class="tracker-hero-grid-3">
+                <div class="tracker-hero-box">
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-orange);">
+                        <span class="material-symbols-rounded">local_fire_department</span>
+                    </span>
+                    <div class="tracker-hero-val">${Math.round(kcal)}</div>
+                    <div class="tracker-hero-lbl">kcal</div>
+                </div>
+                <div class="tracker-hero-box">
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-cyan);">
+                        <span class="material-symbols-rounded">water_drop</span>
+                    </span>
+                    <div class="tracker-hero-val" style="color:var(--accent-cyan);">${liters} L</div>
+                    <div class="tracker-hero-lbl">Wasser</div>
+                </div>
+                <div class="tracker-hero-box">
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-green);">
+                        <span class="material-symbols-rounded">footprint</span>
+                    </span>
+                    <div class="tracker-hero-val" style="color:var(--accent-green);">${steps.toLocaleString('de-DE')}</div>
+                    <div class="tracker-hero-lbl">Schritte</div>
+                </div>
+            </div>
+
+            <div class="macro-summary-bar">
+                <div>
+                    <div style="font-size:14px; font-weight:800; color:var(--accent-green);">${Math.round(pro * 10) / 10} g</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Eiweiß</div>
+                </div>
+                <div>
+                    <div style="font-size:14px; font-weight:800; color:var(--accent-orange);">${Math.round(fat * 10) / 10} g</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Fett</div>
+                </div>
+                <div>
+                    <div style="font-size:14px; font-weight:800; color:var(--accent-blue);">${Math.round(carbs * 10) / 10} g</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Kohlenhydrate</div>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    cont.innerHTML = html;
+}
+
+/* --- 6. EINSTELLUNGEN (PROFILBILD, NAME, GEWICHT, ZIELE, SPRACHE, GLOW & THEME) --- */
+function applyVisualSettings() {
+    document.documentElement.setAttribute('data-theme', userSettings.theme || 'default');
+    document.documentElement.setAttribute('data-glow', userSettings.iconGlow ? 'on' : 'off');
+
+    // Benutzername
+    document.getElementById('display-username').innerText = userName;
+
+    // Avatar im Header & in den Einstellungen
+    const headerImg = document.getElementById('header-avatar-img');
+    const headerPlaceholder = document.getElementById('header-avatar-placeholder');
+    const settingsImg = document.getElementById('settings-avatar-img');
+    const settingsIcon = document.getElementById('settings-avatar-icon');
+
+    if (userSettings.avatarDataUrl) {
+        headerImg.src = userSettings.avatarDataUrl;
+        headerImg.style.display = 'block';
+        headerPlaceholder.style.display = 'none';
+
+        settingsImg.src = userSettings.avatarDataUrl;
+        settingsImg.style.display = 'block';
+        settingsIcon.style.display = 'none';
+    } else {
+        headerImg.style.display = 'none';
+        headerPlaceholder.style.display = 'block';
+
+        settingsImg.style.display = 'none';
+        settingsIcon.style.display = 'block';
+    }
+
+    applyTranslations(userSettings.lang || 'de');
+    initPickers();
+}
+
+function renderSettingsView() {
+    document.getElementById('settings-input-name').value = userName;
+    document.getElementById('settings-input-weight').value = userSettings.weight || 75;
+    document.getElementById('settings-select-goal').value = userSettings.fitnessGoal || 'muscle';
+    document.getElementById('settings-input-step-goal').value = userSettings.stepGoal || 10000;
+    document.getElementById('settings-input-kcal-goal').value = userSettings.kcalGoal || 2500;
+    document.getElementById('settings-input-water-goal').value = userSettings.waterGoal || 3.0;
+    document.getElementById('settings-select-lang').value = userSettings.lang || 'de';
+
+    document.getElementById('theme-card-default').classList.toggle('active', userSettings.theme !== 'monochrome');
+    document.getElementById('theme-card-monochrome').classList.toggle('active', userSettings.theme === 'monochrome');
+
+    document.getElementById('settings-glow-switch').classList.toggle('on', !!userSettings.iconGlow);
+    document.getElementById('settings-autopause-switch').classList.toggle('on', !!userSettings.autoPause);
+}
+
+function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxDim = 220;
+            let w = img.width;
+            let h = img.height;
+            if (w > h) {
+                if (w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+            } else {
+                if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            userSettings.avatarDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            saveAll();
+            applyVisualSettings();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeAvatarImage() {
+    userSettings.avatarDataUrl = '';
+    saveAll();
+    applyVisualSettings();
+}
+
+function selectAppTheme(themeName) {
+    userSettings.theme = themeName;
+    saveAll();
+    applyVisualSettings();
+    renderSettingsView();
+    renderHome();
+    renderFitness();
+    renderHabits();
+    renderJournal();
+    renderFitTracker();
+}
+
+function toggleIconGlowSetting() {
+    userSettings.iconGlow = !userSettings.iconGlow;
+    saveAll();
+    applyVisualSettings();
+    renderSettingsView();
+}
+
+function toggleAutoPauseSetting() {
+    userSettings.autoPause = !userSettings.autoPause;
+    saveAll();
+    renderSettingsView();
+}
+
+function changeAppLanguage(langCode) {
+    userSettings.lang = langCode;
+    saveAll();
+    applyTranslations(langCode);
+    renderHome();
+}
+
+function applyTranslations(langCode) {
+    const dict = TRANSLATIONS[langCode] || TRANSLATIONS.de;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+            el.innerText = dict[key];
+        }
+    });
+
+    const now = new Date();
+    const localeMap = { de: 'de-DE', en: 'en-US', fr: 'fr-FR', es: 'es-ES' };
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    const dateLabel = document.getElementById('current-date-label');
+    if (dateLabel) {
+        dateLabel.innerText = 'APEXFIT • ' + now.toLocaleDateString(localeMap[langCode] || 'de-DE', options);
+    }
+}
+
+function saveAllSettings() {
+    const newName = document.getElementById('settings-input-name').value.trim();
+    if (newName) userName = newName;
+
+    userSettings.weight = parseFloat(document.getElementById('settings-input-weight').value) || 75;
+    userSettings.fitnessGoal = document.getElementById('settings-select-goal').value || 'muscle';
+    userSettings.stepGoal = Math.max(500, parseInt(document.getElementById('settings-input-step-goal').value) || 10000);
+    userSettings.kcalGoal = Math.max(500, parseInt(document.getElementById('settings-input-kcal-goal').value) || 2500);
+    userSettings.waterGoal = Math.max(0.5, parseFloat(document.getElementById('settings-input-water-goal').value) || 3.0);
+    userSettings.lang = document.getElementById('settings-select-lang').value || 'de';
+
+    saveAll();
+    applyVisualSettings();
+    renderHome();
+    renderFitTracker();
+    alert('Deine Einstellungen wurden gespeichert!');
+}
+
+function exportBackupJSON() {
+    const backupObj = {
+        userName,
+        userSettings,
+        habitCategories,
+        habitsList,
+        fitnessData,
+        journalData,
+        nutritionData,
+        notesData
+    };
+    const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ApexFit_Backup_${getDateKey(new Date())}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function importBackupJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.userName) userName = data.userName;
+            if (data.userSettings) userSettings = { ...userSettings, ...data.userSettings };
+            if (data.habitCategories) habitCategories = data.habitCategories;
+            if (data.habitsList) habitsList = data.habitsList;
+            if (data.fitnessData) fitnessData = data.fitnessData;
+            if (data.journalData) journalData = data.journalData;
+            if (data.nutritionData) nutritionData = data.nutritionData;
+            if (data.notesData) notesData = data.notesData;
+
+            saveAll();
+            applyVisualSettings();
+            renderSettingsView();
+            renderHome();
+            renderFitness();
+            renderHabits();
+            renderJournal();
+            renderFitTracker();
+            alert('Backup erfolgreich wiederhergestellt!');
+        } catch (err) {
+            alert('Ungültige Backup-Datei.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+/* --- 7. LIVE FIREBASE RANKING & FREUNDE-SYSTEM --- */
 async function syncMyProfileToFirebase() {
     const myXP = calculateTotalXP();
     const myLvl = getLevelFromXP(myXP);
+    const tierData = getLevelTierData(myLvl);
     const payload = {
         id: myUserId,
         name: userName,
         xp: myXP,
         level: myLvl,
-        rank: getRankTitle(myLvl),
+        rank: tierData.title,
         updatedAt: Date.now()
     };
     try {
@@ -2351,8 +2559,7 @@ function renderLeaderboardDOM(players) {
     players.forEach((p, idx) => {
         const rankNum = idx + 1;
         const lvl = getLevelFromXP(p.xp);
-        const rankTitle = getRankTitle(lvl);
-        const lvlIcon = getLevelIconInfo(lvl);
+        const tierData = getLevelTierData(lvl);
         let badgeClass = '';
         if (rankNum === 1) badgeClass = 'lb-rank-1';
         else if (rankNum === 2) badgeClass = 'lb-rank-2';
@@ -2362,15 +2569,15 @@ function renderLeaderboardDOM(players) {
         <div class="leaderboard-row ${p.isMe ? 'is-me' : ''}">
             <div class="lb-left">
                 <div class="lb-rank-badge ${badgeClass}">${rankNum}</div>
-                <div class="lvl-anim-wrapper ${lvlIcon.tierClass}" style="width:26px; height:26px;">
-                    <svg viewBox="0 0 24 24" style="width:24px; height:24px;"><use href="#${lvlIcon.icon}"/></svg>
+                <div class="lvl-unique-slot" style="width:32px; height:32px;">
+                    <div class="lvl-badge-wrap ${tierData.fx}">${tierData.svg}</div>
                 </div>
                 <div class="lb-user-info">
                     <div class="lb-name">
                         <span>${p.name}</span>
-                        ${p.isMe ? '<span style="font-size:10px; background:var(--accent-blue); color:#fff; padding:2px 6px; border-radius:8px;">DU</span>' : ''}
+                        ${p.isMe ? '<span style="font-size:10px; background:var(--accent-blue); color:#000; font-weight:800; padding:2px 6px; border-radius:8px;">DU</span>' : ''}
                     </div>
-                    <div class="lb-sub">Lvl ${lvl} • ${rankTitle}</div>
+                    <div class="lb-sub">Lvl ${lvl} • ${tierData.title}</div>
                 </div>
             </div>
             <div class="lb-right">
@@ -2464,9 +2671,12 @@ async function removeFriendFromLeaderboard(fId) {
     syncAndLoadLeaderboard(true);
 }
 
-async function checkIncomingInviteLink() {
+/* --- EINGEHENDE LINKS PRÜFEN (FREUNDES-INVITE ODER GETEILTER TRAININGSPLAN) --- */
+async function checkIncomingLinks() {
     const params = new URLSearchParams(window.location.search);
     const invitedBy = params.get('invite');
+    const sharedPlan = params.get('plan');
+
     if (invitedBy) {
         const cleanCode = invitedBy.toUpperCase().trim();
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -2475,6 +2685,30 @@ async function checkIncomingInviteLink() {
             openTabFromMore('leaderboard');
             alert(`Erfolgreich mit Freund (${cleanCode}) im Live-Ranking verbunden!`);
         }
+    } else if (sharedPlan) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        try {
+            const parsed = decodePlanPayload(sharedPlan);
+            if (parsed && parsed.name && confirm(`Möchtest du den geteilten Trainingsplan „${parsed.name}“ (${(parsed.exercises || []).length} Übungen) in dein ApexFit importieren?`)) {
+                fitnessData.push({
+                    id: 'cat_' + Date.now(),
+                    name: parsed.name,
+                    icon: parsed.icon || 'custom_dumbbell',
+                    color: parsed.color || '#0a84ff',
+                    exercises: (parsed.exercises || []).map((ex, i) => ({
+                        id: 'ex_' + Date.now() + '_' + i,
+                        name: ex.name || 'Übung',
+                        sets: Number(ex.sets) || 3,
+                        reps: Number(ex.reps) || 10,
+                        weight: Number(ex.weight) || 50
+                    }))
+                });
+                saveAll();
+                renderFitness();
+                renderHome();
+                switchTab('fitness', document.getElementById('nav-fitness'));
+            }
+        } catch (e) {}
     }
 }
 
@@ -2494,12 +2728,13 @@ function openTabFromMore(tabId) {
 
 function switchTab(tabId, element) {
     document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-    document.getElementById('view-' + tabId).classList.add('active');
+    const targetView = document.getElementById('view-' + tabId);
+    if (targetView) targetView.classList.add('active');
 
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     if (element) {
         element.classList.add('active');
-    } else if (tabId === 'fittracker' || tabId === 'leaderboard' || tabId === 'settings') {
+    } else if (['fittracker', 'leaderboard', 'settings'].includes(tabId)) {
         document.getElementById('nav-more').classList.add('active');
     }
 
@@ -2518,6 +2753,7 @@ function switchTab(tabId, element) {
     } else if (tabId === 'settings') {
         renderSettingsView();
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 setInterval(() => {
@@ -2527,17 +2763,14 @@ setInterval(() => {
     }
 }, 20000);
 
-/* --- INITIALER APP-START --- */
-document.getElementById('display-username').innerText = userName;
-injectAdditionalFlexIcons();
+/* --- INITIALER START --- */
 checkNotesAutoCleanup();
-initPickers();
-applyTranslations();
+applyVisualSettings();
+renderSettingsView();
 renderHome();
 renderFitness();
 renderHabits();
 renderJournal();
 renderFitTracker();
-renderSettingsView();
 syncAndLoadLeaderboard(false);
-checkIncomingInviteLink();
+checkIncomingLinks();
