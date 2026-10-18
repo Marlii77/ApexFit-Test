@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ApexFit</title>
+
+    <!-- App-Icon für iPhone & iPad -->
+    <link rel="apple-touch-icon" href="Icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="Icon.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Google Fonts & Material Symbols (Heavy Filled Fallback) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,700,1,200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+
+    <!-- Verknüpfung zur separaten CSS-Datei -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ==========================================
+         FLEX SOLID SVG SPRITE SHEET (CHUNKYS & CUTOUTS)
+         ========================================== -->
+    <svg id="flex-solid-sprites" style="display:none;" xmlns="http://www.w3.org/2000/svg">
+        <!-- Blitz / Focus -->
+        <symbol id="fx-bolt" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M4 12C4 6.5 6.5 4 12 4C17.5 4 20 6.5 20 12C20 17.5 17.5 20 12 20C6.5 20 4 17.5 4 12ZM13.2 6.8L8.2 12.6C7.8 13.1 8.1 13.8 8.8 13.8H11.2L10.3 17.2C10.1 17.8 10.9 18.2 11.3 17.7L16.3 11.9C16.7 11.4 16.4 10.7 15.7 10.7H13.3L14.2 7.3C14.4 6.7 13.6 6.3 13.2 6.8Z"/>
+        </symbol>
+        <!-- Flamme / Consistency -->
+        <symbol id="fx-flame" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M12.9 2.6C13.5 2.1 14.4 2.5 14.4 3.3C14.4 5.5 16.2 6.8 17.6 8.3C19.3 10.1 20.2 12.2 20.2 14.5C20.2 18.9 16.6 22 12 22C7.4 22 3.8 18.9 3.8 14.5C3.8 11.4 5.5 8.6 7.8 6.9C8.4 6.5 9.2 7 9.1 7.7C8.9 8.8 9.4 9.7 10.1 9.9C10.4 7.1 11.4 4.1 12.9 2.6ZM12 14.2C10.6 14.2 9.5 15.3 9.5 16.8C9.5 18.2 10.6 19.3 12 19.3C13.4 19.3 14.5 18.2 14.5 16.8C14.5 15.3 13.4 14.2 12 14.2Z"/>
+        </symbol>
+        <!-- Kalender / Matrix -->
+        <symbol id="fx-calendar" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M7.5 2C8.3 2 9 2.7 9 3.5V4.2H15V3.5C15 2.7 15.7 2 16.5 2C17.3 2 18 2.7 18 3.5V4.5C20.2 5.2 21 7.2 21 10.5V15.5C21 19.8 19.2 21.5 15 21.5H9C4.8 21.5 3 19.8 3 15.5V10.5C3 7.2 3.8 5.2 6 4.5V3.5C6 2.7 6.7 2 7.5 2ZM7.5 11.5C6.7 11.5 6 12.2 6 13C6 13.8 6.7 14.5 7.5 14.5H11.5C12.3 14.5 13 13.8 13 13C13 12.2 12.3 11.5 11.5 11.5H7.5ZM7.5 16C6.7 16 6 16.7 6 17.5C6 18.3 6.7 19 7.5 19H16.5C17.3 19 18 18.3 18 17.5C18 16.7 17.3 16 16.5 16H7.5Z"/>
+        </symbol>
+        <!-- Chart / Graph -->
+        <symbol id="fx-chart" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M3 12C3 5.8 5.8 3 12 3C18.2 3 21 5.8 21 12C21 18.2 18.2 21 12 21C5.8 21 3 18.2 3 12ZM7.2 14.8C6.6 14.2 6.6 13.3 7.2 12.7L10.2 9.7C10.8 9.1 11.7 9.1 12.3 9.7L13.8 11.2L16.3 8.7C16.9 8.1 17.8 8.1 18.4 8.7C19 9.3 19 10.2 18.4 10.8L14.8 14.4C14.2 15 13.3 15 12.7 14.4L11.2 12.9L9.3 14.8C8.7 15.4 7.8 15.4 7.2 14.8Z"/>
+        </symbol>
+        <!-- Hantel / Fitness -->
+        <symbol id="fx-dumbbell" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M3.5 8.5C3.5 6.8 4.8 5.5 6.5 5.5C7.8 5.5 8.9 6.3 9.3 7.5H14.7C15.1 6.3 16.2 5.5 17.5 5.5C19.2 5.5 20.5 6.8 20.5 8.5V15.5C20.5 17.2 19.2 18.5 17.5 18.5C16.2 18.5 15.1 17.7 14.7 16.5H9.3C8.9 17.7 7.8 18.5 6.5 18.5C4.8 18.5 3.5 17.2 3.5 15.5V8.5ZM9.5 10.5V13.5H14.5V10.5H9.5Z"/>
+        </symbol>
+        <!-- Kamera / Scanner -->
+        <symbol id="fx-camera" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M8.5 3.5C9.1 2.8 10 2.5 11 2.5H13C14 2.5 14.9 2.8 15.5 3.5L16.6 4.8C19.6 5.2 21 7.2 21 11V15C21 19.2 19.2 21 15 21H9C4.8 21 3 19.2 3 15V11C3 7.2 4.4 5.2 7.4 4.8L8.5 3.5ZM12 9.5C10.1 9.5 8.5 11.1 8.5 13C8.5 14.9 10.1 16.5 12 16.5C13.9 16.5 15.5 14.9 15.5 13C15.5 11.1 13.9 9.5 12 9.5Z"/>
+        </symbol>
+        <!-- Wassertropfen -->
+        <symbol id="fx-drop" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M12 2.3C12.7 2.3 13.3 2.7 13.8 3.2C16.2 6.1 20 11.1 20 15.2C20 19.6 16.4 22 12 22C7.6 22 4 19.6 4 15.2C4 11.1 7.8 6.1 10.2 3.2C10.7 2.7 11.3 2.3 12 2.3ZM9.5 14.5C9.5 13.7 8.8 13 8 13C7.2 13 6.5 13.7 6.5 14.5C6.5 16.9 8.3 18.8 10.7 18.8C11.5 18.8 12.2 18.1 12.2 17.3C12.2 16.5 11.5 15.8 10.7 15.8C9.9 15.8 9.5 15.2 9.5 14.5Z"/>
+        </symbol>
+        <!-- Pokal / Trophy -->
+        <symbol id="fx-trophy" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M6 3H18C19.1 3 20 3.9 20 5V8C20 11.9 17.2 15.1 13.5 15.8V18H16C16.8 18 17.5 18.7 17.5 19.5C17.5 20.3 16.8 21 16 21H8C7.2 21 6.5 20.3 6.5 19.5C6.5 18.7 7.2 18 8 18H10.5V15.8C6.8 15.1 4 11.9 4 8V5C4 3.9 4.9 3 6 3ZM12 6.5L13.1 8.6L15.4 8.9L13.7 10.5L14.1 12.8L12 11.7L9.9 12.8L10.3 10.5L8.6 8.9L10.9 8.6L12 6.5Z"/>
+        </symbol>
+        <!-- Ernährung / Apfel-Herz -->
+        <symbol id="fx-nutrition" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M14.5 2C14.8 3.8 13.5 5.4 11.8 5.7C11.5 3.9 12.8 2.3 14.5 2ZM8.2 6.5C10 6.5 11.2 7.3 12 7.3C12.8 7.3 14 6.5 15.8 6.5C18.8 6.5 21 9.1 21 12.8C21 17.6 17.5 22 14.5 22C13.3 22 12.7 21.4 12 21.4C11.3 21.4 10.7 22 9.5 22C6.5 22 3 17.6 3 12.8C3 9.1 5.2 6.5 8.2 6.5ZM9.5 11C8.7 11 8 11.7 8 12.5V14.5C8 15.3 8.7 16 9.5 16C10.3 16 11 15.3 11 14.5V12.5C11 11.7 10.3 11 9.5 11Z"/>
+        </symbol>
+        <!-- Schild / Schutz -->
+        <symbol id="fx-shield" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M12 2.2C12.6 2.2 13.2 2.4 13.8 2.6L18.8 4.8C20.1 5.4 21 6.7 21 8.2V12.2C21 16.9 17.3 20.6 12.8 21.9C12.3 22 11.7 22 11.2 21.9C6.7 20.6 3 16.9 3 12.2V8.2C3 6.7 3.9 5.4 5.2 4.8L10.2 2.6C10.8 2.4 11.4 2.2 12 2.2ZM15.3 9.3C15.9 9.9 15.9 10.8 15.3 11.4L11.8 14.9C11.2 15.5 10.3 15.5 9.7 14.9L8.2 13.4C7.6 12.8 7.6 11.9 8.2 11.3C8.8 10.7 9.7 10.7 10.3 11.3L10.8 11.8L13.2 9.3C13.8 8.7 14.7 8.7 15.3 9.3Z"/>
+        </symbol>
+        <!-- User / Profil -->
+        <symbol id="fx-user" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M12 2.5C15 2.5 17.5 5 17.5 8C17.5 11 15 13.5 12 13.5C9 13.5 6.5 11 6.5 8C6.5 5 9 2.5 12 2.5ZM10.5 7.5C9.9 7.5 9.5 7.9 9.5 8.5C9.5 9.1 9.9 9.5 10.5 9.5H13.5C14.1 9.5 14.5 9.1 14.5 8.5C14.5 7.9 14.1 7.5 13.5 7.5H10.5ZM4 19.2C4 16.3 6.8 15 12 15C17.2 15 20 16.3 20 19.2C20 21.1 18.4 22 15.5 22H8.5C5.6 22 4 21.1 4 19.2Z"/>
+        </symbol>
+        <!-- Ziel / Target -->
+        <symbol id="fx-target" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M12 2.5C17.2 2.5 21.5 6.8 21.5 12C21.5 17.2 17.2 21.5 12 21.5C6.8 21.5 2.5 17.2 2.5 12C2.5 6.8 6.8 2.5 12 2.5ZM12 7C9.2 7 7 9.2 7 12C7 14.8 9.2 17 12 17C14.8 17 17 14.8 17 12C17 9.2 14.8 7 12 7ZM12 10C13.1 10 14 10.9 14 12C14 13.1 13.1 14 12 14C10.9 14 10 13.1 10 12C10 10.9 10.9 10 12 10Z"/>
+        </symbol>
+        <!-- Sprache / Globe -->
+        <symbol id="fx-globe" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M12 2.5C17.2 2.5 21.5 6.8 21.5 12C21.5 17.2 17.2 21.5 12 21.5C6.8 21.5 2.5 17.2 2.5 12C2.5 6.8 6.8 2.5 12 2.5ZM8.5 10.5C7.7 10.5 7 11.2 7 12C7 12.8 7.7 13.5 8.5 13.5H15.5C16.3 13.5 17 12.8 17 12C17 11.2 16.3 10.5 15.5 10.5H8.5ZM10 6.5C9.2 6.5 8.5 7.2 8.5 8C8.5 8.8 9.2 9.5 10 9.5H14C14.8 9.5 15.5 8.8 15.5 8C15.5 7.2 14.8 6.5 14 6.5H10ZM10 14.5C9.2 14.5 8.5 15.2 8.5 16C8.5 16.8 9.2 17.5 10 17.5H14C14.8 17.5 15.5 16.8 15.5 16C15.5 15.2 14.8 14.5 14 14.5H10Z"/>
+        </symbol>
+        <!-- Einstellungen / Gear Squircle -->
+        <symbol id="fx-settings" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M9.8 2.8C11.1 2.1 12.9 2.1 14.2 2.8L18.7 5.4C20 6.1 20.9 7.7 20.9 9.2V14.8C20.9 16.3 20 17.9 18.7 18.6L14.2 21.2C12.9 21.9 11.1 21.9 9.8 21.2L5.3 18.6C4 17.9 3.1 16.3 3.1 14.8V9.2C3.1 7.7 4 6.1 5.3 5.4L9.8 2.8ZM12 8.5C10.1 8.5 8.5 10.1 8.5 12C8.5 13.9 10.1 15.5 12 15.5C13.9 15.5 15.5 13.9 15.5 12C15.5 10.1 13.9 8.5 12 8.5Z"/>
+        </symbol>
+        <!-- Krone / Max Level -->
+        <symbol id="fx-crown" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M3.2 7.3C2.5 6.6 1.5 7.2 1.7 8.1L3.7 17.5C4.1 19.3 5.7 20.5 7.5 20.5H16.5C18.3 20.5 19.9 19.3 20.3 17.5L22.3 8.1C22.5 7.2 21.5 6.6 20.8 7.3L17.2 10.5L13 4.3C12.5 3.6 11.5 3.6 11 4.3L6.8 10.5L3.2 7.3ZM9 15C9 14.2 9.7 13.5 10.5 13.5H13.5C14.3 13.5 15 14.2 15 15C15 15.8 14.3 16.5 13.5 16.5H10.5C9.7 16.5 9 15.8 9 15Z"/>
+        </symbol>
+        <!-- Diamant / Gem -->
+        <symbol id="fx-gem" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M7.8 3.2C8.5 2.7 9.4 2.5 10.3 2.5H13.7C14.6 2.5 15.5 2.7 16.2 3.2L20.6 6.8C21.8 7.8 22 9.5 21 10.8L13.8 20.4C12.9 21.6 11.1 21.6 10.2 20.4L3 10.8C2 9.5 2.2 7.8 3.4 6.8L7.8 3.2ZM9.5 8.5C8.7 8.5 8 9.2 8 10C8 10.8 8.7 11.5 9.5 11.5H14.5C15.3 11.5 16 10.8 16 10C16 9.2 15.3 8.5 14.5 8.5H9.5Z"/>
+        </symbol>
+        <!-- Rakete / Hustler -->
+        <symbol id="fx-rocket" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M19.8 3.2C20.4 3.2 20.8 3.6 20.8 4.2C20.8 9.5 18.2 14.1 14.2 16.8L12.8 19.8C12.4 20.7 11.2 20.8 10.6 20L8.8 17.5L6.5 15.2L4 13.4C3.2 12.8 3.3 11.6 4.2 11.2L7.2 9.8C9.9 5.8 14.5 3.2 19.8 3.2ZM14.5 7.5C13.4 7.5 12.5 8.4 12.5 9.5C12.5 10.6 13.4 11.5 14.5 11.5C15.6 11.5 16.5 10.6 16.5 9.5C16.5 8.4 15.6 7.5 14.5 7.5Z"/>
+        </symbol>
+        <!-- Stern / Commander -->
+        <symbol id="fx-star" viewBox="0 0 24 24">
+            <path fill="currentColor" fill-rule="evenodd" d="M10.7 3.1C11.3 1.9 12.7 1.9 13.3 3.1L15.6 7.4L20.4 8.2C21.7 8.4 22.2 9.9 21.3 10.8L17.9 14.3L18.6 19.1C18.8 20.4 17.5 21.3 16.3 20.7L12 18.5L7.7 20.7C6.5 21.3 5.2 20.4 5.4 19.1L6.1 14.3L2.7 10.8C1.8 9.9 2.3 8.4 3.6 8.2L8.4 7.4L10.7 3.1ZM12 10.2C10.9 10.2 10 11.1 10 12.2C10 13.3 10.9 14.2 12 14.2C13.1 14.2 14 13.3 14 12.2C14 11.1 13.1 10.2 12 10.2Z"/>
+        </symbol>
+    </svg>
+
+    <!-- ==========================================
+         1. HOME REITER (APEXFIT DASHBOARD)
+         ========================================== -->
+    <div id="view-home" class="view active">
+        <div class="page-header">
+            <div onclick="openProfileModal()" style="cursor:pointer;">
+                <div class="subtitle-date" id="current-date-label">APEXFIT • HEUTE</div>
+                <h1><span data-i18n="greeting">Guten Tag</span>, <span id="display-username">Marlii</span></h1>
+            </div>
+            <!-- Statische Header-Icons (KEINE Schwebe-Animation) -->
+            <div class="header-actions">
+                <button class="icon-btn-top" onclick="openNotesModal()" title="Notizen">
+                    <span class="material-symbols-rounded" style="font-size:20px;">sticky_note_2</span>
+                    <span class="note-badge-dot" id="notes-count-badge" style="display:none;">0</span>
+                </button>
+                <button class="icon-btn-top" onclick="openProfileModal()" title="Namen ändern">
+                    <span class="material-symbols-rounded" style="font-size:20px;">edit</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- LEVEL SYSTEM HERO CARD (MIT EIGENEN ANIMIERTEN FLEX-SOLID LEVEL-ICONS) -->
+            <div class="level-hero-card">
+                <div class="level-top-row">
+                    <div class="level-big-number">
+                        <div id="lvl-icon-wrapper" class="lvl-anim-wrapper lvl-tier-1"></div>
+                        <span id="lvl-number">Lvl 1</span>
+                        <span class="lvl-rank" id="lvl-rank-title">• Rookie</span>
+                    </div>
+                    <div class="xp-badge-pill" id="total-xp-badge">0 XP Gesamt</div>
+                </div>
+                <div class="level-progress-track">
+                    <div class="level-progress-fill" id="lvl-progress-bar"></div>
+                </div>
+                <div class="level-sub-info">
+                    <span id="lvl-progress-text">0 / 250 XP</span>
+                    <span id="lvl-next-hint">Noch 250 XP bis Lvl 2</span>
+                </div>
+            </div>
+
+            <!-- BENTO SCORE RINGS (NUR DIE ECK-ICONS SCHWEBEN) -->
+            <div class="bento-grid">
+                <div class="bento-card">
+                    <div class="bento-header">
+                        <span class="bento-title" data-i18n="daily_focus">Daily Focus</span>
+                        <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-blue);"><use href="#fx-bolt"/></svg>
+                    </div>
+                    <div class="ring-wrapper">
+                        <div class="ring-inner-sphere">
+                            <span class="ring-value" id="daily-score-val">0%</span>
+                            <span class="ring-sub" data-i18n="today">Heute</span>
+                        </div>
+                        <svg class="ring-svg" viewBox="0 0 100 100">
+                            <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+                            <circle id="ring-daily" class="ring-progress ring-blue" cx="50" cy="50" r="44"></circle>
+                        </svg>
+                    </div>
+                    <div class="bento-footer" id="daily-score-sub">0 von 0 erledigt</div>
+                </div>
+
+                <div class="bento-card">
+                    <div class="bento-header">
+                        <span class="bento-title" data-i18n="consistency">Consistency</span>
+                        <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-green);"><use href="#fx-flame"/></svg>
+                    </div>
+                    <div class="ring-wrapper">
+                        <div class="ring-inner-sphere">
+                            <span class="ring-value" id="weekly-score-val">0%</span>
+                            <span class="ring-sub" data-i18n="days_7">7 Tage</span>
+                        </div>
+                        <svg class="ring-svg" viewBox="0 0 100 100">
+                            <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+                            <circle id="ring-weekly" class="ring-progress ring-green" cx="50" cy="50" r="44"></circle>
+                        </svg>
+                    </div>
+                    <div class="bento-footer" id="weekly-score-sub">0 Check-ins</div>
+                </div>
+            </div>
+
+            <!-- OPTIONALE GRAPHEN AUF HOME -->
+            <div class="graph-toggle-bar" onclick="toggleHomeGraphs()">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-blue);"><use href="#fx-chart"/></svg>
+                    <div>
+                        <div style="font-size:14px; font-weight:700;" data-i18n="show_graphs">Performance-Graphen anzeigen</div>
+                        <div style="font-size:11px; color:var(--text-muted);" data-i18n="graphs_sub">7-Tage XP-Trend & Fitness-Sätze</div>
+                    </div>
+                </div>
+                <div class="ios-switch" id="home-graph-switch"></div>
+            </div>
+
+            <div id="home-graphs-wrapper" style="display:none;">
+                <div class="bevel-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="xp_curve_title">7-Tage XP & Aktivitäts-Kurve</h3>
+                            <span class="card-subtitle">Habits + Trainings-Sätze (50 XP/Satz)</span>
+                        </div>
+                        <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-indigo);"><use href="#fx-chart"/></svg>
+                    </div>
+                    <div class="svg-chart-box" id="home-xp-chart"></div>
+                </div>
+            </div>
+
+            <!-- 7-TAGE HABIT MATRIX -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="habit_matrix_title">7-Tage Habit Matrix</h3>
+                        <span class="card-subtitle" data-i18n="habit_matrix_sub">Jeder Haken bringt bis zu 50 XP</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-blue);"><use href="#fx-calendar"/></svg>
+                </div>
+                <div id="matrix-container"></div>
+            </div>
+
+            <!-- 7-TAGE FITNESS-MATRIX & VERLAUF (UNTER DER HABIT-MATRIX) -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="fit_matrix_title">7-Tage Fitness-Matrix & Verlauf</h3>
+                        <span class="card-subtitle" data-i18n="fit_matrix_sub">Absolvierte Sätze pro Muskelgruppe</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-green);"><use href="#fx-dumbbell"/></svg>
+                </div>
+                <div id="fitness-matrix-container"></div>
+                <div class="svg-chart-box" id="fitness-sets-chart" style="height:135px; margin-top:14px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         2. FITNESS REITER
+         ========================================== -->
+    <div id="view-fitness" class="view">
+        <div class="page-header">
+            <div>
+                <div class="subtitle-date">50 XP pro Satz • Gym Modus</div>
+                <h1 data-i18n="nav_fitness">Fitness</h1>
+            </div>
+            <!-- Statische Header-Buttons ohne Schwebe-Effekt -->
+            <div class="header-actions">
+                <button class="btn-start-workout-top" onclick="openStartWorkoutModal()">
+                    <span class="material-symbols-rounded" style="font-size:18px;">play_arrow</span>
+                    <span data-i18n="start_workout">Training starten</span>
+                </button>
+                <button class="icon-btn-top primary-glow" onclick="openFitnessCategoryModal()" title="Neue Muskelgruppe">
+                    <span class="material-symbols-rounded">add</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="active-workout-container"></div>
+            <div id="fitness-categories-container"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         3. HABITS REITER
+         ========================================== -->
+    <div id="view-habits" class="view">
+        <div class="page-header">
+            <div>
+                <div class="subtitle-date" data-i18n="habits_subtitle">Tägliche Ziele (Max. 50 XP)</div>
+                <h1 data-i18n="nav_habits">Habits</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Statische Action-Buttons (kein Schwebe-Effekt) -->
+            <div class="action-bar">
+                <button class="action-btn" onclick="openHabitCategoryModal()">
+                    <span class="material-symbols-rounded" style="font-size:19px; color:var(--accent-blue);">create_new_folder</span>
+                    <span data-i18n="add_category">+ Kategorie</span>
+                </button>
+                <button class="action-btn blue-glow-btn" onclick="openNewHabitModal()">
+                    <span class="material-symbols-rounded" style="font-size:19px;">add_task</span>
+                    <span data-i18n="add_goal">+ Neues Ziel</span>
+                </button>
+            </div>
+
+            <div id="habits-categories-container"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         4. JOURNAL REITER
+         ========================================== -->
+    <div id="view-journal" class="view">
+        <div class="page-header">
+            <div>
+                <div class="subtitle-date" data-i18n="journal_subtitle">Fortschritt & Trainings-Zeiten</div>
+                <h1 data-i18n="nav_journal">Journal</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="filter-scroll-bar" id="journal-filter-bar"></div>
+            <div class="journal-stats-strip" id="journal-stats-container"></div>
+
+            <div class="bevel-card" id="journal-graph-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="strength_curve_title">Kraft- & Satz-Entwicklung</h3>
+                        <span class="card-subtitle" data-i18n="strength_curve_sub">Maximalgewicht (kg) der letzten Workouts</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-blue);"><use href="#fx-chart"/></svg>
+                </div>
+                <div class="svg-chart-box" id="journal-progression-chart" style="height:130px;"></div>
+            </div>
+
+            <div id="journal-entries-container"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         5. FITTRACKER REITER (OHNE VOREINGESTELLTEN TOKEN + MIT HISTORY UNTEN)
+         ========================================== -->
+    <div id="view-fittracker" class="view">
+        <div class="page-header">
+            <div>
+                <div class="subtitle-date">KI Ernährungs- & Wasser-Log</div>
+                <h1>FitTracker</h1>
+            </div>
+            <!-- Statisches Header-Icon (kein Schwebe-Effekt) -->
+            <button class="icon-btn-top" onclick="openApiKeyModal()" title="Eigenen KI API-Key hinterlegen">
+                <span class="material-symbols-rounded" style="font-size:20px; color:var(--accent-cyan);">key</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <!-- GANZ OBEN: TAGESBILANZ -->
+            <div class="tracker-summary-hero">
+                <div class="card-title-row" style="margin-bottom:12px;">
+                    <div>
+                        <h3 data-i18n="daily_balance">Heutige Tagesbilanz</h3>
+                        <span class="card-subtitle" id="tracker-goal-Dynamic-sub">Kalorien & Flüssigkeit über den Tag</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-green);"><use href="#fx-nutrition"/></svg>
+                </div>
+
+                <div class="tracker-hero-grid">
+                    <div class="tracker-hero-box">
+                        <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-orange);"><use href="#fx-flame"/></svg>
+                        <div class="tracker-hero-val" id="daily-total-kcal">0 kcal</div>
+                        <div class="tracker-hero-lbl" id="daily-kcal-target-lbl">Kalorien Heute</div>
+                    </div>
+                    <div class="tracker-hero-box">
+                        <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-cyan);"><use href="#fx-drop"/></svg>
+                        <div class="tracker-hero-val" id="daily-total-water" style="color:var(--accent-cyan);">0.00 L</div>
+                        <div class="tracker-hero-lbl" id="daily-water-target-lbl">Wasser (Liter)</div>
+                    </div>
+                </div>
+
+                <div class="macro-summary-bar">
+                    <div>
+                        <div style="font-size:15px; font-weight:800; color:#30d158;" id="daily-total-protein">0 g</div>
+                        <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;" data-i18n="protein">Eiweiß</div>
+                    </div>
+                    <div>
+                        <div style="font-size:15px; font-weight:800; color:#ff9f0a;" id="daily-total-fat">0 g</div>
+                        <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;" data-i18n="fat">Fett</div>
+                    </div>
+                    <div>
+                        <div style="font-size:15px; font-weight:800; color:#0a84ff;" id="daily-total-carbs">0 g</div>
+                        <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-transform:uppercase;" data-i18n="carbs">Kohlenhydrate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BEREICH 1: ESSEN & KI FOTO-SCANNER -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="food_scanner_title">Essen • KI Foto-Scanner</h3>
+                        <span class="card-subtitle">Foto hochladen & Nährwerte untereinander prüfen</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-orange);"><use href="#fx-camera"/></svg>
+                </div>
+
+                <label class="photo-upload-zone" for="food-photo-input">
+                    <svg class="flex-solid-icon" style="width:32px; height:32px; color:var(--accent-blue); margin-bottom:6px;"><use href="#fx-camera"/></svg>
+                    <div style="font-size:14.5px; font-weight:700;" data-i18n="upload_meal_photo">Mahlzeit fotografieren oder Bild wählen</div>
+                    <div style="font-size:11.5px; color:var(--text-muted); margin-top:3px;" id="ai-scan-status">Eigenen API-Key oben rechts über das Schlüssel-Icon eintragen</div>
+                </label>
+                <input type="file" id="food-photo-input" accept="image/*" style="display:none;" onchange="handleFoodPhotoUpload(event)">
+
+                <img id="food-preview-image" class="food-preview-img" alt="Mahlzeit Vorschau">
+
+                <!-- WERTE UNTEREINANDER -->
+                <div class="vertical-nutrition-stack">
+                    <div class="vertical-nutrition-row">
+                        <div class="vn-left">
+                            <span>🍽️</span>
+                            <span data-i18n="meal">Mahlzeit</span>
+                        </div>
+                        <div class="vn-right">
+                            <input type="text" id="food-input-name" class="vn-input wide" placeholder="z.B. Hähnchen & Reis">
+                        </div>
+                    </div>
+
+                    <div class="vertical-nutrition-row">
+                        <div class="vn-left">
+                            <span>🔥</span>
+                            <span data-i18n="calories">Kalorien</span>
+                        </div>
+                        <div class="vn-right">
+                            <input type="number" id="food-input-kcal" class="vn-input" value="0">
+                            <span class="vn-unit">kcal</span>
+                        </div>
+                    </div>
+
+                    <div class="vertical-nutrition-row">
+                        <div class="vn-left">
+                            <span>🥩</span>
+                            <span data-i18n="protein">Eiweiß</span>
+                        </div>
+                        <div class="vn-right">
+                            <input type="number" step="0.5" id="food-input-protein" class="vn-input" value="0">
+                            <span class="vn-unit">g</span>
+                        </div>
+                    </div>
+
+                    <div class="vertical-nutrition-row">
+                        <div class="vn-left">
+                            <span>🥑</span>
+                            <span data-i18n="fat">Fett</span>
+                        </div>
+                        <div class="vn-right">
+                            <input type="number" step="0.5" id="food-input-fat" class="vn-input" value="0">
+                            <span class="vn-unit">g</span>
+                        </div>
+                    </div>
+
+                    <div class="vertical-nutrition-row">
+                        <div class="vn-left">
+                            <span>🌾</span>
+                            <span data-i18n="carbs">Kohlenhydrate</span>
+                        </div>
+                        <div class="vn-right">
+                            <input type="number" step="0.5" id="food-input-carbs" class="vn-input" value="0">
+                            <span class="vn-unit">g</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="width:100%;" onclick="addMealToDay()" data-i18n="save_meal_btn">
+                    + Mahlzeit zum heutigen Tag speichern
+                </button>
+
+                <div id="today-meals-list" style="margin-top:16px;"></div>
+            </div>
+
+            <!-- BEREICH 2: TRINKEN HINZUFÜGEN -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="water_title">Trinken • Wasser hinzufügen</h3>
+                        <span class="card-subtitle">Schnellauswahl oder Eingabe in ml / Liter</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-cyan);"><use href="#fx-drop"/></svg>
+                </div>
+
+                <div class="water-quick-grid">
+                    <button class="water-btn" onclick="addWaterAmount(250, 'ml')">+250 ml</button>
+                    <button class="water-btn" onclick="addWaterAmount(500, 'ml')">+500 ml</button>
+                    <button class="water-btn" onclick="addWaterAmount(750, 'ml')">+750 ml</button>
+                    <button class="water-btn" onclick="addWaterAmount(1, 'l')">+1.0 L</button>
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="number" step="0.1" id="water-custom-val" class="form-input" placeholder="Menge (z.B. 300 oder 0.5)" style="flex:1; padding:12px 14px;">
+                    <select id="water-custom-unit" class="form-select" style="width:95px; padding:12px 10px;">
+                        <option value="ml">ml</option>
+                        <option value="l">Liter</option>
+                    </select>
+                    <button class="btn-primary" style="flex:0 0 auto; padding:12px 16px; border-radius:14px;" onclick="addCustomWater()">+</button>
+                </div>
+
+                <div id="today-water-logs" style="margin-top:14px;"></div>
+            </div>
+
+            <!-- BEREICH 3 (GANZ UNTEN): HISTORY BUTTON & VERGANGENE TAGESERGEBNISSE (OPTIK WIE TAGESBILANZ OBEN) -->
+            <button class="action-btn" style="width:100%; margin-bottom:16px;" onclick="toggleTrackerHistory()">
+                <svg class="flex-solid-icon" style="width:20px; height:20px; color:var(--accent-blue);"><use href="#fx-calendar"/></svg>
+                <span id="btn-tracker-history-label" data-i18n="show_history_btn">History • Letzte Tagesergebnisse vergleichen</span>
+            </button>
+
+            <div id="tracker-history-container" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         6. RANKING / LEADERBOARD REITER
+         ========================================== -->
+    <div id="view-leaderboard" class="view">
+        <div class="page-header">
+            <div>
+                <div class="subtitle-date">Live Cloud-Synchronisation</div>
+                <h1 data-i18n="nav_ranking">Ranking</h1>
+            </div>
+            <button class="icon-btn-top" onclick="syncAndLoadLeaderboard(true)" title="Jetzt aktualisieren">
+                <span class="material-symbols-rounded" style="font-size:20px;">sync</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="action-bar">
+                <button class="action-btn" onclick="openInviteModal()">
+                    <span class="material-symbols-rounded" style="font-size:19px; color:var(--accent-blue);">share</span>
+                    <span data-i18n="invite_btn">Einladen (Link/Code)</span>
+                </button>
+                <button class="action-btn blue-glow-btn" onclick="openAddFriendModal()">
+                    <span class="material-symbols-rounded" style="font-size:19px;">person_add</span>
+                    <span data-i18n="add_friend_btn">+ Freundes-Code</span>
+                </button>
+            </div>
+
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 style="display:flex; align-items:center; gap:8px;">
+                            <span>Live Leaderboard</span>
+                            <span class="live-dot" title="Verbunden mit Firebase"></span>
+                        </h3>
+                        <span class="card-subtitle" id="lb-sync-status">Habits + 50 XP je Trainings-Satz</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-gold);"><use href="#fx-trophy"/></svg>
+                </div>
+                <div id="leaderboard-list-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         7. EINSTELLUNGEN REITER (NEU IM MEHR-MENÜ!)
+         ========================================== -->
+    <div id="view-settings" class="view">
+        <div class="page-header">
+            <div>
+                <div class="subtitle-date">Profil, Ziele & Sprache</div>
+                <h1 data-i18n="settings_title">Einstellungen</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- 1. Ganz oben: Name, Körpergewicht & Ziel -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="profile_and_goals">Profil & Körperziel</h3>
+                        <span class="card-subtitle">Name, aktuelles Gewicht & Fokus</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-blue);"><use href="#fx-user"/></svg>
+                </div>
+
+                <div class="form-field">
+                    <label data-i18n="your_name">Dein Name</label>
+                    <input type="text" id="settings-input-name" class="form-input" placeholder="Dein Name...">
+                </div>
+
+                <div class="form-row-2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="form-field">
+                        <label data-i18n="body_weight">Körpergewicht (kg)</label>
+                        <input type="number" step="0.1" id="settings-input-weight" class="form-input" placeholder="z.B. 76.5">
+                    </div>
+                    <div class="form-field">
+                        <label data-i18n="goal_label">Dein Ziel</label>
+                        <select id="settings-select-goal" class="form-select">
+                            <option value="cut" data-i18n="goal_lose">Abnehmen</option>
+                            <option value="maintain" data-i18n="goal_maintain">Gewicht halten</option>
+                            <option value="diet" data-i18n="goal_diet">Diät (Defizit)</option>
+                            <option value="bulk" data-i18n="goal_bulk">Muskelaufbau</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="width:100%; margin-top:4px;" onclick="saveSettingsProfile()" data-i18n="save_profile_btn">
+                    Profil & Ziel speichern
+                </button>
+            </div>
+
+            <!-- 2. Sprache ändern (Deutsch, Englisch, Französisch, Spanisch) -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="language_title">Sprache / Language</h3>
+                        <span class="card-subtitle">App-Oberfläche sofort umschalten</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-green);"><use href="#fx-globe"/></svg>
+                </div>
+
+                <div class="form-field" style="margin-bottom:0;">
+                    <select id="settings-select-lang" class="form-select" onchange="changeAppLanguage(this.value)">
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="es">🇪🇸 Español</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 3. Sinnvolle Zusatz-Option: Tägliche Richtwerte für FitTracker -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="daily_targets_title">Tagesziele (FitTracker)</h3>
+                        <span class="card-subtitle">Richtwerte für Kalorien & Wasser</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-orange);"><use href="#fx-target"/></svg>
+                </div>
+
+                <div class="form-row-2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="form-field">
+                        <label>Kalorien-Ziel (kcal)</label>
+                        <input type="number" id="settings-input-kcal-goal" class="form-input" value="2400">
+                    </div>
+                    <div class="form-field">
+                        <label>Wasser-Ziel (Liter)</label>
+                        <input type="number" step="0.1" id="settings-input-water-goal" class="form-input" value="3.0">
+                    </div>
+                </div>
+
+                <button class="btn-secondary" style="width:100%;" onclick="saveSettingsTargets()" data-i18n="save_targets_btn">
+                    Richtwerte aktualisieren
+                </button>
+            </div>
+
+            <!-- 4. Sinnvolle Zusatz-Option: Eigener KI-Key & Daten-Backup -->
+            <div class="bevel-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3>KI-Schlüssel & Daten-Backup</h3>
+                        <span class="card-subtitle">Eigener Gemini API-Key & Sicherheitskopie</span>
+                    </div>
+                    <svg class="flex-solid-icon card-corner-icon" style="color:var(--accent-indigo);"><use href="#fx-shield"/></svg>
+                </div>
+
+                <div class="form-field">
+                    <label>Eigener Google AI Studio API-Key</label>
+                    <input type="password" id="settings-input-apikey" class="form-input" placeholder="AIzaSy...">
+                </div>
+                <button class="btn-secondary" style="width:100%; margin-bottom:12px;" onclick="saveSettingsApiKey()">
+                    API-Key speichern
+                </button>
+
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-secondary" style="flex:1; font-size:13px;" onclick="exportAppData()">
+                        Backup exportieren
+                    </button>
+                    <button class="btn-secondary" style="flex:1; font-size:13px; color:var(--danger); border-color:rgba(255,69,58,0.3);" onclick="resetAllAppData()">
+                        Reset App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODALS
+         ========================================== -->
+
+    <!-- Modal: "+ MEHR" NAVIGATION (OHNE HABITS, MIT FITTRACKER, RANKING & EINSTELLUNGEN) -->
+    <div id="modal-more-menu" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title" data-i18n="more_menu_title">Mehr auswählen</h3>
+            <div class="more-menu-grid">
+                <div class="more-menu-card" onclick="openTabFromMore('fittracker')">
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <svg class="flex-solid-icon card-corner-icon" style="width:28px; height:28px; color:var(--accent-green);"><use href="#fx-nutrition"/></svg>
+                        <div>
+                            <div style="font-size:16px; font-weight:700;">FitTracker (Essen & Trinken)</div>
+                            <div style="font-size:12px; color:var(--text-muted);">KI Foto-Kalorienscanner, Wasser & History</div>
+                        </div>
+                    </div>
+                    <span class="material-symbols-rounded" style="color:var(--text-muted);">chevron_right</span>
+                </div>
+
+                <div class="more-menu-card" onclick="openTabFromMore('leaderboard')">
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <svg class="flex-solid-icon card-corner-icon" style="width:28px; height:28px; color:var(--accent-gold);"><use href="#fx-trophy"/></svg>
+                        <div>
+                            <div style="font-size:16px; font-weight:700;">Ranking (Live Leaderboard)</div>
+                            <div style="font-size:12px; color:var(--text-muted);">Vergleiche Lvl & XP in Echtzeit mit Freunden</div>
+                        </div>
+                    </div>
+                    <span class="material-symbols-rounded" style="color:var(--text-muted);">chevron_right</span>
+                </div>
+
+                <div class="more-menu-card" onclick="openTabFromMore('settings')">
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <svg class="flex-solid-icon card-corner-icon" style="width:28px; height:28px; color:var(--accent-blue);"><use href="#fx-settings"/></svg>
+                        <div>
+                            <div style="font-size:16px; font-weight:700;" data-i18n="settings_title">Einstellungen</div>
+                            <div style="font-size:12px; color:var(--text-muted);">Name, Gewicht, Ziel (Diät/Abnehmen) & Sprache</div>
+                        </div>
+                    </div>
+                    <span class="material-symbols-rounded" style="color:var(--text-muted);">chevron_right</span>
+                </div>
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" style="width:100%;" onclick="closeModals()" data-i18n="close_btn">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: KI API-Key Einstellungen -->
+    <div id="modal-apikey" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Eigenen KI API-Key hinterlegen</h3>
+            <p style="font-size:12.5px; color:var(--text-muted); margin:-8px 0 14px 0; line-height:1.4;">
+                Füge hier deinen persönlichen Google AI Studio Schlüssel (beginnend mit <b>AIzaSy...</b>) für den Foto-Scanner ein:
+            </p>
+            <div class="form-field">
+                <label>API-Key (bleibt lokal auf deinem Gerät)</label>
+                <input type="password" id="input-gemini-key" class="form-input" placeholder="AIzaSy...">
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="saveGeminiKey()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: 3-Stufen Notizen -->
+    <div id="modal-notes" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Deine Notizen</h3>
+            
+            <div class="notes-tabs">
+                <button class="notes-tab-btn active" id="ntab-daily" onclick="switchNotesTab('daily')">Täglich (24h)</button>
+                <button class="notes-tab-btn" id="ntab-weekly" onclick="switchNotesTab('weekly')">Woche (Mo–So)</button>
+                <button class="notes-tab-btn" id="ntab-general" onclick="switchNotesTab('general')">Generell (Nie)</button>
+            </div>
+
+            <p id="notes-expiry-hint" style="font-size:11.5px; color:var(--accent-blue); margin:0 0 12px 0; font-weight:600;">
+                Löscht sich automatisch am Ende des heutigen Tages.
+            </p>
+
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+                <input type="text" id="input-note-text" class="form-input" placeholder="Neue Notiz schreiben..." style="padding:12px 14px;">
+                <button class="btn-primary" style="flex:0 0 auto; padding:0 18px; border-radius:14px;" onclick="addNoteItem()">+</button>
+            </div>
+
+            <div id="notes-list-container" style="max-height:240px; overflow-y:auto;"></div>
+
+            <div class="sheet-actions">
+                <button class="btn-secondary" style="width:100%;" onclick="closeModals()">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Namen anpassen -->
+    <div id="modal-profile" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Profil anpassen</h3>
+            <div class="form-field">
+                <label>Dein Name in ApexFit</label>
+                <input type="text" id="input-username" class="form-input" placeholder="Dein Name...">
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="saveUsername()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Training starten -->
+    <div id="modal-start-workout" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Training starten</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:-10px 0 16px 0;">
+                Wähle deine Muskelgruppe (Jeder fertige Satz = <b>+50 XP</b>):
+            </p>
+            <div id="start-workout-cat-list"></div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" style="width:100%;" onclick="closeModals()">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Training geschafft! -->
+    <div id="modal-celebrate-workout" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet celebration-box" id="celebration-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <div class="trophy-glow-circle">
+                <svg class="flex-solid-icon" style="width:42px; height:42px; color:#4ade80;"><use href="#fx-trophy"/></svg>
+            </div>
+            <h2 style="margin:0 0 6px 0; font-size:24px; font-weight:800;">Training Geschafft!</h2>
+            <p id="celeb-cat-subtitle" style="color:var(--text-muted); font-size:13.5px; margin:0 0 18px 0;">Starkes Workout!</p>
+
+            <div class="journal-stats-strip" style="margin-bottom:18px;">
+                <div class="journal-stat-box">
+                    <div class="journal-stat-val" id="celeb-train-time" style="color:#4ade80;">00:00</div>
+                    <div class="journal-stat-lbl">Trainingszeit</div>
+                </div>
+                <div class="journal-stat-box">
+                    <div class="journal-stat-val" id="celeb-pause-time" style="color:#fbbf24;">00:00</div>
+                    <div class="journal-stat-lbl">Pausenzeit</div>
+                </div>
+                <div class="journal-stat-box">
+                    <div class="journal-stat-val" id="celeb-xp-earned" style="color:#64d2ff;">+0 XP</div>
+                    <div class="journal-stat-lbl" id="celeb-sets-count">0 Sätze</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #30d158 0%, #1f9d3d 100%);" onclick="closeCelebrationAndOpenJournal()">
+                Im Journal ansehen
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Fitness-Kategorie -->
+    <div id="modal-fit-category" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Neue Muskelgruppe</h3>
+            <div class="form-field">
+                <label>Name der Muskelgruppe</label>
+                <input type="text" id="input-fit-cat-name" class="form-input" placeholder="z.B. Brust, Arme, Rücken, Beine...">
+            </div>
+            <div class="form-field">
+                <label>Flex-Solid Icon wählen</label>
+                <div class="icon-picker-grid" id="fit-icon-picker"></div>
+            </div>
+            <div class="form-field">
+                <label>Akzentfarbe (inkl. Weiß & Schwarz)</label>
+                <div class="color-picker-grid" id="fit-color-picker"></div>
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="saveFitnessCategory()">Erstellen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Fitness-Übung -->
+    <div id="modal-fit-exercise" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Übung hinzufügen</h3>
+            <div class="form-field">
+                <label>Übungsname</label>
+                <input type="text" id="input-ex-name" class="form-input" placeholder="z.B. Schrägbankdrücken">
+            </div>
+            <div class="form-row-3">
+                <div class="form-field">
+                    <label>Sätze</label>
+                    <input type="number" id="input-ex-sets" class="form-input" value="3">
+                </div>
+                <div class="form-field">
+                    <label>Wdh.</label>
+                    <input type="number" id="input-ex-reps" class="form-input" value="10">
+                </div>
+                <div class="form-field">
+                    <label>kg</label>
+                    <input type="number" step="0.5" id="input-ex-weight" class="form-input" value="60">
+                </div>
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="saveFitnessExercise()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Neue Habit-Kategorie -->
+    <div id="modal-habit-category" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Neue Ziel-Kategorie</h3>
+            <div class="form-field">
+                <label>Name der Kategorie</label>
+                <input type="text" id="input-habit-cat-name" class="form-input" placeholder="z.B. Supplements, Morning Routine, Coding...">
+            </div>
+            <div class="form-field">
+                <label>Flex-Solid Icon wählen</label>
+                <div class="icon-picker-grid" id="habit-icon-picker"></div>
+            </div>
+            <div class="form-field">
+                <label>Akzentfarbe (inkl. Weiß & Schwarz)</label>
+                <div class="color-picker-grid" id="habit-color-picker"></div>
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="saveHabitCategory()">Erstellen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Neues Ziel / Habit -->
+    <div id="modal-habit-item" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Neues tägliches Ziel</h3>
+            <div class="form-field">
+                <label>Name des Ziels / der Aufgabe</label>
+                <input type="text" id="input-habit-name" class="form-input" placeholder="z.B. Creatin (5g), Ice Roller, Fokus...">
+            </div>
+            <div class="form-field">
+                <label>Kategorie auswählen</label>
+                <select id="select-habit-cat" class="form-select"></select>
+            </div>
+            <div class="form-field">
+                <label>
+                    <span>XP-Belohnung (5 – 50 XP)</span>
+                    <span id="xp-slider-label" style="color:var(--accent-blue); font-weight:800; font-size:13px;">25 XP</span>
+                </label>
+                <input type="range" id="input-habit-xp" class="xp-slider" min="5" max="50" step="5" value="25" oninput="updateXpPreview(this.value)">
+                <div class="xp-presets">
+                    <button type="button" class="xp-preset-btn" onclick="setXpPreset(10)">10 XP</button>
+                    <button type="button" class="xp-preset-btn" onclick="setXpPreset(20)">20 XP</button>
+                    <button type="button" class="xp-preset-btn active" onclick="setXpPreset(25)">25 XP</button>
+                    <button type="button" class="xp-preset-btn" onclick="setXpPreset(40)">40 XP</button>
+                    <button type="button" class="xp-preset-btn" onclick="setXpPreset(50)">50 XP</button>
+                </div>
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="saveNewHabit()">Hinzufügen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Freunde einladen -->
+    <div id="modal-invite" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Freunde ins Ranking einladen</h3>
+            <p style="color:var(--text-muted); font-size:13px; margin:-8px 0 16px 0; line-height:1.4;">
+                Teile deinen persönlichen Link oder Freundes-Code. Eure XP und Lvl synchronisieren sich vollautomatisch in Echtzeit!
+            </p>
+            <div class="form-field">
+                <label>Dein persönlicher Freundes-Code</label>
+                <div class="invite-box">
+                    <span class="invite-code-big" id="my-friend-code-display">AF-XXXXX</span>
+                    <button class="btn-pill" style="background:var(--accent-blue); color:#fff; border:none; padding:8px 14px;" onclick="copyFriendCode()">
+                        <span class="material-symbols-rounded" style="font-size:16px;">content_copy</span> Code kopieren
+                    </button>
+                </div>
+            </div>
+            <div class="form-field">
+                <label>Direkter Einladungs-Link</label>
+                <button class="btn-primary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="shareInviteLink()">
+                    <span class="material-symbols-rounded">link</span>
+                    Einladungs-Link teilen / kopieren
+                </button>
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" style="width:100%;" onclick="closeModals()">Fertig</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Freund per Code/Link hinzufügen -->
+    <div id="modal-add-friend" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <h3 class="sheet-title">Freund verbinden</h3>
+            <div class="form-field">
+                <label>Freundes-Code oder Einladungs-Link einfügen</label>
+                <input type="text" id="input-friend-code" class="form-input" placeholder="z.B. AF-8K4M2 oder Link...">
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
+                <button class="btn-primary" onclick="addFriendByCodeInput()">Verbinden</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         FLOATING BOTTOM DOCK (HOME, FITNESS, HABITS, JOURNAL + MEHR)
+         ========================================== -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="switchTab('home', this)">
+            <span class="material-symbols-rounded">space_dashboard</span>
+            <span class="label" data-i18n="nav_home">Home</span>
+        </div>
+        <div class="nav-item" id="nav-fitness" onclick="switchTab('fitness', this)">
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span class="label" data-i18n="nav_fitness">Fitness</span>
+        </div>
+        <div class="nav-item" id="nav-habits" onclick="switchTab('habits', this)">
+            <span class="material-symbols-rounded">check_circle</span>
+            <span class="label" data-i18n="nav_habits">Habits</span>
+        </div>
+        <div class="nav-item" id="nav-journal" onclick="switchTab('journal', this)">
+            <span class="material-symbols-rounded">menu_book</span>
+            <span class="label" data-i18n="nav_journal">Journal</span>
+        </div>
+        <div class="nav-item" id="nav-more" onclick="openMoreMenuModal()">
+            <span class="material-symbols-rounded">add_circle</span>
+            <span class="label" data-i18n="nav_more">Mehr</span>
+        </div>
+    </nav>
+
+    <!-- Verknüpfung zur separaten JavaScript-Datei -->
+    <script src="app.js"></script>
+</body>
+</html>
