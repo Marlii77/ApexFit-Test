@@ -1,5 +1,5 @@
 /* =========================================================
-   APEXFIT – APP.JS (LOGIK, FIREBASE, I18N, THEMES & ICONS)
+   APEXFIT – APP.JS (LOGIK, FIREBASE, I18N, 3 THEMES & ICONS)
    ========================================================= */
 
 const FIREBASE_DB_URL = "https://apexfit-4c49a-default-rtdb.europe-west1.firebasedatabase.app";
@@ -22,37 +22,82 @@ const MONOCHROME_COLORS = [
     '#1f1f23', '#18181b', '#121215', '#09090b'
 ];
 
-/* --- ÜBERARBEITETE ICON-AUSWAHL (INKL. NEUER HANTEL, KATZE, SUPPLEMENT, SCHLOSS, ORDNER, LISTE, RUCKSACK, ROUTINE) --- */
+/* --- MASSGESCHNEIDERTE SVG-ICONS FÜR FITNESS (GYM, MUSKELN, GERÄTE) & HABITS --- */
 const CUSTOM_SVG_ICONS = {
-    // Komplett neu designte Pro-Kurzhantel (Dumbbell)
+    // 1. Kurzhantel (Dumbbell)
     custom_dumbbell: `<svg viewBox="0 0 24 24"><path d="M20.5 7.5a1 1 0 0 0-1 1v1h-1V6a1.5 1.5 0 0 0-3 0v4.5h-7V6a1.5 1.5 0 0 0-3 0v3.5h-1v-1a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0v-1h1V18a1.5 1.5 0 0 0 3 0v-4.5h7V18a1.5 1.5 0 0 0 3 0v-3.5h1v1a1 1 0 0 0 2 0v-7a1 1 0 0 0-1-1Z"/></svg>`,
-    // Eigenes Katzen-Icon (Haustier)
+    // 2. Langhantel (Barbell)
+    custom_barbell: `<svg viewBox="0 0 24 24"><path d="M2 11h2v2H2v-2Zm18 0h2v2h-2v-2ZM5 7h2v10H5V7Zm12 0h2v10h-2V7ZM8 9h1.5v6H8V9Zm6.5 0H16v6h-1.5V9Zm-5 2h5v2h-5v-2Z"/></svg>`,
+    // 3. Bizeps / Muskel-Arm
+    custom_biceps: `<svg viewBox="0 0 24 24"><path d="M18.5 4.5c-1.7 0-3 1.3-3 3 0 .6.2 1.2.5 1.7l-1.8 1.8c-1.3-1-3.1-1.2-4.6-.3-.8.5-1.4 1.2-1.8 2.1L6 8.5 4.2 10c-.8.7-1.1 1.8-.8 2.8l1.4 4.7c.4 1.3 1.6 2.2 3 2.2h6.7c2.8 0 5-2.2 5-5 0-1.5-.7-2.9-1.8-3.8l1.8-2.2c.6-.3 1-.9 1-1.7 0-1.4-1.1-2.5-2-2.5Z"/></svg>`,
+    // 4. Brustmuskel / Torso (Chest)
+    custom_chest: `<svg viewBox="0 0 24 24"><path d="M4 5c2.5-1.2 5.2-1.5 8-1.5s5.5.3 8 1.5l1.5 4.5c.3 1-.2 2.1-1.1 2.6l-1.4.7v6.7H5v-6.7l-1.4-.7c-.9-.5-1.4-1.6-1.1-2.6L4 5Zm8 2v5c2.8 0 5-1.2 5.5-3.5L16.5 6c-1.4-.4-3-.5-4.5-.5V7Zm-1.5-1.5c-1.5 0-3.1.1-4.5.5l-1 2.5C5.5 10.8 7.7 12 10.5 12V5.5Z"/></svg>`,
+    // 5. Breiter Rücken / V-Taper (Back)
+    custom_back: `<svg viewBox="0 0 24 24"><path d="M3 5.5 7.5 3h9L21 5.5l-2.5 8.5-2.5 7H8l-2.5-7L3 5.5Zm8 1.5v11h2V7h-2Zm-4.2 1 1.6 5.5h1.6V8H6.8Zm8.8 0v5.5h1.6L18.8 8h-3.2Z"/></svg>`,
+    // 6. Beine / Quadrizeps (Legs)
+    custom_legs: `<svg viewBox="0 0 24 24"><path d="M6 3h12l-1 7.5 1.5 6.5-2.5 4h-2.5l-.5-6.5L12 9l-1 5.5L10.5 21H8l-2.5-4L7 10.5 6 3Z"/></svg>`,
+    // 7. Laufband (Treadmill)
+    custom_treadmill: `<svg viewBox="0 0 24 24"><path d="M19.5 3a1.5 1.5 0 0 0-1.4 1L14.8 14H4a2 2 0 0 0 0 4h14.5a1.5 1.5 0 0 0 1.4-1l2.5-12A1.5 1.5 0 0 0 19.5 3ZM3 20h18v2H3v-2Zm5.5-9.5 2.5-2.5 2 2 2.5-3 1.5 1.2-3.8 4.5-2.2-2.2-1.3 1.3-1.2-1.3Z"/></svg>`,
+    // 8. Kettlebell
+    custom_kettlebell: `<svg viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 0 1 2 2v2.2A7.5 7.5 0 1 1 7 7.2V5a2 2 0 0 1 2-2Zm0 2v1.3a7.5 7.5 0 0 1 6 0V5H9Zm3 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>`,
+    // 9. Kabelzug / Maschine (Cable Pulley)
+    custom_cable: `<svg viewBox="0 0 24 24"><path d="M4 2h16v3H4V2Zm7 3h2v6.2l3.8 5.8H14l-2-3.2-2 3.2H7.2L11 11.2V5Zm-5 14h12v3H6v-3Z"/></svg>`,
+    // 10. Hantelbank (Bench Press)
+    custom_bench: `<svg viewBox="0 0 24 24"><path d="M2 13h20v3H19v5h-2.5v-5h-9v5H5v-5H2v-3Zm4-8h2v6H6V5Zm10 0h2v6h-2V5ZM3 7h18v2H3V7Z"/></svg>`,
+    // 11. Sixpack / Core (Abs)
+    custom_abs: `<svg viewBox="0 0 24 24"><rect x="6" y="3" width="5" height="4.5" rx="1.5"/><rect x="13" y="3" width="5" height="4.5" rx="1.5"/><rect x="6" y="9.5" width="5" height="4.5" rx="1.5"/><rect x="13" y="9.5" width="5" height="4.5" rx="1.5"/><rect x="6" y="16" width="5" height="4.5" rx="1.5"/><rect x="13" y="16" width="5" height="4.5" rx="1.5"/></svg>`,
+    // 12. Eigenes Katzen-Icon (Haustier für Habits)
     custom_cat: `<svg viewBox="0 0 24 24"><path d="M12 5c-1.6 0-3.1.5-4.3 1.4L4.5 3.8A1 1 0 0 0 3 4.6v5.8C2.4 11.5 2 12.7 2 14c0 4.4 4.5 8 10 8s10-3.6 10-8c0-1.3-.4-2.5-1-3.6V4.6a1 1 0 0 0-1.5-.8l-3.2 2.6C15.1 5.5 13.6 5 12 5Zm-3.5 7a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-3.5 3.2c1.1 0 2 .6 2.4 1.5h-4.8c.4-.9 1.3-1.5 2.4-1.5Z"/></svg>`,
-    // Supplement Kapsel / Dose
+    // 13. Supplement Kapsel / Dose (für Habits)
     custom_supp: `<svg viewBox="0 0 24 24"><path d="M16.2 3.8a4.5 4.5 0 0 0-6.4 0l-6 6a4.5 4.5 0 0 0 6.4 6.4l6-6a4.5 4.5 0 0 0 0-6.4Zm-5 5 2.1-2.1a2.5 2.5 0 0 1 3.6 3.6L14.8 12.4 11.2 8.8ZM19 14a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2h-2v2a1 1 0 1 1-2 0v-2h-2a1 1 0 1 1 0-2h2v-2a1 1 0 0 1 1-1Z"/></svg>`
 };
 
-const APP_ICONS = [
-    'custom_dumbbell',       // Überarbeitete Hantel
+/* --- SPEZIELLE FITNESS-ICONS (HANTELN, MUSKELN, GERÄTE, CARDIO) --- */
+const FITNESS_ICONS = [
+    'custom_dumbbell',       // Kurzhantel
+    'custom_barbell',        // Langhantel
+    'custom_biceps',         // Bizeps / Arme
+    'custom_chest',          // Brust / Torso
+    'custom_back',           // Rücken / Lat
+    'custom_legs',           // Beine / Quads
+    'custom_abs',            // Sixpack / Bauch
+    'custom_bench',          // Hantelbank
+    'custom_cable',          // Kabelzug / Turm
+    'custom_kettlebell',     // Kettlebell
+    'custom_treadmill',      // Laufband
+    'fitness_center',        // Klassische Hantel
+    'exercise',              // Gym Gewicht
+    'directions_run',        // Sprint / Cardio
+    'pedal_bike',            // Indoor Bike
+    'rowing',                // Rudergerät
+    'sports_gymnastics',     // Calisthenics / Stretch
+    'sports_mma',            // Boxhandschuh / Kampfsport
+    'timer',                 // HIIT / Intervall
+    'monitoring'             // Kraftkurve
+];
+
+/* --- SPEZIELLE HABIT-ICONS (SUPPLEMENTS, LISTEN, SCHLOSS, ORDNER, KATZE, RUCKSACK, ROUTINE) --- */
+const HABIT_ICONS = [
     'custom_supp',           // Supplement Kapsel
-    'medication',            // Supplement Dose / Pillen
+    'medication',            // Supplement Dose
     'description',           // Dokument
-    'Format_list_bulleted',  // Liste / Checkliste
-    'fact_check',            // Dokument-Check
+    'format_list_bulleted',  // Liste
+    'fact_check',            // Checkliste
     'lock',                  // Schloss
     'folder',                // Ordner (Folder)
-    'event_repeat',          // Routine / Wiederholung
+    'event_repeat',          // Routine
     'custom_cat',            // Haustier (Katze)
-    'pets',                  // Pfote / Haustier
+    'pets',                  // Pfote
     'backpack',              // Rucksack
-    'bolt',                  // Energie
-    'local_fire_department', // Flamme
-    'directions_run',        // Cardio / Laufen
-    'shield',                // Brust / Schutz
-    'sports_mma',            // Kampfsport / Kraft
-    'self_improvement',      // Fokus / Recovery
-    'water_drop',            // Hydration
-    'bedtime'                // Schlaf
+    'bolt',                  // Energie / Fokus
+    'local_fire_department', // Streak / Flamme
+    'water_drop',            // Wasser / Hydration
+    'self_improvement',      // Meditation / Mindset
+    'bedtime',               // Schlaf
+    'menu_book',             // Lesen / Lernen
+    'code',                  // Coding / Projekt
+    'spa',                   // Skincare / Gua Sha
+    'custom_dumbbell'        // Training-Habit
 ];
 
 function renderIconMarkup(iconKey, sizePx = 22) {
@@ -63,7 +108,7 @@ function renderIconMarkup(iconKey, sizePx = 22) {
     return `<span class="material-symbols-rounded" style="font-size:${sizePx}px;">${cleanName}</span>`;
 }
 
-/* --- 16 EIGENE SEPARATE LEVEL-ICONS MIT INDIVIDUELLEN LOOP-ANIMATIONEN (ALLE 5 LVL NEU BIS LVL 75) --- */
+/* --- 16 EIGENE SEPARATE LEVEL-ICONS MIT INDIVIDUELLEN LOOP-ANIMATIONEN --- */
 const LEVEL_TIERS = [
     { min: 1,  title: 'Rookie',       fx: 'lvl-fx-1',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,4 30,18 18,32 6,18" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
     { min: 5,  title: 'Starter',      fx: 'lvl-fx-2',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L29 9.5V22.5L18 29L7 22.5V9.5L18 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M13 20L18 13L23 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
@@ -158,9 +203,9 @@ const TRANSLATIONS = {
         label_kcal_goal: "Kalorien (kcal)",
         label_water_goal: "Wasser (Liter)",
         settings_appearance_title: "Design, Effekte & Sprache",
-        settings_appearance_sub: "App-Theme, Icon-Glow & Sprachauswahl",
+        settings_appearance_sub: "App-Theme, Eigene Farben, Icon-Glow & Sprache",
         label_language: "Sprache / Language",
-        label_theme: "App-Design (Hintergrund & Farbwelt)",
+        label_theme: "App-Design (3 Modi zur Auswahl)",
         label_icon_glow: "Icon Glow-Effekt aktivieren",
         sub_icon_glow: "Leuchtender Schein um Kategorien- & Card-Icons",
         label_auto_pause: "Auto-Pausen-Timer im Gym",
@@ -169,7 +214,7 @@ const TRANSLATIONS = {
         btn_save_settings: "Einstellungen speichern",
         more_menu_title: "Mehr auswählen",
         more_tracker_sub: "Kalorien, Wasser, Schrittzähler & History",
-        more_ranking_sub: "Vergleiche Lvl & XP in Echtzeit mit Freunden",
+        more_ranking_sub: "Vergleiche Lvl, XP & 7-Tage-History mit Freunden",
         more_settings_sub: "Profilbild, Name, Gewicht, Ziele, Sprache & Design",
         btn_close: "Schließen"
     },
@@ -233,9 +278,9 @@ const TRANSLATIONS = {
         label_kcal_goal: "Calories (kcal)",
         label_water_goal: "Water (Liters)",
         settings_appearance_title: "Design, Effects & Language",
-        settings_appearance_sub: "App Theme, Icon Glow & Language",
+        settings_appearance_sub: "App Theme, Custom Colors, Icon Glow & Language",
         label_language: "Language",
-        label_theme: "App Theme (Background & Colors)",
+        label_theme: "App Theme (3 Modes)",
         label_icon_glow: "Enable Icon Glow Effect",
         sub_icon_glow: "Glowing aura around category & card icons",
         label_auto_pause: "Auto Rest Timer in Gym",
@@ -244,7 +289,7 @@ const TRANSLATIONS = {
         btn_save_settings: "Save Settings",
         more_menu_title: "More Options",
         more_tracker_sub: "Calories, Water, Step Counter & History",
-        more_ranking_sub: "Compare Lvl & XP live with friends",
+        more_ranking_sub: "Compare Lvl, XP & 7-Day History live",
         more_settings_sub: "Avatar, Name, Weight, Goals, Language & Theme",
         btn_close: "Close"
     },
@@ -308,7 +353,7 @@ const TRANSLATIONS = {
         label_kcal_goal: "Calories (kcal)",
         label_water_goal: "Eau (Litres)",
         settings_appearance_title: "Design, Effets & Langue",
-        settings_appearance_sub: "Thème, lueur des icônes & langue",
+        settings_appearance_sub: "Thème, couleurs perso, lueur & langue",
         label_language: "Langue / Language",
         label_theme: "Thème de l'application",
         label_icon_glow: "Effet lumineux des icônes",
@@ -319,7 +364,7 @@ const TRANSLATIONS = {
         btn_save_settings: "Enregistrer les réglages",
         more_menu_title: "Plus d'options",
         more_tracker_sub: "Calories, Eau, Podomètre & Historique",
-        more_ranking_sub: "Comparez Lvl & XP en direct",
+        more_ranking_sub: "Comparez Lvl, XP & Historique 7j",
         more_settings_sub: "Photo, Nom, Poids, Objectifs, Langue & Thème",
         btn_close: "Fermer"
     },
@@ -383,7 +428,7 @@ const TRANSLATIONS = {
         label_kcal_goal: "Calorías (kcal)",
         label_water_goal: "Agua (Litros)",
         settings_appearance_title: "Diseño, Efectos e Idioma",
-        settings_appearance_sub: "Tema, brillo de iconos e idioma",
+        settings_appearance_sub: "Tema, colores propios, brillo e idioma",
         label_language: "Idioma / Language",
         label_theme: "Diseño de la App",
         label_icon_glow: "Activar brillo en iconos (Glow)",
@@ -394,28 +439,34 @@ const TRANSLATIONS = {
         btn_save_settings: "Guardar ajustes",
         more_menu_title: "Más opciones",
         more_tracker_sub: "Calorías, Agua, Pasos e Historial",
-        more_ranking_sub: "Compara Lvl y XP en vivo con amigos",
+        more_ranking_sub: "Compara Lvl, XP e Historial 7d",
         more_settings_sub: "Foto, Nombre, Peso, Metas, Idioma y Diseño",
         btn_close: "Cerrar"
     }
 };
 
-/* --- HILFSFUNKTIONEN FÜR FARBEN & ZEIT --- */
+/* --- KONTRAST-ERKENNUNG (LUMINANZ-BERECHNUNG FÜR JEDE HEX-FARBE) --- */
+function hexToRgb(hex) {
+    if (!hex || typeof hex !== 'string') return { r: 10, g: 132, b: 255 };
+    let c = hex.replace('#', '').trim();
+    if (c.length === 3) c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+    const num = parseInt(c, 16);
+    if (isNaN(num)) return { r: 10, g: 132, b: 255 };
+    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+}
+
 function getContrastText(hex) {
-    if (!hex) return '#ffffff';
-    const c = hex.toLowerCase();
-    if (['#ffffff', '#f4f4f5', '#e4e4e7', '#d4d4d8', '#ffd60a', '#64d2ff'].includes(c)) {
-        return '#000000';
-    }
-    return '#ffffff';
+    const { r, g, b } = hexToRgb(hex);
+    // Wahrgenommene Helligkeit (YIQ-Formel)
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq >= 150) ? '#09090b' : '#ffffff';
 }
 
 function getBorderForColor(hex) {
     if (!hex) return 'transparent';
-    const c = hex.toLowerCase();
-    if (['#111216', '#09090b', '#121215', '#18181b', '#000000'].includes(c)) {
-        return 'rgba(255, 255, 255, 0.45)';
-    }
+    const { r, g, b } = hexToRgb(hex);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    if (yiq < 40) return 'rgba(255, 255, 255, 0.45)';
     return hex;
 }
 
@@ -423,10 +474,13 @@ function getEffectiveIconColor(hex) {
     if (userSettings && userSettings.theme === 'monochrome') {
         return '#ffffff';
     }
-    if (!hex) return '#0a84ff';
-    if (['#111216', '#09090b', '#000000'].includes(hex.toLowerCase())) {
-        return '#f5f7fa';
+    if (userSettings && userSettings.theme === 'custom' && userSettings.customColors) {
+        if (!hex) return userSettings.customColors.accent || '#ff375f';
     }
+    if (!hex) return '#0a84ff';
+    const { r, g, b } = hexToRgb(hex);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    if (yiq < 35) return '#f5f7fa';
     return hex;
 }
 
@@ -497,10 +551,19 @@ let userSettings = JSON.parse(localStorage.getItem('apexfit_settings')) || {
     waterGoal: 3.0,
     lang: 'de',
     theme: 'default',
-    iconGlow: false, // Standardmäßig ausgeschaltet
+    iconGlow: false,
     autoPause: true,
-    avatarDataUrl: ''
+    avatarDataUrl: '',
+    customColors: {
+        bg: '#12131a',
+        card: '#202330',
+        accent: '#ff375f',
+        text: '#ffffff'
+    }
 };
+if (!userSettings.customColors) {
+    userSettings.customColors = { bg: '#12131a', card: '#202330', accent: '#ff375f', text: '#ffffff' };
+}
 
 let showHomeGraphs = localStorage.getItem('apexfit_show_graphs') === 'true';
 let showTrackerHistory = false;
@@ -528,7 +591,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     {
         id: 'cat_1',
         name: 'Brust',
-        icon: 'custom_dumbbell',
+        icon: 'custom_chest',
         color: '#0a84ff',
         exercises: [
             { id: 'ex_1', name: 'Bankdrücken', sets: 4, reps: 8, weight: 70 },
@@ -538,7 +601,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     {
         id: 'cat_2',
         name: 'Arme',
-        icon: 'bolt',
+        icon: 'custom_biceps',
         color: '#5e5ce6',
         exercises: [
             { id: 'ex_3', name: 'Kurzhantel Curls', sets: 3, reps: 10, weight: 16 },
@@ -556,7 +619,7 @@ let friendIds = JSON.parse(localStorage.getItem('apexfit_friend_ids')) || [];
 
 let nutritionData = JSON.parse(localStorage.getItem('apexfit_nutrition')) || {};
 if (!nutritionData[todayKey]) {
-    nutritionData[todayKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0 };
+    nutritionData[todayKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0, stepsLogs: [] };
 }
 
 let notesData = JSON.parse(localStorage.getItem('apexfit_notes')) || {
@@ -569,6 +632,7 @@ let notesData = JSON.parse(localStorage.getItem('apexfit_notes')) || {
 
 let currentNotesTab = 'daily';
 let currentFitCategoryId = null;
+let editingHabitCategoryId = null; // Für das nachträgliche Bearbeiten von Habit-Kategorien
 let selectedHabitColor = '#0a84ff';
 let selectedHabitIcon = 'custom_supp';
 let selectedFitColor = '#0a84ff';
@@ -592,7 +656,7 @@ function saveAll() {
     syncMyProfileToFirebase();
 }
 
-/* --- FARB- & ICON-PICKER INITIALISIEREN (PASST SICH DEM GEWÄHLTEN THEME AN) --- */
+/* --- SEPARATE PICKER FÜR FITNESS-ICONS UND HABIT-ICONS --- */
 function initPickers() {
     const fitIconContainer = document.getElementById('fit-icon-picker');
     const habitIconContainer = document.getElementById('habit-icon-picker');
@@ -601,36 +665,43 @@ function initPickers() {
     fitIconContainer.innerHTML = '';
     habitIconContainer.innerHTML = '';
 
-    APP_ICONS.forEach((ic, idx) => {
+    // 1. Spezielle Fitness-Icons (Hanteln, Muskeln, Geräte)
+    FITNESS_ICONS.forEach((ic, idx) => {
+        const isSel = (ic === selectedFitIcon) || (idx === 0 && !FITNESS_ICONS.includes(selectedFitIcon));
         fitIconContainer.innerHTML += `
-            <div class="icon-option ${idx === 0 ? 'selected' : ''}" data-icon="${ic}" onclick="selectFitIcon(this)">
+            <div class="icon-option ${isSel ? 'selected' : ''}" data-icon="${ic}" onclick="selectFitIcon(this)">
                 ${renderIconMarkup(ic, 22)}
             </div>`;
+    });
+
+    // 2. Spezielle Habit-Icons (Supplements, Listen, Schloss, Ordner, Katze, Rucksack, Routine)
+    HABIT_ICONS.forEach((ic, idx) => {
+        const isSel = (ic === selectedHabitIcon) || (idx === 0 && !HABIT_ICONS.includes(selectedHabitIcon));
         habitIconContainer.innerHTML += `
-            <div class="icon-option ${idx === 1 ? 'selected' : ''}" data-icon="${ic}" onclick="selectHabitIcon(this)">
+            <div class="icon-option ${isSel ? 'selected' : ''}" data-icon="${ic}" onclick="selectHabitIcon(this)">
                 ${renderIconMarkup(ic, 22)}
             </div>`;
     });
 
     const palette = (userSettings.theme === 'monochrome') ? MONOCHROME_COLORS : DEFAULT_COLORS;
-    selectedFitColor = palette[0];
-    selectedHabitColor = palette[0];
+    if (!palette.includes(selectedFitColor)) selectedFitColor = palette[0];
+    if (!palette.includes(selectedHabitColor)) selectedHabitColor = palette[0];
 
     const fitColorContainer = document.getElementById('fit-color-picker');
     const habitColorContainer = document.getElementById('habit-color-picker');
     fitColorContainer.innerHTML = '';
     habitColorContainer.innerHTML = '';
 
-    palette.forEach((col, idx) => {
+    palette.forEach((col) => {
         const extraBorder = ['#111216', '#09090b', '#121215'].includes(col) ? 'border-color: rgba(255,255,255,0.45);' : '';
         fitColorContainer.innerHTML += `
-            <div class="color-swatch ${idx === 0 ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectFitColor(this)"></div>`;
+            <div class="color-swatch ${col === selectedFitColor ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectFitColor(this)"></div>`;
         habitColorContainer.innerHTML += `
-            <div class="color-swatch ${idx === 0 ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectHabitColor(this)"></div>`;
+            <div class="color-swatch ${col === selectedHabitColor ? 'selected' : ''}" data-color="${col}" style="background:${col}; ${extraBorder}" onclick="selectHabitColor(this)"></div>`;
     });
 }
 
-/* --- LEVEL & XP BERECHNUNG (MIT 16 EIGENEN ANIMIERTEN LEVEL-ICONS) --- */
+/* --- LEVEL & XP BERECHNUNG (INKL. TAGES-XP FÜR DIE 7-TAGE RANKING-HISTORY) --- */
 function calculateTotalXP() {
     let totalXP = 0;
     habitsList.forEach(h => {
@@ -648,6 +719,33 @@ function calculateTotalXP() {
         }
     });
     return totalXP;
+}
+
+function calculateMyDailyXPForDate(dateKey) {
+    let dayXP = 0;
+    habitsList.forEach(h => {
+        if (h.history && h.history[dateKey]) {
+            dayXP += Math.min(50, Number(h.xp) || 25);
+        }
+    });
+    journalData.forEach(j => {
+        const jDay = j.dateKey || (j.dateISO ? getDateKey(new Date(j.dateISO)) : '');
+        if (jDay === dateKey && j.exercises) {
+            j.exercises.forEach(ex => {
+                dayXP += (ex.sets ? ex.sets.length : 0) * XP_PER_WORKOUT_SET;
+            });
+        }
+    });
+    return dayXP;
+}
+
+function calculateMyLast7DaysXPMap() {
+    const map = {};
+    const last7 = getLast7Days();
+    last7.forEach(d => {
+        map[d.key] = calculateMyDailyXPForDate(d.key);
+    });
+    return map;
 }
 
 function renderLevelCard() {
@@ -680,7 +778,7 @@ function renderLevelCard() {
     }
 }
 
-/* --- NOTIZEN SYSTEM (TÄGLICH, WÖCHENTLICH MO-SO, GENERELL) --- */
+/* --- NOTIZEN SYSTEM --- */
 function checkNotesAutoCleanup() {
     let changed = false;
     const nowDayKey = getDateKey(new Date());
@@ -780,7 +878,10 @@ function deleteNoteItem(noteId) {
 
 /* --- SVG GRAPH GENERATOR --- */
 function createSmoothSVGChart(labels, values, accentColor, unitSuffix = '') {
-    const chartColor = (userSettings.theme === 'monochrome') ? '#ffffff' : accentColor;
+    let chartColor = accentColor;
+    if (userSettings.theme === 'monochrome') chartColor = '#ffffff';
+    else if (userSettings.theme === 'custom' && userSettings.customColors?.accent) chartColor = userSettings.customColors.accent;
+
     const w = 340;
     const h = 125;
     const padLeft = 24;
@@ -809,8 +910,8 @@ function createSmoothSVGChart(labels, values, accentColor, unitSuffix = '') {
     pts.forEach(p => {
         circlesHTML += `
             <circle cx="${p.x}" cy="${p.y}" r="4" fill="${chartColor}" stroke="#111" stroke-width="1.5" />
-            <text x="${p.x}" y="${p.y - 8}" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle">${p.v}${unitSuffix}</text>
-            <text x="${p.x}" y="${h - 6}" fill="#a1a1aa" font-size="9.5" font-weight="600" text-anchor="middle">${p.label}</text>
+            <text x="${p.x}" y="${p.y - 8}" fill="var(--text-main)" font-size="9.5" font-weight="700" text-anchor="middle">${p.v}${unitSuffix}</text>
+            <text x="${p.x}" y="${h - 6}" fill="var(--text-muted)" font-size="9.5" font-weight="600" text-anchor="middle">${p.label}</text>
         `;
     });
 
@@ -848,7 +949,7 @@ function calculateStreak(habit) {
     return streak;
 }
 
-/* --- 1. HOME DASHBOARD RENDERN --- */
+/* --- 1. HOME DASHBOARD RENDERN (MATRIX NACH KATEGORIEN-REIHENFOLGE SORTIERT & HÄKCHEN-FIX) --- */
 function renderHome() {
     renderLevelCard();
 
@@ -886,30 +987,27 @@ function renderHome() {
         sw.classList.add('on');
         gWrap.style.display = 'block';
         const labels = last7.map(d => d.dayName);
-        const xpValues = last7.map(d => {
-            let dayXP = 0;
-            habitsList.forEach(h => {
-                if (h.history && h.history[d.key]) dayXP += Math.min(50, Number(h.xp) || 25);
-            });
-            journalData.forEach(j => {
-                const jDay = j.dateKey || (j.dateISO ? getDateKey(new Date(j.dateISO)) : '');
-                if (jDay === d.key && j.exercises) {
-                    j.exercises.forEach(ex => { dayXP += (ex.sets ? ex.sets.length : 0) * XP_PER_WORKOUT_SET; });
-                }
-            });
-            return dayXP;
-        });
+        const xpValues = last7.map(d => calculateMyDailyXPForDate(d.key));
         document.getElementById('home-xp-chart').innerHTML = createSmoothSVGChart(labels, xpValues, '#0a84ff', '');
     } else {
         sw.classList.remove('on');
         gWrap.style.display = 'none';
     }
 
-    // 7-Tage Habit Matrix
+    // 7-Tage Habit Matrix: IMMER nach der Ordnung der Habit-Kategorien gruppieren!
     const matrixContainer = document.getElementById('matrix-container');
     if (habitsList.length === 0) {
         matrixContainer.innerHTML = `<p class="empty-hint">Noch keine Ziele im Reiter „Habits“ angelegt.</p>`;
     } else {
+        const orderedHabits = [];
+        habitCategories.forEach(cat => {
+            const catItems = habitsList.filter(h => h.catId === cat.id);
+            orderedHabits.push(...catItems);
+        });
+        // Falls noch Habits ohne Kategorie existieren, am Ende anhängen
+        const orphanHabits = habitsList.filter(h => !habitCategories.some(c => c.id === h.catId));
+        orderedHabits.push(...orphanHabits);
+
         let tableHTML = `
             <table class="matrix-table">
                 <colgroup>
@@ -927,7 +1025,7 @@ function renderHome() {
         });
         tableHTML += `</tr></thead><tbody>`;
 
-        habitsList.forEach(h => {
+        orderedHabits.forEach(h => {
             const cat = habitCategories.find(c => c.id === h.catId);
             const rawColor = cat ? cat.color : '#0a84ff';
             const dotColor = (userSettings.theme === 'monochrome') ? '#ffffff' : rawColor;
@@ -948,12 +1046,14 @@ function renderHome() {
                     </td>`;
 
             last7.forEach(d => {
-                const isDone = h.history && h.history[d.key];
-                const doneStyle = isDone ? `background:${dotColor}; border-color:${dotBorder}; color:${checkTextColor};` : '';
+                const isDone = !!(h.history && h.history[d.key]);
+                const doneStyle = isDone
+                    ? `background:${dotColor}; border-color:${dotBorder}; color:${checkTextColor};`
+                    : '';
                 tableHTML += `
                     <td class="matrix-cell">
                         <button class="matrix-dot-btn ${isDone ? 'done' : ''}" style="${doneStyle}" onclick="toggleHabitDate('${h.id}', '${d.key}')">
-                            <span class="material-symbols-rounded" style="font-size:15px; font-weight:bold;">check</span>
+                            ${isDone ? `<span class="material-symbols-rounded" style="font-size:15px; font-weight:bold; color:${checkTextColor} !important;">check</span>` : ''}
                         </button>
                     </td>`;
             });
@@ -968,7 +1068,7 @@ function renderHome() {
     renderFitnessMatrixAndChart();
 }
 
-/* --- 2. HABITS REITER RENDERN (NUR CARD-OBEN-LINKS ICON SCHWEBT) --- */
+/* --- 2. HABITS REITER RENDERN (INKL. KATEGORIE NACHTRÄGLICH BEARBEITEN) --- */
 function renderHabits() {
     const container = document.getElementById('habits-categories-container');
     container.innerHTML = '';
@@ -993,7 +1093,7 @@ function renderHabits() {
             itemsHTML = `<p class="empty-hint">Noch keine Ziele in dieser Kategorie</p>`;
         } else {
             catHabits.forEach(h => {
-                const isDone = h.history && h.history[tKey];
+                const isDone = !!(h.history && h.history[tKey]);
                 const streak = calculateStreak(h);
                 const xpVal = Math.min(50, Number(h.xp) || 25);
                 const circleStyle = isDone ? `background:${activeColor}; border-color:${dotBorder};` : '';
@@ -1002,7 +1102,7 @@ function renderHabits() {
                 <div class="habit-item-row ${isDone ? 'completed' : ''}">
                     <div class="habit-left" onclick="toggleHabitDate('${h.id}', '${tKey}')">
                         <div class="check-circle" style="${circleStyle}">
-                            ${isDone ? `<span class="material-symbols-rounded" style="font-size:16px; color:${checkColor}; font-weight:bold;">check</span>` : ''}
+                            ${isDone ? `<span class="material-symbols-rounded" style="font-size:16px; color:${checkColor} !important; font-weight:bold;">check</span>` : ''}
                         </div>
                         <span class="habit-title">${h.name}</span>
                     </div>
@@ -1021,16 +1121,20 @@ function renderHabits() {
         <div class="bevel-card">
             <div class="category-header">
                 <div class="category-title-group">
-                    <!-- Schwebendes Icon links oben im Liquid Glass Element -->
                     <span class="card-corner-icon floating-card-icon" style="--icon-color:${iconCol};">
                         ${renderIconMarkup(cIcon, 24)}
                     </span>
                     <h2 class="category-title">${cat.name}</h2>
                     <span class="badge-count">${doneCount}/${catHabits.length}</span>
                 </div>
-                <button class="btn-delete-icon" onclick="deleteHabitCategory('${cat.id}')" title="Kategorie löschen">
-                    <span class="material-symbols-rounded" style="font-size:19px;">delete</span>
-                </button>
+                <div class="category-actions">
+                    <button class="btn-edit-icon" onclick="openHabitCategoryModal('${cat.id}')" title="Kategorie bearbeiten (Name, Icon, Farbe)">
+                        <span class="material-symbols-rounded" style="font-size:19px;">edit</span>
+                    </button>
+                    <button class="btn-delete-icon" onclick="deleteHabitCategory('${cat.id}')" title="Kategorie löschen">
+                        <span class="material-symbols-rounded" style="font-size:19px;">delete</span>
+                    </button>
+                </div>
             </div>
             <div>${itemsHTML}</div>
         </div>`;
@@ -1076,21 +1180,53 @@ function selectHabitColor(el) {
     selectedHabitColor = el.getAttribute('data-color');
 }
 
-function openHabitCategoryModal() {
-    document.getElementById('input-habit-cat-name').value = '';
+function openHabitCategoryModal(editCatId = null) {
+    editingHabitCategoryId = editCatId;
+    const titleEl = document.getElementById('habit-cat-modal-title');
+    const saveBtn = document.getElementById('habit-cat-save-btn');
+    const nameInput = document.getElementById('input-habit-cat-name');
+
+    if (editCatId) {
+        const existingCat = habitCategories.find(c => c.id === editCatId);
+        if (existingCat) {
+            titleEl.innerText = 'Kategorie bearbeiten';
+            saveBtn.innerText = 'Speichern';
+            nameInput.value = existingCat.name;
+            selectedHabitIcon = existingCat.icon || 'custom_supp';
+            selectedHabitColor = existingCat.color || '#0a84ff';
+        }
+    } else {
+        titleEl.innerText = 'Neue Ziel-Kategorie';
+        saveBtn.innerText = 'Erstellen';
+        nameInput.value = '';
+    }
+
+    initPickers();
     document.getElementById('modal-habit-category').classList.add('open');
-    setTimeout(() => document.getElementById('input-habit-cat-name').focus(), 100);
+    setTimeout(() => nameInput.focus(), 100);
 }
 
 function saveHabitCategory() {
     const name = document.getElementById('input-habit-cat-name').value.trim();
     if (!name) return;
-    habitCategories.push({
-        id: 'hcat_' + Date.now(),
-        name: name,
-        icon: selectedHabitIcon,
-        color: selectedHabitColor
-    });
+
+    if (editingHabitCategoryId) {
+        const cat = habitCategories.find(c => c.id === editingHabitCategoryId);
+        if (cat) {
+            cat.name = name;
+            cat.icon = selectedHabitIcon;
+            cat.color = selectedHabitColor;
+        }
+        editingHabitCategoryId = null;
+    } else {
+        habitCategories.push({
+            id: 'hcat_' + Date.now(),
+            name: name,
+            icon: selectedHabitIcon,
+            color: selectedHabitColor
+        });
+    }
+
     saveAll();
     renderHabits();
     renderHome();
@@ -1311,7 +1447,6 @@ function renderFitness() {
         <div class="bevel-card">
             <div class="category-header">
                 <div class="category-title-group">
-                    <!-- Schwebendes Icon links oben im Liquid Glass Element -->
                     <span class="card-corner-icon floating-card-icon" style="--icon-color:${iconCol};">
                         ${renderIconMarkup(cIcon, 25)}
                     </span>
@@ -1320,7 +1455,7 @@ function renderFitness() {
                 </div>
                 <div class="category-actions">
                     <button class="btn-pill" style="background:${btnColor}; color:${cText}; border-color:${cBorder};" onclick="openFitnessExerciseModal('${cat.id}')">
-                        <span class="material-symbols-rounded" style="font-size:15px;">add</span> Übung
+                        <span class="material-symbols-rounded" style="font-size:15px; color:${cText} !important;">add</span> Übung
                     </button>
                     <button class="btn-share-icon" onclick="openSharePlanModal('${cat.id}')" title="Trainingsplan mit Freunden teilen">
                         <span class="material-symbols-rounded" style="font-size:19px;">share</span>
@@ -1335,7 +1470,7 @@ function renderFitness() {
     });
 }
 
-/* --- TRAININGSPLÄNE (MUSKELGRUPPEN) TEILEN & IMPORTIEREN --- */
+/* --- TRAININGSPLÄNE TEILEN & IMPORTIEREN --- */
 function encodePlanPayload(catObj) {
     const cleanPlan = {
         name: catObj.name,
@@ -1447,7 +1582,7 @@ function confirmImportFitnessPlan() {
     }
 }
 
-/* --- LIVE WORKOUT IM GYM --- */
+/* --- LIVE WORKOUT IM GYM (MIT ANIMIERTER TRAININGS- UND PAUSENZEIT) --- */
 function openStartWorkoutModal() {
     const listEl = document.getElementById('start-workout-cat-list');
     listEl.innerHTML = '';
@@ -1553,7 +1688,7 @@ function renderActiveWorkoutBanner() {
                 setsHTML += `
                 <div class="set-row ${s.done ? 'set-done' : ''}">
                     <button class="set-check-btn" onclick="toggleWorkoutSet(${exIdx}, ${setIdx})" title="Satz abhaken (+50 XP)">
-                        <span class="material-symbols-rounded" style="font-size:18px; font-weight:bold;">check</span>
+                        <span class="material-symbols-rounded" style="font-size:17px; font-weight:bold;">check</span>
                     </button>
                     <span class="set-num-label">${setIdx + 1}. Satz</span>
                     <div class="set-inline-box">
@@ -1567,7 +1702,7 @@ function renderActiveWorkoutBanner() {
                         <span class="set-inline-unit">Wdh</span>
                     </div>
                     <button class="btn-remove-set" onclick="removeWorkoutSet(${exIdx}, ${setIdx})" title="Satz entfernen">
-                        <span class="material-symbols-rounded" style="font-size:16px;">remove</span>
+                        <span class="material-symbols-rounded" style="font-size:14px;">remove</span>
                     </button>
                 </div>`;
             });
@@ -1585,15 +1720,17 @@ function renderActiveWorkoutBanner() {
         });
     }
 
+    // Beide Timer (Training & Pause) haben im aktiven Zustand den pulsierenden Animations-Effekt
+    const trainActiveClass = !activeWorkout.isPaused ? 'active-train' : '';
     const pauseActiveClass = activeWorkout.isPaused ? 'active-pause' : '';
-    const pauseLabel = activeWorkout.isPaused ? 'Pause läuft (Weiter)' : 'Pause starten';
+    const pauseLabel = activeWorkout.isPaused ? 'Pause läuft' : 'Pause';
 
     container.innerHTML = `
     <div class="active-workout-banner">
         <div class="workout-top-bar">
             <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                 <div>
-                    <div style="font-size:11px; color:#4ade80; font-weight:800; text-transform:uppercase;">AKTIVES TRAINING • +50 XP/SATZ</div>
+                    <div style="font-size:11px; color:#4ade80; font-weight:800; text-transform:uppercase;">AKTIVES TRAINING</div>
                     <h2 style="margin:2px 0 0 0; font-size:21px;">${activeWorkout.catName}</h2>
                 </div>
                 <button class="btn-delete-icon" onclick="cancelActiveWorkout()" title="Training abbrechen">
@@ -1601,7 +1738,7 @@ function renderActiveWorkoutBanner() {
                 </button>
             </div>
             <div class="timers-row">
-                <div class="timer-pill">
+                <div class="timer-pill train-pill ${trainActiveClass}" onclick="if(activeWorkout.isPaused) toggleWorkoutPauseMode()" style="cursor:pointer;">
                     <span class="material-symbols-rounded" style="font-size:16px;">timer</span>
                     <span>Training: <b id="live-workout-timer">${formatSecondsMMSS(activeWorkout.trainSeconds)}</b></span>
                 </div>
@@ -1612,7 +1749,7 @@ function renderActiveWorkoutBanner() {
             </div>
         </div>
         <div>${exBlocksHTML}</div>
-        <button class="btn-primary" style="width:100%; margin-top:12px; background:linear-gradient(135deg, #30d158 0%, #1f9d3d 100%);" onclick="finishWorkoutWithCelebration()">
+        <button class="btn-primary" style="width:100%; margin-top:12px; background:linear-gradient(135deg, #30d158 0%, #1f9d3d 100%) !important; color:#fff !important;" onclick="finishWorkoutWithCelebration()">
             Training abschließen & XP sichern
         </button>
     </div>`;
@@ -1748,6 +1885,7 @@ function updateFitnessMetric(catId, exId, field, newValue) {
 
 function openFitnessCategoryModal() {
     document.getElementById('input-fit-cat-name').value = '';
+    initPickers();
     document.getElementById('modal-fit-category').classList.add('open');
     setTimeout(() => document.getElementById('input-fit-cat-name').focus(), 100);
 }
@@ -1956,26 +2094,21 @@ function deleteJournalEntry(entryId) {
     renderJournal();
 }
 
-/* --- 5. FITTRACKER (OHNE KI • ESSEN, WASSER, SCHRITTZÄHLER & TAGESBILANZ-HISTORIE) --- */
+/* --- 5. FITTRACKER (SCHRITTE EINZELN LÖSCHBAR & HISTORY-TAGE LÖSCHBAR) --- */
 function getTodayNutrition() {
     const tKey = getDateKey(new Date());
     if (!nutritionData[tKey]) {
-        nutritionData[tKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0 };
+        nutritionData[tKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0, stepsLogs: [] };
     }
-    if (typeof nutritionData[tKey].steps === 'undefined') {
-        nutritionData[tKey].steps = 0;
-    }
+    if (typeof nutritionData[tKey].steps === 'undefined') nutritionData[tKey].steps = 0;
+    if (!Array.isArray(nutritionData[tKey].stepsLogs)) nutritionData[tKey].stepsLogs = [];
     return nutritionData[tKey];
 }
 
 function renderFitTracker() {
     const dayLog = getTodayNutrition();
 
-    let totalKcal = 0;
-    let totalPro = 0;
-    let totalFat = 0;
-    let totalCarbs = 0;
-
+    let totalKcal = 0, totalPro = 0, totalFat = 0, totalCarbs = 0;
     dayLog.meals.forEach(m => {
         totalKcal += Number(m.kcal) || 0;
         totalPro += Number(m.protein) || 0;
@@ -2002,7 +2135,6 @@ function renderFitTracker() {
     document.getElementById('daily-total-fat').innerText = `${Math.round(totalFat * 10) / 10} g`;
     document.getElementById('daily-total-carbs').innerText = `${Math.round(totalCarbs * 10) / 10} g`;
 
-    // Schrittzähler Fortschrittsbalken
     const stepPct = Math.min(100, Math.round((stepsToday / stepGoal) * 100));
     document.getElementById('steps-progress-bar').style.width = `${stepPct}%`;
     document.getElementById('steps-progress-subtitle').innerText = `${stepsToday.toLocaleString('de-DE')} von ${stepGoal.toLocaleString('de-DE')} Schritten (${stepPct}%)`;
@@ -2045,6 +2177,25 @@ function renderFitTracker() {
         });
         wHtml += `</div>`;
         waterEl.innerHTML = wHtml;
+    }
+
+    // Schritte-Logs (Einzeln entfernbar wie beim Trinken!)
+    const stepsEl = document.getElementById('today-steps-logs');
+    if (stepsEl) {
+        if (!dayLog.stepsLogs || dayLog.stepsLogs.length === 0) {
+            stepsEl.innerHTML = '';
+        } else {
+            let sHtml = `<div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+            dayLog.stepsLogs.forEach(s => {
+                sHtml += `
+                <span class="journal-set-tag" style="display:inline-flex; align-items:center; gap:5px; color:var(--accent-green);">
+                    👟 +${Number(s.count).toLocaleString('de-DE')}
+                    <span class="material-symbols-rounded" style="font-size:14px; cursor:pointer;" onclick="removeStepLog('${s.id}')" title="Schritte entfernen">close</span>
+                </span>`;
+            });
+            sHtml += `</div>`;
+            stepsEl.innerHTML = sHtml;
+        }
     }
 
     if (showTrackerHistory) {
@@ -2126,12 +2277,17 @@ function removeWaterLog(wId) {
     }
 }
 
-/* --- SCHRITTZÄHLER FUNKTIONEN --- */
+/* --- SCHRITTZÄHLER LOGIK (INKL. EINZELNE SCHRITTE ENTFERNEN) --- */
 function addStepsAmount(stepsToAdd) {
     const val = parseInt(stepsToAdd) || 0;
     if (val <= 0) return;
     const dayLog = getTodayNutrition();
     dayLog.steps = (Number(dayLog.steps) || 0) + val;
+    if (!Array.isArray(dayLog.stepsLogs)) dayLog.stepsLogs = [];
+    dayLog.stepsLogs.push({
+        id: 'st_' + Date.now(),
+        count: val
+    });
     saveAll();
     renderFitTracker();
 }
@@ -2149,12 +2305,24 @@ function setExactSteps() {
     const val = Math.max(0, parseInt(inp.value) || 0);
     const dayLog = getTodayNutrition();
     dayLog.steps = val;
+    dayLog.stepsLogs = val > 0 ? [{ id: 'st_' + Date.now(), count: val }] : [];
     inp.value = '';
     saveAll();
     renderFitTracker();
 }
 
-/* --- FITTRACKER HISTORY (OPTISCH WIE DIE TAGESBILANZ GANZ OBEN) --- */
+function removeStepLog(sId) {
+    const dayLog = getTodayNutrition();
+    const item = (dayLog.stepsLogs || []).find(s => s.id === sId);
+    if (item) {
+        dayLog.steps = Math.max(0, (Number(dayLog.steps) || 0) - item.count);
+        dayLog.stepsLogs = dayLog.stepsLogs.filter(s => s.id !== sId);
+        saveAll();
+        renderFitTracker();
+    }
+}
+
+/* --- FITTRACKER HISTORY (INKL. LÖSCH-BUTTON PRO TAG) --- */
 function toggleTrackerHistory() {
     showTrackerHistory = !showTrackerHistory;
     const cont = document.getElementById('tracker-history-container');
@@ -2164,6 +2332,18 @@ function toggleTrackerHistory() {
     } else {
         cont.style.display = 'none';
     }
+}
+
+function deleteTrackerHistoryDay(dateKey) {
+    if (!confirm('Diesen Tag aus der FitTracker-History wirklich entfernen?')) return;
+    if (dateKey === getDateKey(new Date())) {
+        nutritionData[dateKey] = { meals: [], waterMl: 0, waterLogs: [], steps: 0, stepsLogs: [] };
+    } else {
+        delete nutritionData[dateKey];
+    }
+    saveAll();
+    renderFitTracker();
+    renderTrackerHistoryCards();
 }
 
 function renderTrackerHistoryCards() {
@@ -2199,9 +2379,14 @@ function renderTrackerHistoryCards() {
                     <h3>${isToday ? 'Heute (' + readableDate + ')' : readableDate}</h3>
                     <span class="card-subtitle">${(dLog.meals || []).length} Mahlzeiten protokolliert</span>
                 </div>
-                <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-blue);">
-                    <span class="material-symbols-rounded">calendar_today</span>
-                </span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-blue);">
+                        <span class="material-symbols-rounded">calendar_today</span>
+                    </span>
+                    <button class="btn-delete-icon" onclick="deleteTrackerHistoryDay('${dKey}')" title="Tag aus History löschen">
+                        <span class="material-symbols-rounded" style="font-size:19px;">delete</span>
+                    </button>
+                </div>
             </div>
 
             <div class="tracker-hero-grid-3">
@@ -2248,15 +2433,66 @@ function renderTrackerHistoryCards() {
     cont.innerHTML = html;
 }
 
-/* --- 6. EINSTELLUNGEN (PROFILBILD, NAME, GEWICHT, ZIELE, SPRACHE, GLOW & THEME) --- */
+/* --- 6. EINSTELLUNGEN (INKL. 3. EIGENES DESIGN / CUSTOM COLOR PICKER) --- */
+function applyCustomThemeCSSVars() {
+    const rootStyle = document.documentElement.style;
+    if (userSettings.theme === 'custom' && userSettings.customColors) {
+        const c = userSettings.customColors;
+        const rgbCard = hexToRgb(c.card);
+        const rgbBg = hexToRgb(c.bg);
+        const btnContrast = getContrastText(c.accent);
+
+        rootStyle.setProperty('--bg-main', c.bg);
+        rootStyle.setProperty('--bg-secondary', c.card);
+        rootStyle.setProperty('--liquid-bg', `linear-gradient(135deg, rgba(${rgbCard.r}, ${rgbCard.g}, ${rgbCard.b}, 0.88) 0%, rgba(${rgbBg.r}, ${rgbBg.g}, ${rgbBg.b}, 0.92) 100%)`);
+        rootStyle.setProperty('--liquid-inner', `rgba(${rgbBg.r}, ${rgbBg.g}, ${rgbBg.b}, 0.65)`);
+        rootStyle.setProperty('--accent-blue', c.accent);
+        rootStyle.setProperty('--text-main', c.text);
+        rootStyle.setProperty('--btn-primary-text', btnContrast);
+        rootStyle.setProperty('--header-bg', `rgba(${rgbBg.r}, ${rgbBg.g}, ${rgbBg.b}, 0.80)`);
+        rootStyle.setProperty('--dock-bg', `rgba(${rgbCard.r}, ${rgbCard.g}, ${rgbCard.b}, 0.90)`);
+        rootStyle.setProperty('--sheet-bg', `linear-gradient(160deg, ${c.card} 0%, ${c.bg} 100%)`);
+    } else {
+        // Entferne Inline-Überschreibungen, damit Default & Monochrome aus style.css greifen
+        ['--bg-main', '--bg-secondary', '--liquid-bg', '--liquid-inner', '--accent-blue', '--text-main', '--btn-primary-text', '--header-bg', '--dock-bg', '--sheet-bg'].forEach(prop => {
+            rootStyle.removeProperty(prop);
+        });
+    }
+
+    // Vorschau-Punkte auf der Custom-Theme-Kachel aktualisieren
+    if (userSettings.customColors) {
+        const dBg = document.getElementById('preview-dot-custom-bg');
+        const dCard = document.getElementById('preview-dot-custom-card');
+        const dAcc = document.getElementById('preview-dot-custom-acc');
+        if (dBg) dBg.style.background = userSettings.customColors.bg;
+        if (dCard) dCard.style.background = userSettings.customColors.card;
+        if (dAcc) dAcc.style.background = userSettings.customColors.accent;
+    }
+}
+
+function updateCustomThemeColors() {
+    userSettings.customColors = {
+        bg: document.getElementById('custom-col-bg').value,
+        card: document.getElementById('custom-col-card').value,
+        accent: document.getElementById('custom-col-accent').value,
+        text: document.getElementById('custom-col-text').value
+    };
+    saveAll();
+    applyVisualSettings();
+    renderHome();
+    renderFitness();
+    renderHabits();
+    renderJournal();
+    renderFitTracker();
+}
+
 function applyVisualSettings() {
     document.documentElement.setAttribute('data-theme', userSettings.theme || 'default');
     document.documentElement.setAttribute('data-glow', userSettings.iconGlow ? 'on' : 'off');
+    applyCustomThemeCSSVars();
 
-    // Benutzername
     document.getElementById('display-username').innerText = userName;
 
-    // Avatar im Header & in den Einstellungen
     const headerImg = document.getElementById('header-avatar-img');
     const headerPlaceholder = document.getElementById('header-avatar-placeholder');
     const settingsImg = document.getElementById('settings-avatar-img');
@@ -2291,8 +2527,20 @@ function renderSettingsView() {
     document.getElementById('settings-input-water-goal').value = userSettings.waterGoal || 3.0;
     document.getElementById('settings-select-lang').value = userSettings.lang || 'de';
 
-    document.getElementById('theme-card-default').classList.toggle('active', userSettings.theme !== 'monochrome');
+    document.getElementById('theme-card-default').classList.toggle('active', userSettings.theme === 'default');
     document.getElementById('theme-card-monochrome').classList.toggle('active', userSettings.theme === 'monochrome');
+    document.getElementById('theme-card-custom').classList.toggle('active', userSettings.theme === 'custom');
+
+    const customEditor = document.getElementById('custom-theme-editor');
+    if (customEditor) {
+        customEditor.style.display = (userSettings.theme === 'custom') ? 'block' : 'none';
+        if (userSettings.customColors) {
+            document.getElementById('custom-col-bg').value = userSettings.customColors.bg || '#12131a';
+            document.getElementById('custom-col-card').value = userSettings.customColors.card || '#202330';
+            document.getElementById('custom-col-accent').value = userSettings.customColors.accent || '#ff375f';
+            document.getElementById('custom-col-text').value = userSettings.customColors.text || '#ffffff';
+        }
+    }
 
     document.getElementById('settings-glow-switch').classList.toggle('on', !!userSettings.iconGlow);
     document.getElementById('settings-autopause-switch').classList.toggle('on', !!userSettings.autoPause);
@@ -2454,7 +2702,7 @@ function importBackupJSON(event) {
     reader.readAsText(file);
 }
 
-/* --- 7. LIVE FIREBASE RANKING & FREUNDE-SYSTEM --- */
+/* --- 7. LIVE FIREBASE RANKING (MIT APP-LOGO & LIVE 7-TAGE XP-HISTORY FÜR FREUNDE) --- */
 async function syncMyProfileToFirebase() {
     const myXP = calculateTotalXP();
     const myLvl = getLevelFromXP(myXP);
@@ -2465,6 +2713,7 @@ async function syncMyProfileToFirebase() {
         xp: myXP,
         level: myLvl,
         rank: tierData.title,
+        dailyXP: calculateMyLast7DaysXPMap(),
         updatedAt: Date.now()
     };
     try {
@@ -2500,6 +2749,8 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
 
     await syncMyProfileToFirebase();
 
+    const myDailyMap = calculateMyLast7DaysXPMap();
+
     try {
         const friendsRes = await fetch(`${FIREBASE_DB_URL}/users/${myUserId}/friends.json`);
         const remoteFriendsObj = await friendsRes.json();
@@ -2517,6 +2768,7 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
                 id: myUserId,
                 name: userName,
                 xp: calculateTotalXP(),
+                dailyXP: myDailyMap,
                 isMe: true
             }
         ];
@@ -2530,6 +2782,7 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
                         id: fId,
                         name: pData.name,
                         xp: Number(pData.xp) || 0,
+                        dailyXP: pData.dailyXP || {},
                         isMe: false
                     });
                 }
@@ -2538,15 +2791,18 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
 
         await Promise.all(fetchPromises);
         renderLeaderboardDOM(players);
+        renderLeaderboard7DayHistory(players);
 
         if (statusEl) {
             const timeStr = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             statusEl.innerText = `Live synchronisiert (${timeStr} Uhr)`;
         }
     } catch (err) {
-        renderLeaderboardDOM([
-            { id: myUserId, name: userName, xp: calculateTotalXP(), isMe: true }
-        ]);
+        const fallbackPlayers = [
+            { id: myUserId, name: userName, xp: calculateTotalXP(), dailyXP: myDailyMap, isMe: true }
+        ];
+        renderLeaderboardDOM(fallbackPlayers);
+        renderLeaderboard7DayHistory(fallbackPlayers);
         if (statusEl) statusEl.innerText = 'Offline-Ansicht';
     }
 }
@@ -2569,13 +2825,12 @@ function renderLeaderboardDOM(players) {
         <div class="leaderboard-row ${p.isMe ? 'is-me' : ''}">
             <div class="lb-left">
                 <div class="lb-rank-badge ${badgeClass}">${rankNum}</div>
-                <div class="lvl-unique-slot" style="width:32px; height:32px;">
-                    <div class="lvl-badge-wrap ${tierData.fx}">${tierData.svg}</div>
-                </div>
+                <!-- App-Logo statt Level-Icon im Ranking -->
+                <img src="Icon.png" class="lb-logo-img" alt="Logo" onerror="this.style.display='none'">
                 <div class="lb-user-info">
                     <div class="lb-name">
                         <span>${p.name}</span>
-                        ${p.isMe ? '<span style="font-size:10px; background:var(--accent-blue); color:#000; font-weight:800; padding:2px 6px; border-radius:8px;">DU</span>' : ''}
+                        ${p.isMe ? `<span style="font-size:10px; background:var(--accent-blue); color:var(--btn-primary-text); font-weight:800; padding:2px 6px; border-radius:8px;">DU</span>` : ''}
                     </div>
                     <div class="lb-sub">Lvl ${lvl} • ${tierData.title}</div>
                 </div>
@@ -2592,6 +2847,102 @@ function renderLeaderboardDOM(players) {
     }
 
     container.innerHTML = html;
+}
+
+/* --- 7-TAGE XP-HISTORY IM RANKING (DU & FREUNDE IM WOCHENVERGLEICH) --- */
+function renderLeaderboard7DayHistory(players) {
+    const chartEl = document.getElementById('leaderboard-history-chart');
+    const tableEl = document.getElementById('leaderboard-history-table-container');
+    if (!chartEl || !tableEl) return;
+
+    const last7 = getLast7Days();
+    const lineColors = ['#0a84ff', '#30d158', '#ff9f0a', '#bf5af2', '#ff375f', '#64d2ff'];
+
+    // 1. Multi-Player SVG Linien-Chart über die 7 Wochentage
+    const w = 340, h = 130, padL = 24, padR = 16, padT = 20, padB = 26;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+
+    let maxDayXP = 50;
+    players.forEach(p => {
+        last7.forEach(d => {
+            const val = Number(p.dailyXP && p.dailyXP[d.key]) || 0;
+            if (val > maxDayXP) maxDayXP = val;
+        });
+    });
+
+    let pathsHTML = '';
+    let labelsHTML = '';
+
+    last7.forEach((d, i) => {
+        const x = padL + (i / 6) * plotW;
+        labelsHTML += `<text x="${x}" y="${h - 6}" fill="var(--text-muted)" font-size="9.5" font-weight="600" text-anchor="middle">${d.dayName}</text>`;
+    });
+
+    players.slice(0, 5).forEach((p, pIdx) => {
+        const col = (userSettings.theme === 'monochrome')
+            ? (p.isMe ? '#ffffff' : '#71717a')
+            : lineColors[pIdx % lineColors.length];
+
+        let dPath = '';
+        let dots = '';
+        last7.forEach((d, i) => {
+            const val = Number(p.dailyXP && p.dailyXP[d.key]) || 0;
+            const x = padL + (i / 6) * plotW;
+            const y = padT + plotH - (val / maxDayXP) * plotH;
+            dPath += (i === 0 ? `M ${x},${y}` : ` L ${x},${y}`);
+            dots += `<circle cx="${x}" cy="${y}" r="3.5" fill="${col}" stroke="#111" stroke-width="1.2"/>`;
+        });
+
+        pathsHTML += `<path d="${dPath}" fill="none" stroke="${col}" stroke-width="${p.isMe ? 3 : 2}" stroke-linecap="round" stroke-linejoin="round"/>${dots}`;
+    });
+
+    chartEl.innerHTML = `
+        <svg viewBox="0 0 ${w} ${h}" style="width:100%; height:100%; overflow:visible;">
+            <line x1="${padL}" y1="${padT + plotH}" x2="${w - padR}" y2="${padT + plotH}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            ${pathsHTML}
+            ${labelsHTML}
+        </svg>`;
+
+    // 2. Wochentags-Tabelle für alle Spieler
+    let tHTML = `
+        <table class="matrix-table">
+            <colgroup>
+                <col class="matrix-col-habit">
+                <col class="matrix-col-day"><col class="matrix-col-day"><col class="matrix-col-day">
+                <col class="matrix-col-day"><col class="matrix-col-day"><col class="matrix-col-day"><col class="matrix-col-day">
+            </colgroup>
+            <thead><tr><th></th>`;
+    last7.forEach(d => {
+        tHTML += `<th class="matrix-header-day ${d.isToday ? 'is-today' : ''}">${d.dayName}<span class="matrix-day-num">${d.dayNum}</span></th>`;
+    });
+    tHTML += `</tr></thead><tbody>`;
+
+    players.forEach((p, pIdx) => {
+        const dotCol = (userSettings.theme === 'monochrome')
+            ? '#ffffff'
+            : lineColors[pIdx % lineColors.length];
+
+        tHTML += `
+            <tr class="matrix-row">
+                <td>
+                    <div class="matrix-habit-name">
+                        <span style="width:8px; height:8px; border-radius:50%; background:${dotCol}; flex-shrink:0;"></span>
+                        <span class="matrix-habit-text">${p.name}</span>
+                    </div>
+                </td>`;
+        last7.forEach(d => {
+            const xpVal = Number(p.dailyXP && p.dailyXP[d.key]) || 0;
+            tHTML += `
+                <td class="matrix-cell">
+                    <span class="lb-history-day-pill ${xpVal > 0 ? 'has-xp' : ''}">${xpVal}</span>
+                </td>`;
+        });
+        tHTML += `</tr>`;
+    });
+
+    tHTML += `</tbody></table>`;
+    tableEl.innerHTML = tHTML;
 }
 
 function openInviteModal() {
@@ -2671,7 +3022,7 @@ async function removeFriendFromLeaderboard(fId) {
     syncAndLoadLeaderboard(true);
 }
 
-/* --- EINGEHENDE LINKS PRÜFEN (FREUNDES-INVITE ODER GETEILTER TRAININGSPLAN) --- */
+/* --- EINGEHENDE LINKS PRÜFEN --- */
 async function checkIncomingLinks() {
     const params = new URLSearchParams(window.location.search);
     const invitedBy = params.get('invite');
