@@ -53,7 +53,6 @@
             <div class="level-hero-card">
                 <div class="level-top-row">
                     <div class="level-big-number">
-                        <!-- Eigener Container für die 16 einzigartigen Level-Icons & Loop-Effekte -->
                         <div id="lvl-unique-icon-slot" class="lvl-unique-slot"></div>
                         <div>
                             <span id="lvl-number">Lvl 1</span>
@@ -76,7 +75,6 @@
                 <div class="bento-card">
                     <div class="bento-header">
                         <span class="bento-title" data-i18n="daily_focus">Daily Focus</span>
-                        <!-- Schwebendes Icon rechts oben im Liquid Glass Element -->
                         <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-blue);">
                             <span class="material-symbols-rounded">bolt</span>
                         </span>
@@ -97,7 +95,6 @@
                 <div class="bento-card">
                     <div class="bento-header">
                         <span class="bento-title" data-i18n="consistency">Consistency</span>
-                        <!-- Schwebendes Icon rechts oben im Liquid Glass Element -->
                         <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-green);">
                             <span class="material-symbols-rounded">local_fire_department</span>
                         </span>
@@ -145,7 +142,7 @@
                 </div>
             </div>
 
-            <!-- 7-TAGE HABIT MATRIX -->
+            <!-- 7-TAGE HABIT MATRIX (SORTIERT NACH KATEGORIEN-ORDNUNG) -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -159,7 +156,7 @@
                 <div id="matrix-container"></div>
             </div>
 
-            <!-- 7-TAGE FITNESS-MATRIX & VERLAUF (UNTER DER HABIT MATRIX) -->
+            <!-- 7-TAGE FITNESS-MATRIX & VERLAUF -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -177,15 +174,14 @@
     </div>
 
     <!-- ==========================================
-         2. FITNESS REITER (GYM MODUS, PLÄNE TEILEN & IMPORTIEREN)
+         2. FITNESS REITER (NUR LOGO + FITNESS LINKS OBEN)
          ========================================== -->
     <div id="view-fitness" class="view">
         <div class="page-header">
-            <div>
-                <div class="subtitle-date">50 XP / Satz • Gym Modus</div>
+            <div class="header-brand-title">
+                <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
                 <h1 data-i18n="nav_fitness">Fitness</h1>
             </div>
-            <!-- Header-Buttons ohne Schwebe-Animation -->
             <div class="header-actions">
                 <button class="btn-start-workout-top" onclick="openStartWorkoutModal()">
                     <span class="material-symbols-rounded" style="font-size:18px;">play_arrow</span>
@@ -207,7 +203,7 @@
     </div>
 
     <!-- ==========================================
-         3. HABITS REITER
+         3. HABITS REITER (LOGO OBEN RECHTS, KATEGORIEN BEARBEITBAR)
          ========================================== -->
     <div id="view-habits" class="view">
         <div class="page-header">
@@ -215,10 +211,10 @@
                 <div class="subtitle-date" data-i18n="habits_sub">Tägliche Ziele (Max. 50 XP)</div>
                 <h1 data-i18n="nav_habits">Habits</h1>
             </div>
+            <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
         </div>
 
         <div class="container">
-            <!-- Obere Action-Buttons OHNE Schwebe-Animation -->
             <div class="action-bar">
                 <button class="action-btn" onclick="openHabitCategoryModal()">
                     <span class="material-symbols-rounded" style="font-size:20px; color:var(--accent-blue);">create_new_folder</span>
@@ -235,7 +231,7 @@
     </div>
 
     <!-- ==========================================
-         4. JOURNAL REITER
+         4. JOURNAL REITER (LOGO OBEN RECHTS)
          ========================================== -->
     <div id="view-journal" class="view">
         <div class="page-header">
@@ -243,6 +239,7 @@
                 <div class="subtitle-date" data-i18n="journal_sub">Fortschritt & Trainings-Zeiten</div>
                 <h1 data-i18n="nav_journal">Journal</h1>
             </div>
+            <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
         </div>
 
         <div class="container">
@@ -267,7 +264,7 @@
     </div>
 
     <!-- ==========================================
-         5. FITTRACKER REITER (OHNE KI • ESSEN, TRINKEN, SCHRITTE & HISTORIE)
+         5. FITTRACKER REITER (LOGO OBEN RECHTS, SCHRITTE & HISTORY LÖSCHBAR)
          ========================================== -->
     <div id="view-fittracker" class="view">
         <div class="page-header">
@@ -275,6 +272,7 @@
                 <div class="subtitle-date" data-i18n="tracker_sub">Ernährung, Wasser & Schritte</div>
                 <h1>FitTracker</h1>
             </div>
+            <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
         </div>
 
         <div class="container">
@@ -436,7 +434,7 @@
                 <div id="today-water-logs" style="margin-top:14px;"></div>
             </div>
 
-            <!-- KATEGORIE 3: SCHRITTZÄHLER (NEU!) -->
+            <!-- KATEGORIE 3: SCHRITTZÄHLER (INKL. EINZELNE SCHRITTE ENTFERNEN WIE BEIM TRINKEN) -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -464,9 +462,12 @@
                     <button class="btn-secondary" style="padding:12px 14px; border-radius:14px;" onclick="setExactSteps()" title="Gesamtwert setzen">=</button>
                     <button class="btn-primary" style="flex:0 0 auto; padding:12px 16px; border-radius:14px;" onclick="addCustomSteps()" title="Schritte addieren">+</button>
                 </div>
+
+                <!-- Einzelne Schritt-Buchungen mit X zum Entfernen -->
+                <div id="today-steps-logs" style="margin-top:14px;"></div>
             </div>
 
-            <!-- GANZ UNTEN: HISTORY BUTTON & TAGESBILANZ-VERGLEICH -->
+            <!-- GANZ UNTEN: HISTORY BUTTON & TAGESBILANZ-VERGLEICH (INKL. LÖSCH-FUNKTION) -->
             <button class="action-btn" id="btn-toggle-tracker-history" style="width:100%; margin-bottom:16px;" onclick="toggleTrackerHistory()">
                 <span class="material-symbols-rounded" style="color:var(--accent-blue);">history</span>
                 <span data-i18n="btn_show_history">History • Letzte Tagesergebnisse vergleichen</span>
@@ -477,7 +478,7 @@
     </div>
 
     <!-- ==========================================
-         6. LEADERBOARD / RANKING REITER
+         6. LEADERBOARD / RANKING REITER (OHNE HEADER-LOGO, MIT 7-TAGE XP-HISTORY & LOGO STATT LVL-ICON)
          ========================================== -->
     <div id="view-leaderboard" class="view">
         <div class="page-header">
@@ -502,6 +503,7 @@
                 </button>
             </div>
 
+            <!-- LIVE RANGLISTE (MIT LOGO STATT LEVEL-ICON) -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -517,11 +519,26 @@
                 </div>
                 <div id="leaderboard-list-container"></div>
             </div>
+
+            <!-- NEU: 7-TAGE XP HISTORY & VERGLEICH (DU & DEINE FREUNDE) -->
+            <div class="bevel-card" id="leaderboard-history-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3>7-Tage XP History • Wochenvergleich</h3>
+                        <span class="card-subtitle">Tägliche XP-Steigerung (Du & deine Freunde live)</span>
+                    </div>
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-blue);">
+                        <span class="material-symbols-rounded">insights</span>
+                    </span>
+                </div>
+                <div class="svg-chart-box" id="leaderboard-history-chart" style="height:140px; margin-bottom:14px;"></div>
+                <div id="leaderboard-history-table-container"></div>
+            </div>
         </div>
     </div>
 
     <!-- ==========================================
-         7. EINSTELLUNGEN REITER (NEU!)
+         7. EINSTELLUNGEN REITER (OHNE HEADER-LOGO, MIT 3. CUSTOM DESIGN)
          ========================================== -->
     <div id="view-settings" class="view">
         <div class="page-header">
@@ -544,14 +561,14 @@
                     </span>
                 </div>
 
-                <!-- Profilbild Upload -->
+                <!-- Profilbild Upload (Mit Kontrast-Fix für helle/weiße Buttons) -->
                 <div class="settings-avatar-row">
                     <div class="settings-avatar-circle" id="settings-avatar-preview">
                         <img id="settings-avatar-img" src="" alt="Profilbild" style="display:none;">
                         <span class="material-symbols-rounded" id="settings-avatar-icon" style="font-size:34px; color:var(--text-muted);">person</span>
                     </div>
                     <div style="flex:1;">
-                        <label for="input-avatar-file" class="btn-pill" style="background:var(--accent-blue); color:#fff; display:inline-flex; margin-bottom:6px; cursor:pointer;">
+                        <label for="input-avatar-file" class="btn-pill btn-upload-avatar" style="display:inline-flex; margin-bottom:6px; cursor:pointer;">
                             <span class="material-symbols-rounded" style="font-size:16px;">upload</span>
                             <span data-i18n="upload_avatar">Profilbild hochladen</span>
                         </label>
@@ -612,12 +629,12 @@
                 </div>
             </div>
 
-            <!-- SEKTION 3: SPRACHE, APP-DESIGN & ICON-GLOW -->
+            <!-- SEKTION 3: SPRACHE, 3 APP-DESIGNS (INKL. CUSTOM) & ICON-GLOW -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
                         <h3 data-i18n="settings_appearance_title">Design, Effekte & Sprache</h3>
-                        <span class="card-subtitle" data-i18n="settings_appearance_sub">App-Theme, Icon-Glow & Sprachauswahl</span>
+                        <span class="card-subtitle" data-i18n="settings_appearance_sub">App-Theme, Eigene Farben, Icon-Glow & Sprache</span>
                     </div>
                     <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-indigo);">
                         <span class="material-symbols-rounded">palette</span>
@@ -635,18 +652,18 @@
                     </select>
                 </div>
 
-                <!-- App-Design (Theme) Umschalter -->
+                <!-- App-Design (3 Optionen: Standard, Monochrom, Eigenes Design) -->
                 <div class="form-field">
-                    <label data-i18n="label_theme">App-Design (Hintergrund & Farbwelt)</label>
-                    <div class="theme-selector-grid">
+                    <label data-i18n="label_theme">App-Design (3 Modi zur Auswahl)</label>
+                    <div class="theme-selector-grid-3">
                         <div class="theme-option-card active" id="theme-card-default" onclick="selectAppTheme('default')">
                             <div class="theme-preview-dots">
                                 <span style="background:#0a84ff;"></span>
                                 <span style="background:#30d158;"></span>
                                 <span style="background:#171922;"></span>
                             </div>
-                            <div style="font-size:13px; font-weight:700;">Liquid Dark (Standard)</div>
-                            <div style="font-size:11px; color:var(--text-muted);">Blau, Grün & Dunkelgrau</div>
+                            <div style="font-size:12.5px; font-weight:700;">Liquid Dark</div>
+                            <div style="font-size:10.5px; color:var(--text-muted);">Standard Design</div>
                         </div>
 
                         <div class="theme-option-card" id="theme-card-monochrome" onclick="selectAppTheme('monochrome')">
@@ -655,13 +672,48 @@
                                 <span style="background:#a1a1aa;"></span>
                                 <span style="background:#18181b;"></span>
                             </div>
-                            <div style="font-size:13px; font-weight:700;">Grau-Weiß Monochrom</div>
-                            <div style="font-size:11px; color:var(--text-muted);">Helleres Grau-Weiß & Weiße Icons</div>
+                            <div style="font-size:12.5px; font-weight:700;">Monochrom</div>
+                            <div style="font-size:10.5px; color:var(--text-muted);">Grau-Weiß & Clean</div>
+                        </div>
+
+                        <div class="theme-option-card" id="theme-card-custom" onclick="selectAppTheme('custom')">
+                            <div class="theme-preview-dots">
+                                <span id="preview-dot-custom-bg" style="background:#12131a;"></span>
+                                <span id="preview-dot-custom-card" style="background:#222533;"></span>
+                                <span id="preview-dot-custom-acc" style="background:#ff375f;"></span>
+                            </div>
+                            <div style="font-size:12.5px; font-weight:700;">Eigenes Design</div>
+                            <div style="font-size:10.5px; color:var(--text-muted);">Farben frei wählen</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Icon Glow Toggle (Standard: Ausgeschaltet) -->
+                <!-- Custom Color Picker Box (Erscheint wenn "Eigenes Design" gewählt ist) -->
+                <div id="custom-theme-editor" class="custom-theme-box" style="display:none;">
+                    <div style="font-size:12px; font-weight:700; margin-bottom:10px; color:var(--accent-blue); text-transform:uppercase;">
+                        Eigene Farben anpassen
+                    </div>
+                    <div class="custom-color-grid">
+                        <div class="custom-color-item">
+                            <label>Hintergrund</label>
+                            <input type="color" id="custom-col-bg" value="#12131a" oninput="updateCustomThemeColors()">
+                        </div>
+                        <div class="custom-color-item">
+                            <label>Elemente / Karten</label>
+                            <input type="color" id="custom-col-card" value="#202330" oninput="updateCustomThemeColors()">
+                        </div>
+                        <div class="custom-color-item">
+                            <label>Akzent / Buttons</label>
+                            <input type="color" id="custom-col-accent" value="#ff375f" oninput="updateCustomThemeColors()">
+                        </div>
+                        <div class="custom-color-item">
+                            <label>Text & Icons</label>
+                            <input type="color" id="custom-col-text" value="#ffffff" oninput="updateCustomThemeColors()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Icon Glow Toggle -->
                 <div class="settings-toggle-row" onclick="toggleIconGlowSetting()">
                     <div>
                         <div style="font-size:14px; font-weight:700;" data-i18n="label_icon_glow">Icon Glow-Effekt aktivieren</div>
@@ -670,7 +722,7 @@
                     <div class="ios-switch" id="settings-glow-switch"></div>
                 </div>
 
-                <!-- Sinnvolle Zusatzoption: Pausen-Timer Auto-Start -->
+                <!-- Pausen-Timer Auto-Start -->
                 <div class="settings-toggle-row" onclick="toggleAutoPauseSetting()">
                     <div>
                         <div style="font-size:14px; font-weight:700;" data-i18n="label_auto_pause">Auto-Pausen-Timer im Gym</div>
@@ -714,7 +766,7 @@
          MODALS
          ========================================== -->
 
-    <!-- Modal: "+ MEHR" NAVIGATION (NUR FITTRACKER, RANKING & EINSTELLUNGEN) -->
+    <!-- Modal: "+ MEHR" NAVIGATION -->
     <div id="modal-more-menu" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
@@ -740,7 +792,7 @@
                         </span>
                         <div>
                             <div style="font-size:16px; font-weight:700;" data-i18n="nav_ranking">Ranking (Live Leaderboard)</div>
-                            <div style="font-size:12px; color:var(--text-muted);" data-i18n="more_ranking_sub">Vergleiche Lvl & XP in Echtzeit mit Freunden</div>
+                            <div style="font-size:12px; color:var(--text-muted);" data-i18n="more_ranking_sub">Vergleiche Lvl, XP & 7-Tage-History mit Freunden</div>
                         </div>
                     </div>
                     <span class="material-symbols-rounded" style="color:var(--text-muted);">chevron_right</span>
@@ -771,7 +823,7 @@
             <div class="sheet-handle"></div>
             <h3 class="sheet-title" id="share-plan-modal-title">Trainingsplan teilen</h3>
             <p style="color:var(--text-muted); font-size:13px; margin:-8px 0 14px 0; line-height:1.4;">
-                Schicke diesen Plan-Code oder Link an einen Freund, damit er exakt diese Muskelgruppe samt allen Übungen, Sätzen und Gewichten mit einem Klick importieren kann:
+                Schicke diesen Plan-Code oder Link an einen Freund, damit er exakt diese Muskelgruppe samt allen Übungen, Sätzen und Gewichten importieren kann:
             </p>
             <div class="form-field">
                 <label>Teilbarer Plan-Code</label>
@@ -881,23 +933,23 @@
                 </div>
             </div>
 
-            <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #30d158 0%, #1f9d3d 100%);" onclick="closeCelebrationAndOpenJournal()">
+            <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #30d158 0%, #1f9d3d 100%); color:#fff !important;" onclick="closeCelebrationAndOpenJournal()">
                 Im Journal ansehen
             </button>
         </div>
     </div>
 
-    <!-- Modal: Fitness-Kategorie (NEUE ICONS INKL. ÜBERARBEITETER HANTEL, SUPPLEMENT, KATZE, RUCKSACK ETC.) -->
+    <!-- Modal: Fitness-Kategorie (SPEZIELLE GYM-, HANTEL-, MUSKEL- & GERÄTE-ICONS) -->
     <div id="modal-fit-category" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
             <h3 class="sheet-title">Neue Muskelgruppe</h3>
             <div class="form-field">
                 <label>Name der Muskelgruppe</label>
-                <input type="text" id="input-fit-cat-name" class="form-input" placeholder="z.B. Brust, Arme, Rücken, Beine...">
+                <input type="text" id="input-fit-cat-name" class="form-input" placeholder="z.B. Brust, Arme, Rücken, Beine, Cardio...">
             </div>
             <div class="form-field">
-                <label>Icon wählen</label>
+                <label>Gym- & Muskel-Icon wählen (20 Icons)</label>
                 <div class="icon-picker-grid" id="fit-icon-picker"></div>
             </div>
             <div class="form-field">
@@ -941,17 +993,17 @@
         </div>
     </div>
 
-    <!-- Modal: Neue Habit-Kategorie -->
+    <!-- Modal: Habit-Kategorie ERSTELLEN ODER BEARBEITEN (NAME, ICON, FARBE) -->
     <div id="modal-habit-category" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
-            <h3 class="sheet-title">Neue Ziel-Kategorie</h3>
+            <h3 class="sheet-title" id="habit-cat-modal-title">Neue Ziel-Kategorie</h3>
             <div class="form-field">
                 <label>Name der Kategorie</label>
                 <input type="text" id="input-habit-cat-name" class="form-input" placeholder="z.B. Supplements, Routine, Haustier, Schule...">
             </div>
             <div class="form-field">
-                <label>Passendes Icon wählen</label>
+                <label>Passendes Habit-Icon wählen (20 Icons)</label>
                 <div class="icon-picker-grid" id="habit-icon-picker"></div>
             </div>
             <div class="form-field">
@@ -960,7 +1012,7 @@
             </div>
             <div class="sheet-actions">
                 <button class="btn-secondary" onclick="closeModals()">Abbrechen</button>
-                <button class="btn-primary" onclick="saveHabitCategory()">Erstellen</button>
+                <button class="btn-primary" id="habit-cat-save-btn" onclick="saveHabitCategory()">Erstellen</button>
             </div>
         </div>
     </div>
@@ -1005,13 +1057,13 @@
             <div class="sheet-handle"></div>
             <h3 class="sheet-title">Freunde ins Ranking einladen</h3>
             <p style="color:var(--text-muted); font-size:13px; margin:-8px 0 16px 0; line-height:1.4;">
-                Teile deinen persönlichen Link oder Freundes-Code. Eure XP und Lvl synchronisieren sich vollautomatisch in Echtzeit!
+                Teile deinen persönlichen Link oder Freundes-Code. Eure XP, Lvl und die 7-Tage-History synchronisieren sich vollautomatisch in Echtzeit!
             </p>
             <div class="form-field">
                 <label>Dein persönlicher Freundes-Code</label>
                 <div class="invite-box">
                     <span class="invite-code-big" id="my-friend-code-display">AF-XXXXX</span>
-                    <button class="btn-pill" style="background:var(--accent-blue); color:#fff; border:none; padding:8px 14px;" onclick="copyFriendCode()">
+                    <button class="btn-pill btn-upload-avatar" style="border:none; padding:8px 14px;" onclick="copyFriendCode()">
                         <span class="material-symbols-rounded" style="font-size:16px;">content_copy</span> Code kopieren
                     </button>
                 </div>
