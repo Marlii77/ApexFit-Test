@@ -1,5 +1,5 @@
 /* =========================================================
-   APEXFIT – STYLE.CSS (LIQUID GLASS, THEMES & ANIMATIONS)
+   APEXFIT – STYLE.CSS (LIQUID GLASS, 3 THEMES & ANIMATIONS)
    ========================================================= */
 
 :root {
@@ -28,20 +28,20 @@
     
     --text-main: #f5f7fa;
     --text-muted: #8e93a4;
+    --btn-primary-text: #ffffff;
     --sheet-bg: linear-gradient(160deg, rgba(38, 41, 54, 0.95) 0%, rgba(20, 22, 30, 0.98) 100%);
     --dock-bg: linear-gradient(135deg, rgba(35, 38, 50, 0.80) 0%, rgba(18, 20, 28, 0.88) 100%);
     --header-bg: rgba(15, 16, 21, 0.68);
 }
 
-/* --- ZWEITES DESIGN: GRAU-WEISS MONOCHROM (ALLE ICONS WEISS, WEISS-SCHWARZ TÖNE) --- */
+/* --- 2. DESIGN: GRAU-WEISS MONOCHROM (KONTRAST-OPTIMIERT) --- */
 html[data-theme="monochrome"] {
     --bg-main: #d6dae2;
     --bg-secondary: #c5cad4;
     --grid-line-color: rgba(0, 0, 0, 0.075);
 
-    /* Dunkle Rauchglas-Karten auf grau-weißem Hintergrund, damit weiße Icons maximal strahlen */
-    --liquid-bg: linear-gradient(135deg, rgba(32, 34, 40, 0.88) 0%, rgba(20, 21, 26, 0.92) 100%);
-    --liquid-inner: linear-gradient(145deg, rgba(48, 50, 58, 0.65) 0%, rgba(16, 17, 20, 0.85) 100%);
+    --liquid-bg: linear-gradient(135deg, rgba(32, 34, 40, 0.90) 0%, rgba(20, 21, 26, 0.94) 100%);
+    --liquid-inner: linear-gradient(145deg, rgba(48, 50, 58, 0.68) 0%, rgba(16, 17, 20, 0.88) 100%);
     --liquid-border: rgba(255, 255, 255, 0.24);
     --liquid-shadow: 
         0 18px 38px rgba(0, 0, 0, 0.28),
@@ -57,9 +57,10 @@ html[data-theme="monochrome"] {
 
     --text-main: #ffffff;
     --text-muted: #a1a1aa;
+    --btn-primary-text: #09090b;
     --sheet-bg: linear-gradient(160deg, rgba(32, 33, 38, 0.96) 0%, rgba(18, 19, 23, 0.99) 100%);
-    --dock-bg: linear-gradient(135deg, rgba(28, 29, 34, 0.90) 0%, rgba(15, 16, 20, 0.95) 100%);
-    --header-bg: rgba(214, 218, 226, 0.78);
+    --dock-bg: linear-gradient(135deg, rgba(28, 29, 34, 0.92) 0%, rgba(15, 16, 20, 0.96) 100%);
+    --header-bg: rgba(214, 218, 226, 0.82);
 }
 
 html[data-theme="monochrome"] .page-header h1,
@@ -68,14 +69,16 @@ html[data-theme="monochrome"] .page-header .subtitle-date {
 }
 
 html[data-theme="monochrome"] .icon-btn-top {
-    background: rgba(24, 25, 30, 0.88);
+    background: rgba(24, 25, 30, 0.90);
     color: #ffffff;
     border-color: rgba(255, 255, 255, 0.25);
 }
 
+/* Fix für weiße Buttons im Monochrom-Modus: Dunkle Schrift auf hellem Button */
 html[data-theme="monochrome"] .btn-start-workout-top,
 html[data-theme="monochrome"] .action-btn.blue-glow-btn,
 html[data-theme="monochrome"] .btn-primary,
+html[data-theme="monochrome"] .btn-upload-avatar,
 html[data-theme="monochrome"] .filter-chip.active {
     background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 100%) !important;
     color: #09090b !important;
@@ -83,12 +86,32 @@ html[data-theme="monochrome"] .filter-chip.active {
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25), inset 0 1px 1px #ffffff !important;
 }
 
-/* Im Monochrom-Design sind alle Icons rein weiß */
-html[data-theme="monochrome"] .card-corner-icon,
-html[data-theme="monochrome"] .bevel-card .material-symbols-rounded,
-html[data-theme="monochrome"] .bento-card .material-symbols-rounded,
-html[data-theme="monochrome"] .tracker-summary-hero .material-symbols-rounded {
+html[data-theme="monochrome"] .btn-upload-avatar .material-symbols-rounded,
+html[data-theme="monochrome"] .btn-start-workout-top .material-symbols-rounded,
+html[data-theme="monochrome"] .action-btn.blue-glow-btn .material-symbols-rounded {
+    color: #09090b !important;
+}
+
+/* Im Monochrom-Design sind nur die Card-Corner-Icons weiß (keine Übersteuerung der Matrix-Häkchen!) */
+html[data-theme="monochrome"] .card-corner-icon {
     color: #ffffff !important;
+}
+
+/* --- 3. DESIGN: EIGENES DESIGN (CUSTOM COLORS) --- */
+html[data-theme="custom"] .btn-start-workout-top,
+html[data-theme="custom"] .action-btn.blue-glow-btn,
+html[data-theme="custom"] .btn-primary,
+html[data-theme="custom"] .btn-upload-avatar,
+html[data-theme="custom"] .filter-chip.active {
+    background: var(--accent-blue) !important;
+    color: var(--btn-primary-text) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+html[data-theme="custom"] .btn-upload-avatar .material-symbols-rounded,
+html[data-theme="custom"] .btn-start-workout-top .material-symbols-rounded,
+html[data-theme="custom"] .action-btn.blue-glow-btn .material-symbols-rounded {
+    color: var(--btn-primary-text) !important;
 }
 
 * {
@@ -150,7 +173,7 @@ html[data-theme="monochrome"] body::after {
         radial-gradient(circle at 80% 90%, rgba(161, 161, 170, 0.35), transparent 50%);
 }
 
-/* --- FREISTEHENDE SCHWEBENDE ICONS (NUR IN DEN LIQUID GLASS ELEMENTEN!) --- */
+/* --- FREISTEHENDE SCHWEBENDE ICONS (NUR IN DEN LIQUID GLASS ELEMENTEN) --- */
 @keyframes gentleCardFloat {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-4px); }
@@ -179,7 +202,7 @@ html[data-theme="monochrome"] body::after {
     fill: currentColor;
 }
 
-/* --- ICON GLOW EFFEKT (STANDARD: AUS, IN EINSTELLUNGEN ANSCHALTBAR) --- */
+/* --- ICON GLOW EFFEKT --- */
 html[data-glow="off"] .card-corner-icon {
     filter: none !important;
 }
@@ -192,7 +215,7 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.85)) !important;
 }
 
-/* --- 16 SEPARATE ANIMIERTE LEVEL-ICONS (JE HÖHER DAS LVL, DESTO KRASSER) --- */
+/* --- 16 SEPARATE ANIMIERTE LEVEL-ICONS --- */
 .lvl-unique-slot {
     width: 44px;
     height: 44px;
@@ -218,7 +241,6 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     overflow: visible;
 }
 
-/* Loop-Animationen für die 16 Level-Ränge */
 @keyframes lvlLoopSpark {
     0%, 100% { transform: scale(1) translateY(0); }
     50% { transform: scale(1.08) translateY(-3px); }
@@ -274,7 +296,7 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
 .lvl-fx-15 { animation: lvlLoopSupernova 1.5s ease-in-out infinite; color: #fde047; }
 .lvl-fx-16 { animation: lvlLoopApexGod 2.8s ease-in-out infinite; color: #ffd60a; }
 
-/* --- HEADER & PROFIL-AVATAR OBEN --- */
+/* --- HEADER, LOGO & PROFIL-AVATAR --- */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -287,6 +309,22 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header-brand-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-app-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    flex-shrink: 0;
 }
 
 .header-user-greeting {
@@ -382,6 +420,7 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     background: linear-gradient(135deg, rgba(10, 132, 255, 0.9) 0%, rgba(0, 91, 181, 0.85) 100%);
     border-color: rgba(255, 255, 255, 0.38);
     box-shadow: 0 8px 20px rgba(10, 132, 255, 0.38), inset 0 1.5px 1px rgba(255, 255, 255, 0.45);
+    color: #ffffff;
 }
 
 .icon-btn-top:active { transform: scale(0.9); }
@@ -391,7 +430,7 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     top: -2px;
     right: -2px;
     background: var(--accent-blue);
-    color: #fff;
+    color: var(--btn-primary-text);
     font-size: 10px;
     font-weight: 800;
     min-width: 18px;
@@ -453,9 +492,10 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     -webkit-backdrop-filter: blur(28px) saturate(190%);
 }
 
-html[data-theme="monochrome"] .level-hero-card {
-    background: linear-gradient(135deg, rgba(36, 37, 42, 0.94) 0%, rgba(18, 19, 23, 0.96) 100%);
-    border-color: rgba(255, 255, 255, 0.32);
+html[data-theme="monochrome"] .level-hero-card,
+html[data-theme="custom"] .level-hero-card {
+    background: var(--liquid-bg);
+    border-color: var(--liquid-border);
 }
 
 .level-top-row {
@@ -484,8 +524,9 @@ html[data-theme="monochrome"] .level-hero-card {
     letter-spacing: 0;
 }
 
-html[data-theme="monochrome"] .level-big-number span.lvl-rank {
-    color: #d4d4d8;
+html[data-theme="monochrome"] .level-big-number span.lvl-rank,
+html[data-theme="custom"] .level-big-number span.lvl-rank {
+    color: var(--text-muted);
 }
 
 .xp-badge-pill {
@@ -499,10 +540,11 @@ html[data-theme="monochrome"] .level-big-number span.lvl-rank {
     border-radius: 20px;
 }
 
-html[data-theme="monochrome"] .xp-badge-pill {
+html[data-theme="monochrome"] .xp-badge-pill,
+html[data-theme="custom"] .xp-badge-pill {
     background: rgba(255, 255, 255, 0.14);
     border-color: rgba(255, 255, 255, 0.35);
-    color: #ffffff;
+    color: var(--text-main);
 }
 
 .level-progress-track {
@@ -527,6 +569,11 @@ html[data-theme="monochrome"] .xp-badge-pill {
 html[data-theme="monochrome"] .level-progress-fill {
     background: linear-gradient(90deg, #a1a1aa 0%, #ffffff 100%);
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="custom"] .level-progress-fill {
+    background: var(--accent-blue);
+    box-shadow: 0 0 12px var(--accent-blue);
 }
 
 .level-sub-info {
@@ -710,7 +757,7 @@ html[data-theme="monochrome"] .ios-switch.on {
     position: relative;
 }
 
-/* --- 7-TAGE MATRIX & FITNESS MATRIX --- */
+/* --- 7-TAGE MATRIX & FITNESS MATRIX (MIT HÄKCHEN-FIX FÜR ALLE THEMES) --- */
 .card-title-row {
     display: flex;
     justify-content: space-between;
@@ -797,14 +844,26 @@ html[data-theme="monochrome"] .ios-switch.on {
     height: 24px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: transparent;
     padding: 0;
     transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Haken ist im nicht-abgehakten Zustand komplett unsichtbar (behebt den Monochrom-Bug) */
+.matrix-dot-btn .material-symbols-rounded {
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity 0.18s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.matrix-dot-btn.done .material-symbols-rounded {
+    opacity: 1;
+    transform: scale(1);
+    color: inherit !important;
 }
 
 .matrix-dot-btn:active { transform: scale(0.85); }
@@ -911,10 +970,11 @@ html[data-theme="monochrome"] .ios-switch.on {
     border-radius: 12px;
 }
 
-html[data-theme="monochrome"] .xp-pill {
+html[data-theme="monochrome"] .xp-pill,
+html[data-theme="custom"] .xp-pill {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.3);
-    color: #ffffff;
+    color: var(--text-main);
 }
 
 .streak-pill {
@@ -961,7 +1021,7 @@ html[data-theme="monochrome"] .xp-pill {
 
 .category-actions {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
 }
 
@@ -980,7 +1040,12 @@ html[data-theme="monochrome"] .xp-pill {
 }
 .btn-pill:active { transform: scale(0.94); }
 
-.btn-delete-icon, .btn-share-icon {
+.btn-upload-avatar {
+    background: var(--accent-blue);
+    color: var(--btn-primary-text);
+}
+
+.btn-delete-icon, .btn-share-icon, .btn-edit-icon {
     background: transparent;
     border: none;
     color: #8e93a4;
@@ -991,7 +1056,7 @@ html[data-theme="monochrome"] .xp-pill {
     transition: color 0.15s ease, transform 0.15s ease;
 }
 .btn-delete-icon:hover { color: var(--danger); }
-.btn-share-icon:hover { color: var(--accent-blue); transform: scale(1.08); }
+.btn-share-icon:hover, .btn-edit-icon:hover { color: var(--accent-blue); transform: scale(1.08); }
 
 .exercise-item {
     position: relative;
@@ -1059,14 +1124,14 @@ html[data-theme="monochrome"] .xp-pill {
     padding: 0;
 }
 
-/* --- LIVE WORKOUT SESSION --- */
+/* --- LIVE WORKOUT SESSION (OPTIMIERTE BREITEN & ANIMIERTE TRAININGSZEIT) --- */
 .active-workout-banner {
     position: relative;
     overflow: hidden;
     background: linear-gradient(145deg, rgba(48, 209, 88, 0.18) 0%, rgba(20, 24, 34, 0.90) 60%, rgba(10, 132, 255, 0.14) 100%);
     border: 1px solid rgba(48, 209, 88, 0.45);
     border-radius: 28px;
-    padding: 20px;
+    padding: 18px 16px;
     margin-bottom: 18px;
     box-shadow: 0 20px 44px rgba(0, 0, 0, 0.55), inset 0 1.5px 1px rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(28px);
@@ -1095,17 +1160,27 @@ html[data-theme="monochrome"] .xp-pill {
 
 .timer-pill {
     flex: 1;
-    background: rgba(48, 209, 88, 0.18);
-    border: 1px solid rgba(48, 209, 88, 0.45);
+    background: rgba(48, 209, 88, 0.16);
+    border: 1px solid rgba(48, 209, 88, 0.42);
     color: #4ade80;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 8px 12px;
+    padding: 8px 10px;
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
+    transition: all 0.25s ease;
+}
+
+/* Animierte Trainingszeit (wenn Training aktiv läuft) */
+.timer-pill.train-pill.active-train {
+    background: linear-gradient(135deg, #30d158 0%, #15803d 100%);
+    color: #052e16;
+    border-color: #86efac;
+    box-shadow: 0 0 16px rgba(48, 209, 88, 0.55);
+    animation: pulseGlow 1.4s infinite alternate;
 }
 
 .timer-pill.pause-pill {
@@ -1126,31 +1201,32 @@ html[data-theme="monochrome"] .xp-pill {
 
 @keyframes pulseGlow {
     from { transform: scale(1); }
-    to { transform: scale(1.03); }
+    to { transform: scale(1.028); }
 }
 
+/* Optimiertes Grid für Sätze: Zahlen werden niemals abgeschnitten, kleineres Minus rechts */
 .set-row {
     display: grid;
-    grid-template-columns: 34px 48px 1fr 1fr 30px;
-    gap: 7px;
+    grid-template-columns: 30px 42px minmax(0, 1fr) minmax(0, 1fr) 22px;
+    gap: 6px;
     align-items: center;
-    background: rgba(0, 0, 0, 0.32);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 14px;
-    padding: 8px 8px;
+    padding: 7px 7px;
     margin-bottom: 8px;
     transition: all 0.2s ease;
 }
 
 .set-row.set-done {
-    background: rgba(48, 209, 88, 0.15);
-    border-color: rgba(48, 209, 88, 0.42);
+    background: rgba(48, 209, 88, 0.16);
+    border-color: rgba(48, 209, 88, 0.45);
 }
 
 .set-check-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 9px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.08);
     border: 1.5px solid rgba(255, 255, 255, 0.24);
     display: flex;
@@ -1163,51 +1239,60 @@ html[data-theme="monochrome"] .xp-pill {
 }
 
 .set-row.set-done .set-check-btn {
-    background: var(--accent-green);
-    border-color: var(--accent-green);
+    background: #30d158;
+    border-color: #30d158;
     color: #000;
-    box-shadow: 0 0 12px rgba(48, 209, 88, 0.5);
+    box-shadow: 0 0 10px rgba(48, 209, 88, 0.5);
 }
 
 .set-num-label {
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--text-muted);
+    white-space: nowrap;
 }
 
 .set-inline-box {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 10px;
-    padding: 5px 7px;
+    padding: 5px 6px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 3px;
+    min-width: 0;
 }
 
 .set-inline-input {
-    width: 58%;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
     background: transparent;
     border: none;
     color: #fff;
-    font-size: 14.5px;
+    font-size: 14px;
     font-weight: 700;
     font-family: inherit;
+    text-align: center;
+    padding: 0;
 }
 
 .set-inline-unit {
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
+    flex-shrink: 0;
 }
 
+/* Kleinerer, kompakterer Minus-Button zum Satz entfernen */
 .btn-remove-set {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: rgba(255, 69, 58, 0.12);
-    border: 1px solid rgba(255, 69, 58, 0.25);
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: rgba(255, 69, 58, 0.14);
+    border: 1px solid rgba(255, 69, 58, 0.3);
     color: #ff6961;
     display: flex;
     align-items: center;
@@ -1216,7 +1301,7 @@ html[data-theme="monochrome"] .xp-pill {
     padding: 0;
     transition: all 0.15s ease;
 }
-.btn-remove-set:active { transform: scale(0.88); }
+.btn-remove-set:active { transform: scale(0.86); }
 
 /* --- FITTRACKER (KALORIEN, WASSER, SCHRITTE & HISTORIE) --- */
 .tracker-summary-hero {
@@ -1230,7 +1315,8 @@ html[data-theme="monochrome"] .xp-pill {
     -webkit-backdrop-filter: blur(28px);
 }
 
-html[data-theme="monochrome"] .tracker-summary-hero {
+html[data-theme="monochrome"] .tracker-summary-hero,
+html[data-theme="custom"] .tracker-summary-hero {
     background: var(--liquid-bg);
 }
 
@@ -1361,7 +1447,7 @@ html[data-theme="monochrome"] .tracker-summary-hero {
 
 .water-btn:active { transform: scale(0.93); }
 
-/* --- EINSTELLUNGEN REITER --- */
+/* --- EINSTELLUNGEN & 3 THEME CARDS + CUSTOM COLOR PICKER --- */
 .settings-avatar-row {
     display: flex;
     align-items: center;
@@ -1414,39 +1500,88 @@ html[data-theme="monochrome"] .tracker-summary-hero {
     gap: 10px;
 }
 
-.theme-selector-grid {
+.theme-selector-grid-3 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
     margin-top: 6px;
 }
 
 .theme-option-card {
     background: rgba(0, 0, 0, 0.35);
     border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
-    padding: 13px;
+    border-radius: 16px;
+    padding: 11px 10px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .theme-option-card.active {
     border-color: var(--accent-blue);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.14);
 }
 
 .theme-preview-dots {
     display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 5px;
+    margin-bottom: 7px;
 }
 
 .theme-preview-dots span {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     display: inline-block;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.custom-theme-box {
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.custom-color-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.custom-color-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 10px;
+    border-radius: 12px;
+}
+
+.custom-color-item label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.custom-color-item input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 30px;
+    height: 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+}
+
+.custom-color-item input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.custom-color-item input[type="color"]::-webkit-color-swatch {
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
 }
 
 .settings-toggle-row {
@@ -1601,7 +1736,7 @@ input::-webkit-inner-spin-button {
     line-height: 1.5;
 }
 
-/* --- LEADERBOARD REITER --- */
+/* --- LEADERBOARD REITER (MIT APP-LOGO & 7-TAGE HISTORY TABELLE) --- */
 .leaderboard-row {
     position: relative;
     z-index: 1;
@@ -1629,25 +1764,36 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
 .lb-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
 }
 
 .lb-rank-badge {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--text-muted);
+    flex-shrink: 0;
 }
 
 .lb-rank-1 { background: linear-gradient(135deg, #ffd60a, #ff9f0a); color: #000; box-shadow: 0 0 12px rgba(255, 214, 10, 0.45); }
 .lb-rank-2 { background: linear-gradient(135deg, #e5e5ea, #8e8e93); color: #000; }
 .lb-rank-3 { background: linear-gradient(135deg, #eca163, #a25b2a); color: #000; }
+
+.lb-logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
+}
 
 .lb-user-info {
     display: flex;
@@ -1689,6 +1835,28 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
     background: var(--accent-green);
     box-shadow: 0 0 8px var(--accent-green);
     display: inline-block;
+}
+
+.lb-history-day-pill {
+    display: inline-block;
+    min-width: 28px;
+    padding: 3px 4px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
+}
+
+.lb-history-day-pill.has-xp {
+    background: rgba(10, 132, 255, 0.22);
+    border: 1px solid rgba(10, 132, 255, 0.45);
+    color: #ffffff;
+}
+
+html[data-theme="monochrome"] .lb-history-day-pill.has-xp {
+    background: #ffffff;
+    color: #09090b;
 }
 
 /* --- NOTIZEN MODAL --- */
