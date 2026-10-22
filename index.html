@@ -22,14 +22,14 @@
 <body>
 
     <!-- ==========================================
-         1. HOME REITER (DASHBOARD, LEVEL, MATRIZEN)
+         1. HOME REITER (DASHBOARD, LEVEL BIS 100, MATRIZEN)
          ========================================== -->
     <div id="view-home" class="view active">
         <div class="page-header">
             <div class="header-user-greeting" onclick="openTabFromMore('settings')">
                 <div class="header-avatar-wrap" id="header-avatar-wrap">
-                    <img id="header-avatar-img" src="" alt="Avatar" style="display:none;">
-                    <span class="material-symbols-rounded" id="header-avatar-placeholder">person</span>
+                    <img id="header-avatar-img" class="user-avatar-sync-img" src="" alt="Avatar" style="display:none;">
+                    <span class="material-symbols-rounded user-avatar-sync-icon" id="header-avatar-placeholder">person</span>
                 </div>
                 <div>
                     <div class="subtitle-date" id="current-date-label">APEXFIT • HEUTE</div>
@@ -49,7 +49,7 @@
         </div>
 
         <div class="container">
-            <!-- LEVEL SYSTEM HERO CARD (MIT EIGENEN SEPARATEN ANIMIERTEN LEVEL-ICONS) -->
+            <!-- LEVEL SYSTEM HERO CARD (MIT ANIMIERTEN LEVEL-ICONS BIS LVL 100) -->
             <div class="level-hero-card">
                 <div class="level-top-row">
                     <div class="level-big-number">
@@ -174,12 +174,11 @@
     </div>
 
     <!-- ==========================================
-         2. FITNESS REITER (NUR LOGO + FITNESS LINKS OBEN)
+         2. FITNESS REITER (OHNE AVATAR/LOGO FÜR MAXIMALEN PLATZ)
          ========================================== -->
     <div id="view-fitness" class="view">
         <div class="page-header">
-            <div class="header-brand-title">
-                <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
+            <div>
                 <h1 data-i18n="nav_fitness">Fitness</h1>
             </div>
             <div class="header-actions">
@@ -203,7 +202,7 @@
     </div>
 
     <!-- ==========================================
-         3. HABITS REITER (LOGO OBEN RECHTS, KATEGORIEN BEARBEITBAR)
+         3. HABITS REITER (BENUTZER-AVATAR OBEN RECHTS)
          ========================================== -->
     <div id="view-habits" class="view">
         <div class="page-header">
@@ -211,7 +210,10 @@
                 <div class="subtitle-date" data-i18n="habits_sub">Tägliche Ziele (Max. 50 XP)</div>
                 <h1 data-i18n="nav_habits">Habits</h1>
             </div>
-            <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
+            <div class="header-avatar-wrap" onclick="openTabFromMore('settings')" title="Profil & Einstellungen" style="cursor:pointer;">
+                <img class="user-avatar-sync-img" src="" alt="Avatar" style="display:none;">
+                <span class="material-symbols-rounded user-avatar-sync-icon">person</span>
+            </div>
         </div>
 
         <div class="container">
@@ -231,7 +233,7 @@
     </div>
 
     <!-- ==========================================
-         4. JOURNAL REITER (LOGO OBEN RECHTS)
+         4. JOURNAL REITER (BENUTZER-AVATAR OBEN RECHTS)
          ========================================== -->
     <div id="view-journal" class="view">
         <div class="page-header">
@@ -239,7 +241,10 @@
                 <div class="subtitle-date" data-i18n="journal_sub">Fortschritt & Trainings-Zeiten</div>
                 <h1 data-i18n="nav_journal">Journal</h1>
             </div>
-            <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
+            <div class="header-avatar-wrap" onclick="openTabFromMore('settings')" title="Profil & Einstellungen" style="cursor:pointer;">
+                <img class="user-avatar-sync-img" src="" alt="Avatar" style="display:none;">
+                <span class="material-symbols-rounded user-avatar-sync-icon">person</span>
+            </div>
         </div>
 
         <div class="container">
@@ -264,7 +269,7 @@
     </div>
 
     <!-- ==========================================
-         5. FITTRACKER REITER (LOGO OBEN RECHTS, SCHRITTE & HISTORY LÖSCHBAR)
+         5. FITTRACKER REITER (BENUTZER-AVATAR OBEN RECHTS)
          ========================================== -->
     <div id="view-fittracker" class="view">
         <div class="page-header">
@@ -272,7 +277,10 @@
                 <div class="subtitle-date" data-i18n="tracker_sub">Ernährung, Wasser & Schritte</div>
                 <h1>FitTracker</h1>
             </div>
-            <img src="Icon.png" class="header-app-logo" alt="ApexFit" onerror="this.style.display='none'">
+            <div class="header-avatar-wrap" onclick="openTabFromMore('settings')" title="Profil & Einstellungen" style="cursor:pointer;">
+                <img class="user-avatar-sync-img" src="" alt="Avatar" style="display:none;">
+                <span class="material-symbols-rounded user-avatar-sync-icon">person</span>
+            </div>
         </div>
 
         <div class="container">
@@ -434,7 +442,7 @@
                 <div id="today-water-logs" style="margin-top:14px;"></div>
             </div>
 
-            <!-- KATEGORIE 3: SCHRITTZÄHLER (INKL. EINZELNE SCHRITTE ENTFERNEN WIE BEIM TRINKEN) -->
+            <!-- KATEGORIE 3: SCHRITTZÄHLER -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -463,11 +471,10 @@
                     <button class="btn-primary" style="flex:0 0 auto; padding:12px 16px; border-radius:14px;" onclick="addCustomSteps()" title="Schritte addieren">+</button>
                 </div>
 
-                <!-- Einzelne Schritt-Buchungen mit X zum Entfernen -->
                 <div id="today-steps-logs" style="margin-top:14px;"></div>
             </div>
 
-            <!-- GANZ UNTEN: HISTORY BUTTON & TAGESBILANZ-VERGLEICH (INKL. LÖSCH-FUNKTION) -->
+            <!-- GANZ UNTEN: HISTORY BUTTON & TAGESBILANZ-VERGLEICH -->
             <button class="action-btn" id="btn-toggle-tracker-history" style="width:100%; margin-bottom:16px;" onclick="toggleTrackerHistory()">
                 <span class="material-symbols-rounded" style="color:var(--accent-blue);">history</span>
                 <span data-i18n="btn_show_history">History • Letzte Tagesergebnisse vergleichen</span>
@@ -478,12 +485,12 @@
     </div>
 
     <!-- ==========================================
-         6. LEADERBOARD / RANKING REITER (OHNE HEADER-LOGO, MIT 7-TAGE XP-HISTORY & LOGO STATT LVL-ICON)
+         6. LEADERBOARD / RANKING REITER (LIVE BENUTZER-AVATARE & 7-TAGE XP-HISTORY)
          ========================================== -->
     <div id="view-leaderboard" class="view">
         <div class="page-header">
             <div>
-                <div class="subtitle-date">Live Cloud-Synchronisation</div>
+                <div class="subtitle-date">Live Cloud-Synchronisation (Max Lvl 100)</div>
                 <h1 data-i18n="nav_ranking">Ranking</h1>
             </div>
             <button class="icon-btn-top" onclick="syncAndLoadLeaderboard(true)" title="Jetzt aktualisieren">
@@ -503,7 +510,7 @@
                 </button>
             </div>
 
-            <!-- LIVE RANGLISTE (MIT LOGO STATT LEVEL-ICON) -->
+            <!-- LIVE RANGLISTE (MIT LIVE BENUTZER-PROFILBILD STATT LEVEL-ICON) -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -520,7 +527,7 @@
                 <div id="leaderboard-list-container"></div>
             </div>
 
-            <!-- NEU: 7-TAGE XP HISTORY & VERGLEICH (DU & DEINE FREUNDE) -->
+            <!-- 7-TAGE XP HISTORY & VERGLEICH (DU & DEINE FREUNDE) -->
             <div class="bevel-card" id="leaderboard-history-card">
                 <div class="card-title-row">
                     <div>
@@ -538,7 +545,7 @@
     </div>
 
     <!-- ==========================================
-         7. EINSTELLUNGEN REITER (OHNE HEADER-LOGO, MIT 3. CUSTOM DESIGN)
+         7. EINSTELLUNGEN REITER
          ========================================== -->
     <div id="view-settings" class="view">
         <div class="page-header">
@@ -561,7 +568,7 @@
                     </span>
                 </div>
 
-                <!-- Profilbild Upload (Mit Kontrast-Fix für helle/weiße Buttons) -->
+                <!-- Profilbild Upload -->
                 <div class="settings-avatar-row">
                     <div class="settings-avatar-circle" id="settings-avatar-preview">
                         <img id="settings-avatar-img" src="" alt="Profilbild" style="display:none;">
@@ -688,7 +695,7 @@
                     </div>
                 </div>
 
-                <!-- Custom Color Picker Box (Erscheint wenn "Eigenes Design" gewählt ist) -->
+                <!-- Custom Color Picker Box -->
                 <div id="custom-theme-editor" class="custom-theme-box" style="display:none;">
                     <div style="font-size:12px; font-weight:700; margin-bottom:10px; color:var(--accent-blue); text-transform:uppercase;">
                         Eigene Farben anpassen
@@ -939,7 +946,7 @@
         </div>
     </div>
 
-    <!-- Modal: Fitness-Kategorie (SPEZIELLE GYM-, HANTEL-, MUSKEL- & GERÄTE-ICONS) -->
+    <!-- Modal: Fitness-Kategorie -->
     <div id="modal-fit-category" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
@@ -993,7 +1000,7 @@
         </div>
     </div>
 
-    <!-- Modal: Habit-Kategorie ERSTELLEN ODER BEARBEITEN (NAME, ICON, FARBE) -->
+    <!-- Modal: Habit-Kategorie ERSTELLEN ODER BEARBEITEN -->
     <div id="modal-habit-category" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
@@ -1057,7 +1064,7 @@
             <div class="sheet-handle"></div>
             <h3 class="sheet-title">Freunde ins Ranking einladen</h3>
             <p style="color:var(--text-muted); font-size:13px; margin:-8px 0 16px 0; line-height:1.4;">
-                Teile deinen persönlichen Link oder Freundes-Code. Eure XP, Lvl und die 7-Tage-History synchronisieren sich vollautomatisch in Echtzeit!
+                Teile deinen persönlichen Link oder Freundes-Code. Eure XP, Lvl, Profilbilder und die 7-Tage-History synchronisieren sich vollautomatisch in Echtzeit!
             </p>
             <div class="form-field">
                 <label>Dein persönlicher Freundes-Code</label>
