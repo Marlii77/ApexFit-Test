@@ -1,5 +1,5 @@
 /* =========================================================
-   APEXFIT – STYLE.CSS (LIQUID GLASS, 3 THEMES & ANIMATIONS)
+   APEXFIT – STYLE.CSS (LIQUID GLASS, 3 THEMES & LVL 1-100 FX)
    ========================================================= */
 
 :root {
@@ -68,13 +68,13 @@ html[data-theme="monochrome"] .page-header .subtitle-date {
     color: #141519;
 }
 
-html[data-theme="monochrome"] .icon-btn-top {
+html[data-theme="monochrome"] .icon-btn-top,
+html[data-theme="monochrome"] .page-header .header-avatar-wrap {
     background: rgba(24, 25, 30, 0.90);
     color: #ffffff;
     border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Fix für weiße Buttons im Monochrom-Modus: Dunkle Schrift auf hellem Button */
 html[data-theme="monochrome"] .btn-start-workout-top,
 html[data-theme="monochrome"] .action-btn.blue-glow-btn,
 html[data-theme="monochrome"] .btn-primary,
@@ -92,7 +92,6 @@ html[data-theme="monochrome"] .action-btn.blue-glow-btn .material-symbols-rounde
     color: #09090b !important;
 }
 
-/* Im Monochrom-Design sind nur die Card-Corner-Icons weiß (keine Übersteuerung der Matrix-Häkchen!) */
 html[data-theme="monochrome"] .card-corner-icon {
     color: #ffffff !important;
 }
@@ -215,10 +214,10 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.85)) !important;
 }
 
-/* --- 16 SEPARATE ANIMIERTE LEVEL-ICONS --- */
+/* --- 21 SEPARATE ANIMIERTE LEVEL-ICONS (LVL 1 BIS LVL 100) --- */
 .lvl-unique-slot {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -236,8 +235,8 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
 }
 
 .lvl-badge-wrap svg {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     overflow: visible;
 }
 
@@ -273,10 +272,39 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 12px #f59e0b) drop-shadow(0 0 24px #ef4444); }
 }
 @keyframes lvlLoopApexGod {
-    0% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(0deg) drop-shadow(0 0 16px #ffd60a) drop-shadow(0 0 32px #0a84ff); }
-    33% { transform: translateY(-5px) scale(1.25) rotate(-8deg); filter: hue-rotate(60deg) drop-shadow(0 0 24px #ff375f) drop-shadow(0 0 42px #ffd60a); }
-    66% { transform: translateY(-3px) scale(1.20) rotate(8deg); filter: hue-rotate(140deg) drop-shadow(0 0 24px #30d158) drop-shadow(0 0 42px #bf5af2); }
-    100% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(360deg) drop-shadow(0 0 16px #ffd60a) drop-shadow(0 0 32px #0a84ff); }
+    0% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(0deg) drop-shadow(0 0 14px #ffd60a) drop-shadow(0 0 28px #0a84ff); }
+    50% { transform: translateY(-5px) scale(1.22) rotate(8deg); filter: hue-rotate(90deg) drop-shadow(0 0 22px #ff375f) drop-shadow(0 0 38px #ffd60a); }
+    100% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(0deg) drop-shadow(0 0 14px #ffd60a) drop-shadow(0 0 28px #0a84ff); }
+}
+
+/* NEU: ULTRA-HIGH-TIER ANIMATIONEN FÜR LVL 80 BIS LVL 100 */
+@keyframes lvlLoopPlasmaVortex {
+    0% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 14px #00f5d4) drop-shadow(0 0 28px #7b2cbf); }
+    50% { transform: scale(1.25) rotate(180deg); filter: drop-shadow(0 0 24px #00bbf9) drop-shadow(0 0 42px #f15bb5); }
+    100% { transform: scale(1) rotate(360deg); filter: drop-shadow(0 0 14px #00f5d4) drop-shadow(0 0 28px #7b2cbf); }
+}
+@keyframes lvlLoopAstralShock {
+    0%, 100% { transform: translateY(0) scale(1) rotate(0deg); filter: drop-shadow(0 0 16px #ff007f) drop-shadow(0 0 34px #7928ca); }
+    25% { transform: translateY(-6px) scale(1.26) rotate(-10deg); filter: drop-shadow(0 0 26px #00dfd8) drop-shadow(0 0 46px #ff007f); }
+    75% { transform: translateY(-4px) scale(1.22) rotate(10deg); filter: drop-shadow(0 0 26px #ffbe0b) drop-shadow(0 0 46px #7928ca); }
+}
+@keyframes lvlLoopCelestialPulse {
+    0% { transform: scale(0.96) rotate(0deg); filter: drop-shadow(0 0 18px #38bdf8) drop-shadow(0 0 36px #818cf8) brightness(1.1); }
+    50% { transform: scale(1.28) rotate(-15deg); filter: drop-shadow(0 0 28px #f472b6) drop-shadow(0 0 52px #38bdf8) brightness(1.35); }
+    100% { transform: scale(0.96) rotate(0deg); filter: drop-shadow(0 0 18px #38bdf8) drop-shadow(0 0 36px #818cf8) brightness(1.1); }
+}
+@keyframes lvlLoopEternalReactor {
+    0% { transform: translateY(0) scale(1) rotate(0deg); filter: drop-shadow(0 0 20px #ff2a85) drop-shadow(0 0 42px #ffbe0b); }
+    33% { transform: translateY(-6px) scale(1.28) rotate(120deg); filter: drop-shadow(0 0 30px #00f5d4) drop-shadow(0 0 54px #ff2a85); }
+    66% { transform: translateY(-3px) scale(1.24) rotate(240deg); filter: drop-shadow(0 0 30px #8338ec) drop-shadow(0 0 54px #00f5d4); }
+    100% { transform: translateY(0) scale(1) rotate(360deg); filter: drop-shadow(0 0 20px #ff2a85) drop-shadow(0 0 42px #ffbe0b); }
+}
+@keyframes lvlLoopOmnipotent100 {
+    0% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(0deg) drop-shadow(0 0 22px #ffd60a) drop-shadow(0 0 44px #ff0055) drop-shadow(0 0 65px #00f5d4) brightness(1.2); }
+    25% { transform: translateY(-7px) scale(1.32) rotate(-12deg); filter: hue-rotate(90deg) drop-shadow(0 0 32px #00f5d4) drop-shadow(0 0 58px #ffd60a) brightness(1.4); }
+    50% { transform: translateY(-4px) scale(1.26) rotate(0deg); filter: hue-rotate(180deg) drop-shadow(0 0 36px #ff0055) drop-shadow(0 0 64px #7b2cbf) brightness(1.5); }
+    75% { transform: translateY(-7px) scale(1.32) rotate(12deg); filter: hue-rotate(270deg) drop-shadow(0 0 32px #ffd60a) drop-shadow(0 0 58px #0a84ff) brightness(1.4); }
+    100% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(360deg) drop-shadow(0 0 22px #ffd60a) drop-shadow(0 0 44px #ff0055) drop-shadow(0 0 65px #00f5d4) brightness(1.2); }
 }
 
 .lvl-fx-1  { animation: lvlLoopSpark 3s ease-in-out infinite; color: #94a3b8; }
@@ -294,9 +322,14 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
 .lvl-fx-13 { animation: lvlLoopSupernova 1.7s ease-in-out infinite; color: #38bdf8; }
 .lvl-fx-14 { animation: lvlLoopCyberGlow 1.6s ease-in-out infinite; color: #c084fc; }
 .lvl-fx-15 { animation: lvlLoopSupernova 1.5s ease-in-out infinite; color: #fde047; }
-.lvl-fx-16 { animation: lvlLoopApexGod 2.8s ease-in-out infinite; color: #ffd60a; }
+.lvl-fx-16 { animation: lvlLoopApexGod 2.6s ease-in-out infinite; color: #ffd60a; }
+.lvl-fx-17 { animation: lvlLoopPlasmaVortex 3.4s ease-in-out infinite; color: #00f5d4; }
+.lvl-fx-18 { animation: lvlLoopAstralShock 2.0s ease-in-out infinite; color: #ff2a85; }
+.lvl-fx-19 { animation: lvlLoopCelestialPulse 1.8s ease-in-out infinite; color: #64d2ff; }
+.lvl-fx-20 { animation: lvlLoopEternalReactor 3.0s linear infinite; color: #ffbe0b; }
+.lvl-fx-21 { animation: lvlLoopOmnipotent100 2.4s ease-in-out infinite; color: #ffd60a; }
 
-/* --- HEADER, LOGO & PROFIL-AVATAR --- */
+/* --- HEADER & PROFIL-AVATAR --- */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -311,22 +344,6 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.header-brand-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-app-logo {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    object-fit: cover;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    flex-shrink: 0;
-}
-
 .header-user-greeting {
     display: flex;
     align-items: center;
@@ -335,8 +352,8 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
 }
 
 .header-avatar-wrap {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: var(--liquid-bg);
     border: 1.5px solid var(--liquid-border);
@@ -346,6 +363,11 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
+    transition: transform 0.18s ease;
+}
+
+.header-avatar-wrap:active {
+    transform: scale(0.92);
 }
 
 .header-avatar-wrap img {
@@ -757,7 +779,7 @@ html[data-theme="monochrome"] .ios-switch.on {
     position: relative;
 }
 
-/* --- 7-TAGE MATRIX & FITNESS MATRIX (MIT HÄKCHEN-FIX FÜR ALLE THEMES) --- */
+/* --- 7-TAGE MATRIX & FITNESS MATRIX --- */
 .card-title-row {
     display: flex;
     justify-content: space-between;
@@ -853,7 +875,6 @@ html[data-theme="monochrome"] .ios-switch.on {
     transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Haken ist im nicht-abgehakten Zustand komplett unsichtbar (behebt den Monochrom-Bug) */
 .matrix-dot-btn .material-symbols-rounded {
     opacity: 0;
     transform: scale(0.4);
@@ -1124,7 +1145,7 @@ html[data-theme="custom"] .xp-pill {
     padding: 0;
 }
 
-/* --- LIVE WORKOUT SESSION (OPTIMIERTE BREITEN & ANIMIERTE TRAININGSZEIT) --- */
+/* --- LIVE WORKOUT SESSION --- */
 .active-workout-banner {
     position: relative;
     overflow: hidden;
@@ -1174,7 +1195,6 @@ html[data-theme="custom"] .xp-pill {
     transition: all 0.25s ease;
 }
 
-/* Animierte Trainingszeit (wenn Training aktiv läuft) */
 .timer-pill.train-pill.active-train {
     background: linear-gradient(135deg, #30d158 0%, #15803d 100%);
     color: #052e16;
@@ -1204,7 +1224,6 @@ html[data-theme="custom"] .xp-pill {
     to { transform: scale(1.028); }
 }
 
-/* Optimiertes Grid für Sätze: Zahlen werden niemals abgeschnitten, kleineres Minus rechts */
 .set-row {
     display: grid;
     grid-template-columns: 30px 42px minmax(0, 1fr) minmax(0, 1fr) 22px;
@@ -1286,7 +1305,6 @@ html[data-theme="custom"] .xp-pill {
     flex-shrink: 0;
 }
 
-/* Kleinerer, kompakterer Minus-Button zum Satz entfernen */
 .btn-remove-set {
     width: 22px;
     height: 22px;
@@ -1303,7 +1321,7 @@ html[data-theme="custom"] .xp-pill {
 }
 .btn-remove-set:active { transform: scale(0.86); }
 
-/* --- FITTRACKER (KALORIEN, WASSER, SCHRITTE & HISTORIE) --- */
+/* --- FITTRACKER --- */
 .tracker-summary-hero {
     background: linear-gradient(135deg, rgba(48, 209, 88, 0.16) 0%, rgba(18, 22, 32, 0.88) 50%, rgba(10, 132, 255, 0.18) 100%);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1736,7 +1754,7 @@ input::-webkit-inner-spin-button {
     line-height: 1.5;
 }
 
-/* --- LEADERBOARD REITER (MIT APP-LOGO & 7-TAGE HISTORY TABELLE) --- */
+/* --- LEADERBOARD REITER (MIT BENUTZER-AVATAR & 7-TAGE HISTORY TABELLE) --- */
 .leaderboard-row {
     position: relative;
     z-index: 1;
@@ -1785,14 +1803,26 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
 .lb-rank-2 { background: linear-gradient(135deg, #e5e5ea, #8e8e93); color: #000; }
 .lb-rank-3 { background: linear-gradient(135deg, #eca163, #a25b2a); color: #000; }
 
-.lb-logo-img {
-    width: 32px;
-    height: 32px;
-    border-radius: 9px;
-    object-fit: cover;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+/* Benutzer-Avatar im Ranking */
+.lb-avatar-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     flex-shrink: 0;
+    color: var(--text-main);
+}
+
+.lb-avatar-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .lb-user-info {
@@ -2138,7 +2168,7 @@ html[data-theme="monochrome"] .lb-history-day-pill.has-xp {
     flex: 1;
     background: linear-gradient(135deg, #0a84ff 0%, #005bb5 100%);
     border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 8px 20px rgba(10, 132, 255, 0.35), inset 0 1.5px 1px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 20px rgba(10, 132, 255, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
     color: #fff;
     padding: 15px;
     border-radius: 16px;
