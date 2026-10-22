@@ -1,11 +1,11 @@
 /* =========================================================
-   APEXFIT – APP.JS (LOGIK, FIREBASE, I18N, 3 THEMES & ICONS)
+   APEXFIT – APP.JS (LOGIK, FIREBASE, I18N, LVL 100 & AVATARE)
    ========================================================= */
 
 const FIREBASE_DB_URL = "https://apexfit-4c49a-default-rtdb.europe-west1.firebasedatabase.app";
 const XP_PER_WORKOUT_SET = 50;
 const XP_PER_LEVEL = 250;
-const MAX_LEVEL = 75;
+const MAX_LEVEL = 100;
 
 /* --- FARBPALETTEN (STANDARD & MONOCHROM WEISS-SCHWARZ TÖNE) --- */
 const DEFAULT_COLORS = [
@@ -52,52 +52,20 @@ const CUSTOM_SVG_ICONS = {
     custom_supp: `<svg viewBox="0 0 24 24"><path d="M16.2 3.8a4.5 4.5 0 0 0-6.4 0l-6 6a4.5 4.5 0 0 0 6.4 6.4l6-6a4.5 4.5 0 0 0 0-6.4Zm-5 5 2.1-2.1a2.5 2.5 0 0 1 3.6 3.6L14.8 12.4 11.2 8.8ZM19 14a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2h-2v2a1 1 0 1 1-2 0v-2h-2a1 1 0 1 1 0-2h2v-2a1 1 0 0 1 1-1Z"/></svg>`
 };
 
-/* --- SPEZIELLE FITNESS-ICONS (HANTELN, MUSKELN, GERÄTE, CARDIO) --- */
+/* --- SPEZIELLE FITNESS-ICONS --- */
 const FITNESS_ICONS = [
-    'custom_dumbbell',       // Kurzhantel
-    'custom_barbell',        // Langhantel
-    'custom_biceps',         // Bizeps / Arme
-    'custom_chest',          // Brust / Torso
-    'custom_back',           // Rücken / Lat
-    'custom_legs',           // Beine / Quads
-    'custom_abs',            // Sixpack / Bauch
-    'custom_bench',          // Hantelbank
-    'custom_cable',          // Kabelzug / Turm
-    'custom_kettlebell',     // Kettlebell
-    'custom_treadmill',      // Laufband
-    'fitness_center',        // Klassische Hantel
-    'exercise',              // Gym Gewicht
-    'directions_run',        // Sprint / Cardio
-    'pedal_bike',            // Indoor Bike
-    'rowing',                // Rudergerät
-    'sports_gymnastics',     // Calisthenics / Stretch
-    'sports_mma',            // Boxhandschuh / Kampfsport
-    'timer',                 // HIIT / Intervall
-    'monitoring'             // Kraftkurve
+    'custom_dumbbell', 'custom_barbell', 'custom_biceps', 'custom_chest', 'custom_back',
+    'custom_legs', 'custom_abs', 'custom_bench', 'custom_cable', 'custom_kettlebell',
+    'custom_treadmill', 'fitness_center', 'exercise', 'directions_run', 'pedal_bike',
+    'rowing', 'sports_gymnastics', 'sports_mma', 'timer', 'monitoring'
 ];
 
-/* --- SPEZIELLE HABIT-ICONS (SUPPLEMENTS, LISTEN, SCHLOSS, ORDNER, KATZE, RUCKSACK, ROUTINE) --- */
+/* --- SPEZIELLE HABIT-ICONS --- */
 const HABIT_ICONS = [
-    'custom_supp',           // Supplement Kapsel
-    'medication',            // Supplement Dose
-    'description',           // Dokument
-    'format_list_bulleted',  // Liste
-    'fact_check',            // Checkliste
-    'lock',                  // Schloss
-    'folder',                // Ordner (Folder)
-    'event_repeat',          // Routine
-    'custom_cat',            // Haustier (Katze)
-    'pets',                  // Pfote
-    'backpack',              // Rucksack
-    'bolt',                  // Energie / Fokus
-    'local_fire_department', // Streak / Flamme
-    'water_drop',            // Wasser / Hydration
-    'self_improvement',      // Meditation / Mindset
-    'bedtime',               // Schlaf
-    'menu_book',             // Lesen / Lernen
-    'code',                  // Coding / Projekt
-    'spa',                   // Skincare / Gua Sha
-    'custom_dumbbell'        // Training-Habit
+    'custom_supp', 'medication', 'description', 'format_list_bulleted', 'fact_check',
+    'lock', 'folder', 'event_repeat', 'custom_cat', 'pets',
+    'backpack', 'bolt', 'local_fire_department', 'water_drop', 'self_improvement',
+    'bedtime', 'menu_book', 'code', 'spa', 'custom_dumbbell'
 ];
 
 function renderIconMarkup(iconKey, sizePx = 22) {
@@ -108,24 +76,30 @@ function renderIconMarkup(iconKey, sizePx = 22) {
     return `<span class="material-symbols-rounded" style="font-size:${sizePx}px;">${cleanName}</span>`;
 }
 
-/* --- 16 EIGENE SEPARATE LEVEL-ICONS MIT INDIVIDUELLEN LOOP-ANIMATIONEN --- */
+/* --- 21 EIGENE SEPARATE LEVEL-ICONS MIT INDIVIDUELLEN LOOP-ANIMATIONEN (BIS LVL 100) --- */
 const LEVEL_TIERS = [
-    { min: 1,  title: 'Rookie',       fx: 'lvl-fx-1',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,4 30,18 18,32 6,18" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
-    { min: 5,  title: 'Starter',      fx: 'lvl-fx-2',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L29 9.5V22.5L18 29L7 22.5V9.5L18 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M13 20L18 13L23 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-    { min: 10, title: 'Striver',      fx: 'lvl-fx-3',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="6 3"/><path d="M11 21L18 12L25 21M13 25L18 18L23 25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>` },
-    { min: 15, title: 'Challenger',   fx: 'lvl-fx-4',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L31 8V18C31 26 18 33 18 33C18 33 5 26 5 18V8L18 3Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,9 22,18 18,27 14,18" fill="currentColor"/></svg>` },
-    { min: 20, title: 'Hustler',      fx: 'lvl-fx-5',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 23,13 34,14 26,22 28,33 18,27 8,33 10,22 2,14 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
-    { min: 25, title: 'Warrior',      fx: 'lvl-fx-6',  svg: `<svg viewBox="0 0 36 36"><path d="M7 7L29 29M29 7L7 29" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><polygon points="18,4 26,18 18,32 10,18" fill="var(--bg-main)" stroke="currentColor" stroke-width="2.4"/></svg>` },
-    { min: 30, title: 'Vanguard',     fx: 'lvl-fx-7',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,11 33,25 18,34 3,25 3,11" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 14L18 24L26 14M13 10L18 16L23 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-    { min: 35, title: 'Spartan',      fx: 'lvl-fx-8',  svg: `<svg viewBox="0 0 36 36"><path d="M8 28L12 10L18 4L24 10L28 28L18 23L8 28Z" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="18" y1="4" x2="18" y2="23" stroke="currentColor" stroke-width="2.4"/></svg>` },
-    { min: 40, title: 'Gladiator',    fx: 'lvl-fx-9',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,5 22,14 31,18 22,22 18,31 14,22 5,18 14,14" fill="currentColor"/></svg>` },
-    { min: 45, title: 'Commander',    fx: 'lvl-fx-10', svg: `<svg viewBox="0 0 36 36"><path d="M4 18L11 7H25L32 18L25 29H11L4 18Z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M11 22L18 14L25 22M11 16L18 8L25 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-    { min: 50, title: 'Master',       fx: 'lvl-fx-11', svg: `<svg viewBox="0 0 36 36"><path d="M5 26L8 12L14 18L18 8L22 18L28 12L31 26H5Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="5" r="2" fill="currentColor"/></svg>` },
-    { min: 55, title: 'Grandmaster',  fx: 'lvl-fx-12', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4"/><polygon points="18,4 28,24 8,24" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,32 28,12 8,12" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>` },
-    { min: 60, title: 'Titan',        fx: 'lvl-fx-13', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 32,9 32,27 18,34 4,27 4,9" fill="none" stroke="currentColor" stroke-width="2.5"/><polygon points="18,8 26,18 18,28 10,18" fill="currentColor"/><circle cx="18" cy="18" r="3" fill="var(--bg-main)"/></svg>` },
-    { min: 65, title: 'Immortal',     fx: 'lvl-fx-14', svg: `<svg viewBox="0 0 36 36"><path d="M18 6C11 6 3 12 3 18C3 24 11 30 18 30C25 30 33 24 33 18C33 12 25 6 18 6Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,10 24,18 18,26 12,18" fill="currentColor"/></svg>` },
-    { min: 70, title: 'Olympian',     fx: 'lvl-fx-15', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="7" fill="currentColor"/><path d="M18 2V7M18 29V34M2 18H7M29 18H34M6.7 6.7L10.2 10.2M25.8 25.8L29.3 29.3M29.3 6.7L25.8 10.2M10.2 25.8L6.7 29.3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>` },
-    { min: 75, title: 'Apex Legend',  fx: 'lvl-fx-16', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,10 33,26 18,34 3,26 3,10" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M9 24L12 13L18 18L24 13L27 24H9Z" fill="currentColor"/><circle cx="18" cy="8" r="2.5" fill="currentColor"/></svg>` }
+    { min: 1,   title: 'Rookie',       fx: 'lvl-fx-1',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,4 30,18 18,32 6,18" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
+    { min: 5,   title: 'Starter',      fx: 'lvl-fx-2',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L29 9.5V22.5L18 29L7 22.5V9.5L18 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M13 20L18 13L23 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 10,  title: 'Striver',      fx: 'lvl-fx-3',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="6 3"/><path d="M11 21L18 12L25 21M13 25L18 18L23 25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>` },
+    { min: 15,  title: 'Challenger',   fx: 'lvl-fx-4',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L31 8V18C31 26 18 33 18 33C18 33 5 26 5 18V8L18 3Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,9 22,18 18,27 14,18" fill="currentColor"/></svg>` },
+    { min: 20,  title: 'Hustler',      fx: 'lvl-fx-5',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 23,13 34,14 26,22 28,33 18,27 8,33 10,22 2,14 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
+    { min: 25,  title: 'Warrior',      fx: 'lvl-fx-6',  svg: `<svg viewBox="0 0 36 36"><path d="M7 7L29 29M29 7L7 29" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><polygon points="18,4 26,18 18,32 10,18" fill="var(--bg-main)" stroke="currentColor" stroke-width="2.4"/></svg>` },
+    { min: 30,  title: 'Vanguard',     fx: 'lvl-fx-7',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,11 33,25 18,34 3,25 3,11" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 14L18 24L26 14M13 10L18 16L23 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 35,  title: 'Spartan',      fx: 'lvl-fx-8',  svg: `<svg viewBox="0 0 36 36"><path d="M8 28L12 10L18 4L24 10L28 28L18 23L8 28Z" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="18" y1="4" x2="18" y2="23" stroke="currentColor" stroke-width="2.4"/></svg>` },
+    { min: 40,  title: 'Gladiator',    fx: 'lvl-fx-9',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,5 22,14 31,18 22,22 18,31 14,22 5,18 14,14" fill="currentColor"/></svg>` },
+    { min: 45,  title: 'Commander',    fx: 'lvl-fx-10', svg: `<svg viewBox="0 0 36 36"><path d="M4 18L11 7H25L32 18L25 29H11L4 18Z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M11 22L18 14L25 22M11 16L18 8L25 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 50,  title: 'Master',       fx: 'lvl-fx-11', svg: `<svg viewBox="0 0 36 36"><path d="M5 26L8 12L14 18L18 8L22 18L28 12L31 26H5Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="5" r="2" fill="currentColor"/></svg>` },
+    { min: 55,  title: 'Grandmaster',  fx: 'lvl-fx-12', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4"/><polygon points="18,4 28,24 8,24" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,32 28,12 8,12" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>` },
+    { min: 60,  title: 'Titan',        fx: 'lvl-fx-13', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 32,9 32,27 18,34 4,27 4,9" fill="none" stroke="currentColor" stroke-width="2.5"/><polygon points="18,8 26,18 18,28 10,18" fill="currentColor"/><circle cx="18" cy="18" r="3" fill="var(--bg-main)"/></svg>` },
+    { min: 65,  title: 'Immortal',     fx: 'lvl-fx-14', svg: `<svg viewBox="0 0 36 36"><path d="M18 6C11 6 3 12 3 18C3 24 11 30 18 30C25 30 33 24 33 18C33 12 25 6 18 6Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,10 24,18 18,26 12,18" fill="currentColor"/></svg>` },
+    { min: 70,  title: 'Olympian',     fx: 'lvl-fx-15', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="7" fill="currentColor"/><path d="M18 2V7M18 29V34M2 18H7M29 18H34M6.7 6.7L10.2 10.2M25.8 25.8L29.3 29.3M29.3 6.7L25.8 10.2M10.2 25.8L6.7 29.3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>` },
+    { min: 75,  title: 'Apex Legend',  fx: 'lvl-fx-16', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,10 33,26 18,34 3,26 3,10" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M9 24L12 13L18 18L24 13L27 24H9Z" fill="currentColor"/><circle cx="18" cy="8" r="2.5" fill="currentColor"/></svg>` },
+    // NEU: LEVEL 80 BIS LEVEL 100
+    { min: 80,  title: 'Mythic',       fx: 'lvl-fx-17', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 3"/><polygon points="18,3 23,13 33,18 23,23 18,33 13,23 3,18 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/></svg>` },
+    { min: 85,  title: 'Astral',       fx: 'lvl-fx-18', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 22,14 34,18 22,22 18,34 14,22 2,18 14,14" fill="currentColor"/><polygon points="7,7 16,15 29,7 21,16 29,29 18,21 7,29 15,18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>` },
+    { min: 90,  title: 'Celestial',    fx: 'lvl-fx-19', svg: `<svg viewBox="0 0 36 36"><path d="M3 12C8 12 12 16 18 6C24 16 28 12 33 12C31 22 25 29 18 33C11 29 5 22 3 12Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,11 23,20 18,28 13,20" fill="currentColor"/></svg>` },
+    { min: 95,  title: 'Eternal',      fx: 'lvl-fx-20', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="2.2"/><ellipse cx="18" cy="18" rx="15" ry="6" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(45 18 18)"/><ellipse cx="18" cy="18" rx="15" ry="6" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(-45 18 18)"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/></svg>` },
+    { min: 100, title: 'Apex God',     fx: 'lvl-fx-21', svg: `<svg viewBox="0 0 36 36"><polygon points="18,1 23,11 35,9 27,18 35,27 23,25 18,35 13,25 1,27 9,18 1,9 13,11" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 23L13 13L18 17L23 13L26 23H10Z" fill="currentColor"/><circle cx="18" cy="9" r="2.5" fill="currentColor"/></svg>` }
 ];
 
 function getLevelTierData(level) {
@@ -457,7 +431,6 @@ function hexToRgb(hex) {
 
 function getContrastText(hex) {
     const { r, g, b } = hexToRgb(hex);
-    // Wahrgenommene Helligkeit (YIQ-Formel)
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     return (yiq >= 150) ? '#09090b' : '#ffffff';
 }
@@ -632,7 +605,7 @@ let notesData = JSON.parse(localStorage.getItem('apexfit_notes')) || {
 
 let currentNotesTab = 'daily';
 let currentFitCategoryId = null;
-let editingHabitCategoryId = null; // Für das nachträgliche Bearbeiten von Habit-Kategorien
+let editingHabitCategoryId = null;
 let selectedHabitColor = '#0a84ff';
 let selectedHabitIcon = 'custom_supp';
 let selectedFitColor = '#0a84ff';
@@ -665,7 +638,6 @@ function initPickers() {
     fitIconContainer.innerHTML = '';
     habitIconContainer.innerHTML = '';
 
-    // 1. Spezielle Fitness-Icons (Hanteln, Muskeln, Geräte)
     FITNESS_ICONS.forEach((ic, idx) => {
         const isSel = (ic === selectedFitIcon) || (idx === 0 && !FITNESS_ICONS.includes(selectedFitIcon));
         fitIconContainer.innerHTML += `
@@ -674,7 +646,6 @@ function initPickers() {
             </div>`;
     });
 
-    // 2. Spezielle Habit-Icons (Supplements, Listen, Schloss, Ordner, Katze, Rucksack, Routine)
     HABIT_ICONS.forEach((ic, idx) => {
         const isSel = (ic === selectedHabitIcon) || (idx === 0 && !HABIT_ICONS.includes(selectedHabitIcon));
         habitIconContainer.innerHTML += `
@@ -701,7 +672,7 @@ function initPickers() {
     });
 }
 
-/* --- LEVEL & XP BERECHNUNG (INKL. TAGES-XP FÜR DIE 7-TAGE RANKING-HISTORY) --- */
+/* --- LEVEL & XP BERECHNUNG (BIS LVL 100) --- */
 function calculateTotalXP() {
     let totalXP = 0;
     habitsList.forEach(h => {
@@ -764,13 +735,13 @@ function renderLevelCard() {
 
     if (currentLevel >= MAX_LEVEL) {
         document.getElementById('lvl-progress-bar').style.width = '100%';
-        document.getElementById('lvl-progress-text').innerText = 'MAX LVL 75 ERREICHT';
-        document.getElementById('lvl-next-hint').innerText = 'Apex Legend Status';
+        document.getElementById('lvl-progress-text').innerText = 'MAX LVL 100 ERREICHT';
+        document.getElementById('lvl-next-hint').innerText = 'Apex God Status';
     } else {
         const xpIntoLevel = totalXP % XP_PER_LEVEL;
         const xpMissing = XP_PER_LEVEL - xpIntoLevel;
         const pct = Math.round((xpIntoLevel / XP_PER_LEVEL) * 100);
-        const nextMilestoneLvl = Math.floor(currentLevel / 5) * 5 + 5;
+        const nextMilestoneLvl = Math.min(MAX_LEVEL, Math.floor(currentLevel / 5) * 5 + 5);
 
         document.getElementById('lvl-progress-bar').style.width = `${pct}%`;
         document.getElementById('lvl-progress-text').innerText = `${xpIntoLevel} / ${XP_PER_LEVEL} XP (${pct}%)`;
@@ -949,7 +920,7 @@ function calculateStreak(habit) {
     return streak;
 }
 
-/* --- 1. HOME DASHBOARD RENDERN (MATRIX NACH KATEGORIEN-REIHENFOLGE SORTIERT & HÄKCHEN-FIX) --- */
+/* --- 1. HOME DASHBOARD RENDERN --- */
 function renderHome() {
     renderLevelCard();
 
@@ -994,7 +965,7 @@ function renderHome() {
         gWrap.style.display = 'none';
     }
 
-    // 7-Tage Habit Matrix: IMMER nach der Ordnung der Habit-Kategorien gruppieren!
+    // 7-Tage Habit Matrix: Sortiert nach Kategorien-Reihenfolge
     const matrixContainer = document.getElementById('matrix-container');
     if (habitsList.length === 0) {
         matrixContainer.innerHTML = `<p class="empty-hint">Noch keine Ziele im Reiter „Habits“ angelegt.</p>`;
@@ -1004,7 +975,6 @@ function renderHome() {
             const catItems = habitsList.filter(h => h.catId === cat.id);
             orderedHabits.push(...catItems);
         });
-        // Falls noch Habits ohne Kategorie existieren, am Ende anhängen
         const orphanHabits = habitsList.filter(h => !habitCategories.some(c => c.id === h.catId));
         orderedHabits.push(...orphanHabits);
 
@@ -1068,7 +1038,7 @@ function renderHome() {
     renderFitnessMatrixAndChart();
 }
 
-/* --- 2. HABITS REITER RENDERN (INKL. KATEGORIE NACHTRÄGLICH BEARBEITEN) --- */
+/* --- 2. HABITS REITER RENDERN --- */
 function renderHabits() {
     const container = document.getElementById('habits-categories-container');
     container.innerHTML = '';
@@ -1582,7 +1552,7 @@ function confirmImportFitnessPlan() {
     }
 }
 
-/* --- LIVE WORKOUT IM GYM (MIT ANIMIERTER TRAININGS- UND PAUSENZEIT) --- */
+/* --- LIVE WORKOUT IM GYM --- */
 function openStartWorkoutModal() {
     const listEl = document.getElementById('start-workout-cat-list');
     listEl.innerHTML = '';
@@ -1720,7 +1690,6 @@ function renderActiveWorkoutBanner() {
         });
     }
 
-    // Beide Timer (Training & Pause) haben im aktiven Zustand den pulsierenden Animations-Effekt
     const trainActiveClass = !activeWorkout.isPaused ? 'active-train' : '';
     const pauseActiveClass = activeWorkout.isPaused ? 'active-pause' : '';
     const pauseLabel = activeWorkout.isPaused ? 'Pause läuft' : 'Pause';
@@ -2094,7 +2063,7 @@ function deleteJournalEntry(entryId) {
     renderJournal();
 }
 
-/* --- 5. FITTRACKER (SCHRITTE EINZELN LÖSCHBAR & HISTORY-TAGE LÖSCHBAR) --- */
+/* --- 5. FITTRACKER --- */
 function getTodayNutrition() {
     const tKey = getDateKey(new Date());
     if (!nutritionData[tKey]) {
@@ -2139,7 +2108,6 @@ function renderFitTracker() {
     document.getElementById('steps-progress-bar').style.width = `${stepPct}%`;
     document.getElementById('steps-progress-subtitle').innerText = `${stepsToday.toLocaleString('de-DE')} von ${stepGoal.toLocaleString('de-DE')} Schritten (${stepPct}%)`;
 
-    // Heutige Mahlzeiten
     const mealsEl = document.getElementById('today-meals-list');
     if (dayLog.meals.length === 0) {
         mealsEl.innerHTML = `<p class="empty-hint" style="padding:4px 0;">Heute noch keine Mahlzeit gespeichert.</p>`;
@@ -2162,7 +2130,6 @@ function renderFitTracker() {
         mealsEl.innerHTML = mHtml;
     }
 
-    // Wasser-Logs
     const waterEl = document.getElementById('today-water-logs');
     if (!dayLog.waterLogs || dayLog.waterLogs.length === 0) {
         waterEl.innerHTML = '';
@@ -2179,7 +2146,6 @@ function renderFitTracker() {
         waterEl.innerHTML = wHtml;
     }
 
-    // Schritte-Logs (Einzeln entfernbar wie beim Trinken!)
     const stepsEl = document.getElementById('today-steps-logs');
     if (stepsEl) {
         if (!dayLog.stepsLogs || dayLog.stepsLogs.length === 0) {
@@ -2277,7 +2243,7 @@ function removeWaterLog(wId) {
     }
 }
 
-/* --- SCHRITTZÄHLER LOGIK (INKL. EINZELNE SCHRITTE ENTFERNEN) --- */
+/* --- SCHRITTZÄHLER LOGIK --- */
 function addStepsAmount(stepsToAdd) {
     const val = parseInt(stepsToAdd) || 0;
     if (val <= 0) return;
@@ -2322,7 +2288,7 @@ function removeStepLog(sId) {
     }
 }
 
-/* --- FITTRACKER HISTORY (INKL. LÖSCH-BUTTON PRO TAG) --- */
+/* --- FITTRACKER HISTORY --- */
 function toggleTrackerHistory() {
     showTrackerHistory = !showTrackerHistory;
     const cont = document.getElementById('tracker-history-container');
@@ -2433,7 +2399,7 @@ function renderTrackerHistoryCards() {
     cont.innerHTML = html;
 }
 
-/* --- 6. EINSTELLUNGEN (INKL. 3. EIGENES DESIGN / CUSTOM COLOR PICKER) --- */
+/* --- 6. EINSTELLUNGEN & ALLE BENUTZER-AVATARE SYNCHRONISIEREN --- */
 function applyCustomThemeCSSVars() {
     const rootStyle = document.documentElement.style;
     if (userSettings.theme === 'custom' && userSettings.customColors) {
@@ -2453,13 +2419,11 @@ function applyCustomThemeCSSVars() {
         rootStyle.setProperty('--dock-bg', `rgba(${rgbCard.r}, ${rgbCard.g}, ${rgbCard.b}, 0.90)`);
         rootStyle.setProperty('--sheet-bg', `linear-gradient(160deg, ${c.card} 0%, ${c.bg} 100%)`);
     } else {
-        // Entferne Inline-Überschreibungen, damit Default & Monochrome aus style.css greifen
         ['--bg-main', '--bg-secondary', '--liquid-bg', '--liquid-inner', '--accent-blue', '--text-main', '--btn-primary-text', '--header-bg', '--dock-bg', '--sheet-bg'].forEach(prop => {
             rootStyle.removeProperty(prop);
         });
     }
 
-    // Vorschau-Punkte auf der Custom-Theme-Kachel aktualisieren
     if (userSettings.customColors) {
         const dBg = document.getElementById('preview-dot-custom-bg');
         const dCard = document.getElementById('preview-dot-custom-card');
@@ -2493,25 +2457,34 @@ function applyVisualSettings() {
 
     document.getElementById('display-username').innerText = userName;
 
-    const headerImg = document.getElementById('header-avatar-img');
-    const headerPlaceholder = document.getElementById('header-avatar-placeholder');
+    // Alle Benutzer-Avatare im Header (Home, Habits, Journal, FitTracker) sowie in Einstellungen synchronisieren
+    const allSyncImgs = document.querySelectorAll('.user-avatar-sync-img');
+    const allSyncIcons = document.querySelectorAll('.user-avatar-sync-icon');
     const settingsImg = document.getElementById('settings-avatar-img');
     const settingsIcon = document.getElementById('settings-avatar-icon');
 
     if (userSettings.avatarDataUrl) {
-        headerImg.src = userSettings.avatarDataUrl;
-        headerImg.style.display = 'block';
-        headerPlaceholder.style.display = 'none';
-
-        settingsImg.src = userSettings.avatarDataUrl;
-        settingsImg.style.display = 'block';
-        settingsIcon.style.display = 'none';
+        allSyncImgs.forEach(img => {
+            img.src = userSettings.avatarDataUrl;
+            img.style.display = 'block';
+        });
+        allSyncIcons.forEach(ic => {
+            ic.style.display = 'none';
+        });
+        if (settingsImg) {
+            settingsImg.src = userSettings.avatarDataUrl;
+            settingsImg.style.display = 'block';
+        }
+        if (settingsIcon) settingsIcon.style.display = 'none';
     } else {
-        headerImg.style.display = 'none';
-        headerPlaceholder.style.display = 'block';
-
-        settingsImg.style.display = 'none';
-        settingsIcon.style.display = 'block';
+        allSyncImgs.forEach(img => {
+            img.style.display = 'none';
+        });
+        allSyncIcons.forEach(ic => {
+            ic.style.display = 'block';
+        });
+        if (settingsImg) settingsImg.style.display = 'none';
+        if (settingsIcon) settingsIcon.style.display = 'block';
     }
 
     applyTranslations(userSettings.lang || 'de');
@@ -2555,7 +2528,7 @@ function handleAvatarUpload(event) {
         const img = new Image();
         img.onload = function() {
             const canvas = document.createElement('canvas');
-            const maxDim = 220;
+            const maxDim = 180;
             let w = img.width;
             let h = img.height;
             if (w > h) {
@@ -2567,9 +2540,10 @@ function handleAvatarUpload(event) {
             canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            userSettings.avatarDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            userSettings.avatarDataUrl = canvas.toDataURL('image/jpeg', 0.80);
             saveAll();
             applyVisualSettings();
+            syncAndLoadLeaderboard(false);
         };
         img.src = e.target.result;
     };
@@ -2580,6 +2554,7 @@ function removeAvatarImage() {
     userSettings.avatarDataUrl = '';
     saveAll();
     applyVisualSettings();
+    syncAndLoadLeaderboard(false);
 }
 
 function selectAppTheme(themeName) {
@@ -2702,7 +2677,7 @@ function importBackupJSON(event) {
     reader.readAsText(file);
 }
 
-/* --- 7. LIVE FIREBASE RANKING (MIT APP-LOGO & LIVE 7-TAGE XP-HISTORY FÜR FREUNDE) --- */
+/* --- 7. LIVE FIREBASE RANKING (MIT ECHTEN PROFILBILDERN / AVATAREN & 7-TAGE XP-HISTORY) --- */
 async function syncMyProfileToFirebase() {
     const myXP = calculateTotalXP();
     const myLvl = getLevelFromXP(myXP);
@@ -2713,6 +2688,7 @@ async function syncMyProfileToFirebase() {
         xp: myXP,
         level: myLvl,
         rank: tierData.title,
+        avatar: userSettings.avatarDataUrl || '',
         dailyXP: calculateMyLast7DaysXPMap(),
         updatedAt: Date.now()
     };
@@ -2768,6 +2744,7 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
                 id: myUserId,
                 name: userName,
                 xp: calculateTotalXP(),
+                avatar: userSettings.avatarDataUrl || '',
                 dailyXP: myDailyMap,
                 isMe: true
             }
@@ -2782,6 +2759,7 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
                         id: fId,
                         name: pData.name,
                         xp: Number(pData.xp) || 0,
+                        avatar: pData.avatar || '',
                         dailyXP: pData.dailyXP || {},
                         isMe: false
                     });
@@ -2799,7 +2777,7 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
         }
     } catch (err) {
         const fallbackPlayers = [
-            { id: myUserId, name: userName, xp: calculateTotalXP(), dailyXP: myDailyMap, isMe: true }
+            { id: myUserId, name: userName, xp: calculateTotalXP(), avatar: userSettings.avatarDataUrl || '', dailyXP: myDailyMap, isMe: true }
         ];
         renderLeaderboardDOM(fallbackPlayers);
         renderLeaderboard7DayHistory(fallbackPlayers);
@@ -2821,12 +2799,16 @@ function renderLeaderboardDOM(players) {
         else if (rankNum === 2) badgeClass = 'lb-rank-2';
         else if (rankNum === 3) badgeClass = 'lb-rank-3';
 
+        const avatarMarkup = p.avatar
+            ? `<img src="${p.avatar}" alt="${p.name}">`
+            : `<span class="material-symbols-rounded" style="font-size:20px;">person</span>`;
+
         html += `
         <div class="leaderboard-row ${p.isMe ? 'is-me' : ''}">
             <div class="lb-left">
                 <div class="lb-rank-badge ${badgeClass}">${rankNum}</div>
-                <!-- App-Logo statt Level-Icon im Ranking -->
-                <img src="Icon.png" class="lb-logo-img" alt="Logo" onerror="this.style.display='none'">
+                <!-- Benutzer-Avatar (Profilbild oder Benutzer-Icon) -->
+                <div class="lb-avatar-wrap">${avatarMarkup}</div>
                 <div class="lb-user-info">
                     <div class="lb-name">
                         <span>${p.name}</span>
@@ -2849,7 +2831,7 @@ function renderLeaderboardDOM(players) {
     container.innerHTML = html;
 }
 
-/* --- 7-TAGE XP-HISTORY IM RANKING (DU & FREUNDE IM WOCHENVERGLEICH) --- */
+/* --- 7-TAGE XP-HISTORY IM RANKING --- */
 function renderLeaderboard7DayHistory(players) {
     const chartEl = document.getElementById('leaderboard-history-chart');
     const tableEl = document.getElementById('leaderboard-history-table-container');
@@ -2858,7 +2840,6 @@ function renderLeaderboard7DayHistory(players) {
     const last7 = getLast7Days();
     const lineColors = ['#0a84ff', '#30d158', '#ff9f0a', '#bf5af2', '#ff375f', '#64d2ff'];
 
-    // 1. Multi-Player SVG Linien-Chart über die 7 Wochentage
     const w = 340, h = 130, padL = 24, padR = 16, padT = 20, padB = 26;
     const plotW = w - padL - padR;
     const plotH = h - padT - padB;
@@ -2904,7 +2885,6 @@ function renderLeaderboard7DayHistory(players) {
             ${labelsHTML}
         </svg>`;
 
-    // 2. Wochentags-Tabelle für alle Spieler
     let tHTML = `
         <table class="matrix-table">
             <colgroup>
