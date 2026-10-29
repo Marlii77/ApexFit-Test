@@ -1,5 +1,5 @@
 /* =========================================================
-   APEXFIT – APP.JS (LOGIK, FIREBASE, I18N, LVL 100 & AVATARE)
+   APEXFIT – APP.JS (BG-TIMER, HEATMAP, ROADMAP, LIVE-FEED)
    ========================================================= */
 
 const FIREBASE_DB_URL = "https://apexfit-4c49a-default-rtdb.europe-west1.firebasedatabase.app";
@@ -22,45 +22,45 @@ const MONOCHROME_COLORS = [
     '#1f1f23', '#18181b', '#121215', '#09090b'
 ];
 
-/* --- MASSGESCHNEIDERTE SVG-ICONS FÜR FITNESS (GYM, MUSKELN, GERÄTE) & HABITS --- */
+/* --- CLEAN VECTOR ICONS (EINHEITLICH IM MATERIAL-ROUNDED STIL) --- */
 const CUSTOM_SVG_ICONS = {
-    // 1. Kurzhantel (Dumbbell)
-    custom_dumbbell: `<svg viewBox="0 0 24 24"><path d="M20.5 7.5a1 1 0 0 0-1 1v1h-1V6a1.5 1.5 0 0 0-3 0v4.5h-7V6a1.5 1.5 0 0 0-3 0v3.5h-1v-1a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0v-1h1V18a1.5 1.5 0 0 0 3 0v-4.5h7V18a1.5 1.5 0 0 0 3 0v-3.5h1v1a1 1 0 0 0 2 0v-7a1 1 0 0 0-1-1Z"/></svg>`,
-    // 2. Langhantel (Barbell)
-    custom_barbell: `<svg viewBox="0 0 24 24"><path d="M2 11h2v2H2v-2Zm18 0h2v2h-2v-2ZM5 7h2v10H5V7Zm12 0h2v10h-2V7ZM8 9h1.5v6H8V9Zm6.5 0H16v6h-1.5V9Zm-5 2h5v2h-5v-2Z"/></svg>`,
-    // 3. Bizeps / Muskel-Arm
-    custom_biceps: `<svg viewBox="0 0 24 24"><path d="M18.5 4.5c-1.7 0-3 1.3-3 3 0 .6.2 1.2.5 1.7l-1.8 1.8c-1.3-1-3.1-1.2-4.6-.3-.8.5-1.4 1.2-1.8 2.1L6 8.5 4.2 10c-.8.7-1.1 1.8-.8 2.8l1.4 4.7c.4 1.3 1.6 2.2 3 2.2h6.7c2.8 0 5-2.2 5-5 0-1.5-.7-2.9-1.8-3.8l1.8-2.2c.6-.3 1-.9 1-1.7 0-1.4-1.1-2.5-2-2.5Z"/></svg>`,
-    // 4. Brustmuskel / Torso (Chest)
-    custom_chest: `<svg viewBox="0 0 24 24"><path d="M4 5c2.5-1.2 5.2-1.5 8-1.5s5.5.3 8 1.5l1.5 4.5c.3 1-.2 2.1-1.1 2.6l-1.4.7v6.7H5v-6.7l-1.4-.7c-.9-.5-1.4-1.6-1.1-2.6L4 5Zm8 2v5c2.8 0 5-1.2 5.5-3.5L16.5 6c-1.4-.4-3-.5-4.5-.5V7Zm-1.5-1.5c-1.5 0-3.1.1-4.5.5l-1 2.5C5.5 10.8 7.7 12 10.5 12V5.5Z"/></svg>`,
-    // 5. Breiter Rücken / V-Taper (Back)
-    custom_back: `<svg viewBox="0 0 24 24"><path d="M3 5.5 7.5 3h9L21 5.5l-2.5 8.5-2.5 7H8l-2.5-7L3 5.5Zm8 1.5v11h2V7h-2Zm-4.2 1 1.6 5.5h1.6V8H6.8Zm8.8 0v5.5h1.6L18.8 8h-3.2Z"/></svg>`,
-    // 6. Beine / Quadrizeps (Legs)
-    custom_legs: `<svg viewBox="0 0 24 24"><path d="M6 3h12l-1 7.5 1.5 6.5-2.5 4h-2.5l-.5-6.5L12 9l-1 5.5L10.5 21H8l-2.5-4L7 10.5 6 3Z"/></svg>`,
-    // 7. Laufband (Treadmill)
-    custom_treadmill: `<svg viewBox="0 0 24 24"><path d="M19.5 3a1.5 1.5 0 0 0-1.4 1L14.8 14H4a2 2 0 0 0 0 4h14.5a1.5 1.5 0 0 0 1.4-1l2.5-12A1.5 1.5 0 0 0 19.5 3ZM3 20h18v2H3v-2Zm5.5-9.5 2.5-2.5 2 2 2.5-3 1.5 1.2-3.8 4.5-2.2-2.2-1.3 1.3-1.2-1.3Z"/></svg>`,
-    // 8. Kettlebell
-    custom_kettlebell: `<svg viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 0 1 2 2v2.2A7.5 7.5 0 1 1 7 7.2V5a2 2 0 0 1 2-2Zm0 2v1.3a7.5 7.5 0 0 1 6 0V5H9Zm3 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>`,
-    // 9. Kabelzug / Maschine (Cable Pulley)
-    custom_cable: `<svg viewBox="0 0 24 24"><path d="M4 2h16v3H4V2Zm7 3h2v6.2l3.8 5.8H14l-2-3.2-2 3.2H7.2L11 11.2V5Zm-5 14h12v3H6v-3Z"/></svg>`,
-    // 10. Hantelbank (Bench Press)
-    custom_bench: `<svg viewBox="0 0 24 24"><path d="M2 13h20v3H19v5h-2.5v-5h-9v5H5v-5H2v-3Zm4-8h2v6H6V5Zm10 0h2v6h-2V5ZM3 7h18v2H3V7Z"/></svg>`,
-    // 11. Sixpack / Core (Abs)
-    custom_abs: `<svg viewBox="0 0 24 24"><rect x="6" y="3" width="5" height="4.5" rx="1.5"/><rect x="13" y="3" width="5" height="4.5" rx="1.5"/><rect x="6" y="9.5" width="5" height="4.5" rx="1.5"/><rect x="13" y="9.5" width="5" height="4.5" rx="1.5"/><rect x="6" y="16" width="5" height="4.5" rx="1.5"/><rect x="13" y="16" width="5" height="4.5" rx="1.5"/></svg>`,
-    // 12. Eigenes Katzen-Icon (Haustier für Habits)
+    // Pro Kurzhantel (Clean & groß skaliert)
+    custom_dumbbell: `<svg viewBox="0 0 24 24"><path d="M21 9h-1V7a1.5 1.5 0 0 0-3 0v3.5H7V7a1.5 1.5 0 0 0-3 0v2H3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h1v2a1.5 1.5 0 0 0 3 0v-3.5h10V17a1.5 1.5 0 0 0 3 0v-2h1a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1Z"/></svg>`,
+    // Langhantel mit großen Scheiben
+    custom_barbell: `<svg viewBox="0 0 24 24"><path d="M22 11h-2V6a1 1 0 0 0-2 0v2h-1.5V7a1 1 0 0 0-2 0v4h-5V7a1 1 0 0 0-2 0v1H6V6a1 1 0 0 0-2 0v5H2a1 1 0 1 0 0 2h2v5a1 1 0 0 0 2 0v-2h1.5v1a1 1 0 0 0 2 0v-4h5v4a1 1 0 0 0 2 0v-1H18v2a1 1 0 0 0 2 0v-5h2a1 1 0 1 0 0-2Z"/></svg>`,
+    // Kettlebell (Clean Silhouette)
+    custom_kettlebell: `<svg viewBox="0 0 24 24"><path d="M15.5 6.8V5a3.5 3.5 0 0 0-7 0v1.8a8 8 0 1 0 7 0ZM10.5 5a1.5 1.5 0 0 1 3 0v1.1a8.1 8.1 0 0 0-3 0V5Zm1.5 12a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg>`,
+    // Eigenes Katzen-Icon (für Habits)
     custom_cat: `<svg viewBox="0 0 24 24"><path d="M12 5c-1.6 0-3.1.5-4.3 1.4L4.5 3.8A1 1 0 0 0 3 4.6v5.8C2.4 11.5 2 12.7 2 14c0 4.4 4.5 8 10 8s10-3.6 10-8c0-1.3-.4-2.5-1-3.6V4.6a1 1 0 0 0-1.5-.8l-3.2 2.6C15.1 5.5 13.6 5 12 5Zm-3.5 7a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-3.5 3.2c1.1 0 2 .6 2.4 1.5h-4.8c.4-.9 1.3-1.5 2.4-1.5Z"/></svg>`,
-    // 13. Supplement Kapsel / Dose (für Habits)
+    // Supplement Kapsel (für Habits)
     custom_supp: `<svg viewBox="0 0 24 24"><path d="M16.2 3.8a4.5 4.5 0 0 0-6.4 0l-6 6a4.5 4.5 0 0 0 6.4 6.4l6-6a4.5 4.5 0 0 0 0-6.4Zm-5 5 2.1-2.1a2.5 2.5 0 0 1 3.6 3.6L14.8 12.4 11.2 8.8ZM19 14a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2h-2v2a1 1 0 1 1-2 0v-2h-2a1 1 0 1 1 0-2h2v-2a1 1 0 0 1 1-1Z"/></svg>`
 };
 
-/* --- SPEZIELLE FITNESS-ICONS --- */
+/* --- ÜBERARBEITETE, OPTISCH PERFEKTE FITNESS-ICONS (20 ICONS) --- */
 const FITNESS_ICONS = [
-    'custom_dumbbell', 'custom_barbell', 'custom_biceps', 'custom_chest', 'custom_back',
-    'custom_legs', 'custom_abs', 'custom_bench', 'custom_cable', 'custom_kettlebell',
-    'custom_treadmill', 'fitness_center', 'exercise', 'directions_run', 'pedal_bike',
-    'rowing', 'sports_gymnastics', 'sports_mma', 'timer', 'monitoring'
+    'fitness_center',        // Klassische Hantel
+    'exercise',              // Pro Kurzhantel schräg
+    'custom_barbell',        // Langhantel (Bankdrücken / Squat)
+    'custom_kettlebell',     // Kettlebell
+    'bolt',                  // Explosivkraft / Arme
+    'local_fire_department', // Intensität / Burn
+    'shield',                // Brust / Panzer-Torso
+    'accessibility_new',     // Ganzkörper / Rücken / Schultern
+    'sports_gymnastics',     // Core / Bauch / Calisthenics
+    'sports_mma',            // Boxhandschuh / Kampfkraft
+    'directions_run',        // Laufband / Sprint
+    'pedal_bike',            // Ergometer / Beine
+    'rowing',                // Rudergerät / Lat
+    'hiking',                // Степпер / Incline Walk
+    'pool',                  // Schwimmen / Ausdauer
+    'timer',                 // HIIT / Intervall
+    'vital_signs',           // Puls / Cardio
+    'monitoring',            // Kraft-Progression
+    'self_improvement',      // Mobility / Stretching
+    'trophy'                 // Wettkampf / PR-Fokus
 ];
 
-/* --- SPEZIELLE HABIT-ICONS --- */
+/* --- HABIT-ICONS (BLEIBEN WIE GEWÜNSCHT ERHALTEN) --- */
 const HABIT_ICONS = [
     'custom_supp', 'medication', 'description', 'format_list_bulleted', 'fact_check',
     'lock', 'folder', 'event_repeat', 'custom_cat', 'pets',
@@ -68,38 +68,50 @@ const HABIT_ICONS = [
     'bedtime', 'menu_book', 'code', 'spa', 'custom_dumbbell'
 ];
 
+// Abwärtskompatibilität für alte gespeicherte Icon-Namen
+const LEGACY_ICON_FALLBACK = {
+    custom_biceps: 'bolt',
+    custom_chest: 'shield',
+    custom_back: 'accessibility_new',
+    custom_legs: 'directions_run',
+    custom_abs: 'sports_gymnastics',
+    custom_bench: 'fitness_center',
+    custom_cable: 'exercise',
+    custom_treadmill: 'directions_run'
+};
+
 function renderIconMarkup(iconKey, sizePx = 22) {
-    if (CUSTOM_SVG_ICONS[iconKey]) {
-        return `<span style="display:inline-flex; width:${sizePx}px; height:${sizePx}px; align-items:center; justify-content:center;">${CUSTOM_SVG_ICONS[iconKey]}</span>`;
+    const resolvedKey = LEGACY_ICON_FALLBACK[iconKey] || iconKey;
+    if (CUSTOM_SVG_ICONS[resolvedKey]) {
+        return `<span style="display:inline-flex; width:${sizePx}px; height:${sizePx}px; align-items:center; justify-content:center;">${CUSTOM_SVG_ICONS[resolvedKey]}</span>`;
     }
-    const cleanName = iconKey ? iconKey.toLowerCase() : 'bolt';
+    const cleanName = resolvedKey ? resolvedKey.toLowerCase() : 'fitness_center';
     return `<span class="material-symbols-rounded" style="font-size:${sizePx}px;">${cleanName}</span>`;
 }
 
-/* --- 21 EIGENE SEPARATE LEVEL-ICONS MIT INDIVIDUELLEN LOOP-ANIMATIONEN (BIS LVL 100) --- */
+/* --- 21 SEPARATE LEVEL-ICONS MIT EIGENEN ANIMATIONEN (LVL 1 BIS LVL 100) --- */
 const LEVEL_TIERS = [
-    { min: 1,   title: 'Rookie',       fx: 'lvl-fx-1',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,4 30,18 18,32 6,18" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
-    { min: 5,   title: 'Starter',      fx: 'lvl-fx-2',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L29 9.5V22.5L18 29L7 22.5V9.5L18 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M13 20L18 13L23 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-    { min: 10,  title: 'Striver',      fx: 'lvl-fx-3',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="6 3"/><path d="M11 21L18 12L25 21M13 25L18 18L23 25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>` },
-    { min: 15,  title: 'Challenger',   fx: 'lvl-fx-4',  svg: `<svg viewBox="0 0 36 36"><path d="M18 3L31 8V18C31 26 18 33 18 33C18 33 5 26 5 18V8L18 3Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,9 22,18 18,27 14,18" fill="currentColor"/></svg>` },
-    { min: 20,  title: 'Hustler',      fx: 'lvl-fx-5',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 23,13 34,14 26,22 28,33 18,27 8,33 10,22 2,14 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
-    { min: 25,  title: 'Warrior',      fx: 'lvl-fx-6',  svg: `<svg viewBox="0 0 36 36"><path d="M7 7L29 29M29 7L7 29" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><polygon points="18,4 26,18 18,32 10,18" fill="var(--bg-main)" stroke="currentColor" stroke-width="2.4"/></svg>` },
-    { min: 30,  title: 'Vanguard',     fx: 'lvl-fx-7',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,11 33,25 18,34 3,25 3,11" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 14L18 24L26 14M13 10L18 16L23 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-    { min: 35,  title: 'Spartan',      fx: 'lvl-fx-8',  svg: `<svg viewBox="0 0 36 36"><path d="M8 28L12 10L18 4L24 10L28 28L18 23L8 28Z" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="18" y1="4" x2="18" y2="23" stroke="currentColor" stroke-width="2.4"/></svg>` },
-    { min: 40,  title: 'Gladiator',    fx: 'lvl-fx-9',  svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,5 22,14 31,18 22,22 18,31 14,22 5,18 14,14" fill="currentColor"/></svg>` },
-    { min: 45,  title: 'Commander',    fx: 'lvl-fx-10', svg: `<svg viewBox="0 0 36 36"><path d="M4 18L11 7H25L32 18L25 29H11L4 18Z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M11 22L18 14L25 22M11 16L18 8L25 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-    { min: 50,  title: 'Master',       fx: 'lvl-fx-11', svg: `<svg viewBox="0 0 36 36"><path d="M5 26L8 12L14 18L18 8L22 18L28 12L31 26H5Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="5" r="2" fill="currentColor"/></svg>` },
-    { min: 55,  title: 'Grandmaster',  fx: 'lvl-fx-12', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4"/><polygon points="18,4 28,24 8,24" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,32 28,12 8,12" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>` },
-    { min: 60,  title: 'Titan',        fx: 'lvl-fx-13', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 32,9 32,27 18,34 4,27 4,9" fill="none" stroke="currentColor" stroke-width="2.5"/><polygon points="18,8 26,18 18,28 10,18" fill="currentColor"/><circle cx="18" cy="18" r="3" fill="var(--bg-main)"/></svg>` },
-    { min: 65,  title: 'Immortal',     fx: 'lvl-fx-14', svg: `<svg viewBox="0 0 36 36"><path d="M18 6C11 6 3 12 3 18C3 24 11 30 18 30C25 30 33 24 33 18C33 12 25 6 18 6Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,10 24,18 18,26 12,18" fill="currentColor"/></svg>` },
-    { min: 70,  title: 'Olympian',     fx: 'lvl-fx-15', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="7" fill="currentColor"/><path d="M18 2V7M18 29V34M2 18H7M29 18H34M6.7 6.7L10.2 10.2M25.8 25.8L29.3 29.3M29.3 6.7L25.8 10.2M10.2 25.8L6.7 29.3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>` },
-    { min: 75,  title: 'Apex Legend',  fx: 'lvl-fx-16', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,10 33,26 18,34 3,26 3,10" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M9 24L12 13L18 18L24 13L27 24H9Z" fill="currentColor"/><circle cx="18" cy="8" r="2.5" fill="currentColor"/></svg>` },
-    // NEU: LEVEL 80 BIS LEVEL 100
-    { min: 80,  title: 'Mythic',       fx: 'lvl-fx-17', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 3"/><polygon points="18,3 23,13 33,18 23,23 18,33 13,23 3,18 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/></svg>` },
-    { min: 85,  title: 'Astral',       fx: 'lvl-fx-18', svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 22,14 34,18 22,22 18,34 14,22 2,18 14,14" fill="currentColor"/><polygon points="7,7 16,15 29,7 21,16 29,29 18,21 7,29 15,18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>` },
-    { min: 90,  title: 'Celestial',    fx: 'lvl-fx-19', svg: `<svg viewBox="0 0 36 36"><path d="M3 12C8 12 12 16 18 6C24 16 28 12 33 12C31 22 25 29 18 33C11 29 5 22 3 12Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,11 23,20 18,28 13,20" fill="currentColor"/></svg>` },
-    { min: 95,  title: 'Eternal',      fx: 'lvl-fx-20', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="2.2"/><ellipse cx="18" cy="18" rx="15" ry="6" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(45 18 18)"/><ellipse cx="18" cy="18" rx="15" ry="6" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(-45 18 18)"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/></svg>` },
-    { min: 100, title: 'Apex God',     fx: 'lvl-fx-21', svg: `<svg viewBox="0 0 36 36"><polygon points="18,1 23,11 35,9 27,18 35,27 23,25 18,35 13,25 1,27 9,18 1,9 13,11" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 23L13 13L18 17L23 13L26 23H10Z" fill="currentColor"/><circle cx="18" cy="9" r="2.5" fill="currentColor"/></svg>` }
+    { min: 1,   title: 'Rookie',       fx: 'lvl-fx-1',  desc: 'Start deiner Reise',       svg: `<svg viewBox="0 0 36 36"><polygon points="18,4 30,18 18,32 6,18" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
+    { min: 5,   title: 'Starter',      fx: 'lvl-fx-2',  desc: 'Erste Konstanz aufgebaut', svg: `<svg viewBox="0 0 36 36"><path d="M18 3L29 9.5V22.5L18 29L7 22.5V9.5L18 3Z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M13 20L18 13L23 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 10,  title: 'Striver',      fx: 'lvl-fx-3',  desc: 'Pulsierender Energie-Ring', svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="6 3"/><path d="M11 21L18 12L25 21M13 25L18 18L23 25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>` },
+    { min: 15,  title: 'Challenger',   fx: 'lvl-fx-4',  desc: 'Schild der Disziplin',     svg: `<svg viewBox="0 0 36 36"><path d="M18 3L31 8V18C31 26 18 33 18 33C18 33 5 26 5 18V8L18 3Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,9 22,18 18,27 14,18" fill="currentColor"/></svg>` },
+    { min: 20,  title: 'Hustler',      fx: 'lvl-fx-5',  desc: 'Blauer Fokus-Stern',       svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 23,13 34,14 26,22 28,33 18,27 8,33 10,22 2,14 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4" fill="currentColor"/></svg>` },
+    { min: 25,  title: 'Warrior',      fx: 'lvl-fx-6',  desc: 'Gekreuzte Klingen',        svg: `<svg viewBox="0 0 36 36"><path d="M7 7L29 29M29 7L7 29" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><polygon points="18,4 26,18 18,32 10,18" fill="var(--bg-main)" stroke="currentColor" stroke-width="2.4"/></svg>` },
+    { min: 30,  title: 'Vanguard',     fx: 'lvl-fx-7',  desc: 'Cyber-Hexagon',            svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,11 33,25 18,34 3,25 3,11" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M10 14L18 24L26 14M13 10L18 16L23 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 35,  title: 'Spartan',      fx: 'lvl-fx-8',  desc: 'Spartanisches Emblem',     svg: `<svg viewBox="0 0 36 36"><path d="M8 28L12 10L18 4L24 10L28 28L18 23L8 28Z" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="18" y1="4" x2="18" y2="23" stroke="currentColor" stroke-width="2.4"/></svg>` },
+    { min: 40,  title: 'Gladiator',    fx: 'lvl-fx-9',  desc: 'Arena-Kompass',            svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,5 22,14 31,18 22,22 18,31 14,22 5,18 14,14" fill="currentColor"/></svg>` },
+    { min: 45,  title: 'Commander',    fx: 'lvl-fx-10', desc: 'Doppel-Chevron in Orange', svg: `<svg viewBox="0 0 36 36"><path d="M4 18L11 7H25L32 18L25 29H11L4 18Z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M11 22L18 14L25 22M11 16L18 8L25 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>` },
+    { min: 50,  title: 'Master',       fx: 'lvl-fx-11', desc: 'Goldene Meister-Krone',    svg: `<svg viewBox="0 0 36 36"><path d="M5 26L8 12L14 18L18 8L22 18L28 12L31 26H5Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="5" r="2" fill="currentColor"/></svg>` },
+    { min: 55,  title: 'Grandmaster',  fx: 'lvl-fx-12', desc: '360° Orbit-Hexagramm',     svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4"/><polygon points="18,4 28,24 8,24" fill="none" stroke="currentColor" stroke-width="2.2"/><polygon points="18,32 28,12 8,12" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>` },
+    { min: 60,  title: 'Titan',        fx: 'lvl-fx-13', desc: 'Titanen-Kristallkern',     svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 32,9 32,27 18,34 4,27 4,9" fill="none" stroke="currentColor" stroke-width="2.5"/><polygon points="18,8 26,18 18,28 10,18" fill="currentColor"/><circle cx="18" cy="18" r="3" fill="var(--bg-main)"/></svg>` },
+    { min: 65,  title: 'Immortal',     fx: 'lvl-fx-14', desc: 'Auge der Unsterblichkeit', svg: `<svg viewBox="0 0 36 36"><path d="M18 6C11 6 3 12 3 18C3 24 11 30 18 30C25 30 33 24 33 18C33 12 25 6 18 6Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,10 24,18 18,26 12,18" fill="currentColor"/></svg>` },
+    { min: 70,  title: 'Olympian',     fx: 'lvl-fx-15', desc: 'Sonnen-Nova des Olymp',    svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="7" fill="currentColor"/><path d="M18 2V7M18 29V34M2 18H7M29 18H34M6.7 6.7L10.2 10.2M25.8 25.8L29.3 29.3M29.3 6.7L25.8 10.2M10.2 25.8L6.7 29.3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>` },
+    { min: 75,  title: 'Apex Legend',  fx: 'lvl-fx-16', desc: 'Prismatische Legende',     svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 33,10 33,26 18,34 3,26 3,10" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M9 24L12 13L18 18L24 13L27 24H9Z" fill="currentColor"/><circle cx="18" cy="8" r="2.5" fill="currentColor"/></svg>` },
+    { min: 80,  title: 'Mythic',       fx: 'lvl-fx-17', desc: 'Rotierender Plasma-Vortex',svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 3"/><polygon points="18,3 23,13 33,18 23,23 18,33 13,23 3,18 13,13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/></svg>` },
+    { min: 85,  title: 'Astral',       fx: 'lvl-fx-18', desc: 'Astrale Schockwelle',      svg: `<svg viewBox="0 0 36 36"><polygon points="18,2 22,14 34,18 22,22 18,34 14,22 2,18 14,14" fill="currentColor"/><polygon points="7,7 16,15 29,7 21,16 29,29 18,21 7,29 15,18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>` },
+    { min: 90,  title: 'Celestial',    fx: 'lvl-fx-19', desc: 'Himmlische Schwingen',     svg: `<svg viewBox="0 0 36 36"><path d="M3 12C8 12 12 16 18 6C24 16 28 12 33 12C31 22 25 29 18 33C11 29 5 22 3 12Z" fill="none" stroke="currentColor" stroke-width="2.4"/><polygon points="18,11 23,20 18,28 13,20" fill="currentColor"/></svg>` },
+    { min: 95,  title: 'Eternal',      fx: 'lvl-fx-20', desc: 'Ewiger Atom-Reaktor',      svg: `<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="2.2"/><ellipse cx="18" cy="18" rx="15" ry="6" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(45 18 18)"/><ellipse cx="18" cy="18" rx="15" ry="6" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(-45 18 18)"/><circle cx="18" cy="18" r="4.5" fill="currentColor"/></svg>` },
+    { min: 100, title: 'Apex God',     fx: 'lvl-fx-21', desc: 'Ultimativer Gott-Status',  svg: `<svg viewBox="0 0 36 36"><polygon points="18,1 23,11 35,9 27,18 35,27 23,25 18,35 13,25 1,27 9,18 1,9 13,11" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 23L13 13L18 17L23 13L26 23H10Z" fill="currentColor"/><circle cx="18" cy="9" r="2.5" fill="currentColor"/></svg>` }
 ];
 
 function getLevelTierData(level) {
@@ -130,6 +142,7 @@ const TRANSLATIONS = {
         habit_matrix_sub: "Jeder Haken bringt bis zu 50 XP",
         fitness_matrix_title: "7-Tage Fitness-Matrix & Verlauf",
         fitness_matrix_sub: "Absolvierte Sätze pro Muskelgruppe",
+        recovery_title: "Muskel-Heatmap & Recovery",
         nav_home: "Home",
         nav_fitness: "Fitness",
         nav_habits: "Habits",
@@ -188,7 +201,7 @@ const TRANSLATIONS = {
         btn_save_settings: "Einstellungen speichern",
         more_menu_title: "Mehr auswählen",
         more_tracker_sub: "Kalorien, Wasser, Schrittzähler & History",
-        more_ranking_sub: "Vergleiche Lvl, XP & 7-Tage-History mit Freunden",
+        more_ranking_sub: "Vergleiche Lvl, XP, Live-Workouts & 7-Tage-History",
         more_settings_sub: "Profilbild, Name, Gewicht, Ziele, Sprache & Design",
         btn_close: "Schließen"
     },
@@ -205,6 +218,7 @@ const TRANSLATIONS = {
         habit_matrix_sub: "Every check-in grants up to 50 XP",
         fitness_matrix_title: "7-Day Fitness Matrix & Trend",
         fitness_matrix_sub: "Completed sets per muscle group",
+        recovery_title: "Muscle Heatmap & Recovery",
         nav_home: "Home",
         nav_fitness: "Fitness",
         nav_habits: "Habits",
@@ -263,7 +277,7 @@ const TRANSLATIONS = {
         btn_save_settings: "Save Settings",
         more_menu_title: "More Options",
         more_tracker_sub: "Calories, Water, Step Counter & History",
-        more_ranking_sub: "Compare Lvl, XP & 7-Day History live",
+        more_ranking_sub: "Compare Lvl, XP, Live Workouts & History",
         more_settings_sub: "Avatar, Name, Weight, Goals, Language & Theme",
         btn_close: "Close"
     },
@@ -280,6 +294,7 @@ const TRANSLATIONS = {
         habit_matrix_sub: "Chaque validation rapporte jusqu'à 50 XP",
         fitness_matrix_title: "Matrice Fitness & Séries (7j)",
         fitness_matrix_sub: "Séries complétées par groupe musculaire",
+        recovery_title: "Heatmap & Récupération Musculaire",
         nav_home: "Accueil",
         nav_fitness: "Fitness",
         nav_habits: "Habitudes",
@@ -338,7 +353,7 @@ const TRANSLATIONS = {
         btn_save_settings: "Enregistrer les réglages",
         more_menu_title: "Plus d'options",
         more_tracker_sub: "Calories, Eau, Podomètre & Historique",
-        more_ranking_sub: "Comparez Lvl, XP & Historique 7j",
+        more_ranking_sub: "Comparez Lvl, XP, Séances Live & Historique",
         more_settings_sub: "Photo, Nom, Poids, Objectifs, Langue & Thème",
         btn_close: "Fermer"
     },
@@ -355,6 +370,7 @@ const TRANSLATIONS = {
         habit_matrix_sub: "Cada tarea suma hasta 50 XP",
         fitness_matrix_title: "Matriz de Fitness y Series",
         fitness_matrix_sub: "Series completadas por grupo muscular",
+        recovery_title: "Heatmap y Recuperación Muscular",
         nav_home: "Inicio",
         nav_fitness: "Fitness",
         nav_habits: "Hábitos",
@@ -413,13 +429,13 @@ const TRANSLATIONS = {
         btn_save_settings: "Guardar ajustes",
         more_menu_title: "Más opciones",
         more_tracker_sub: "Calorías, Agua, Pasos e Historial",
-        more_ranking_sub: "Compara Lvl, XP e Historial 7d",
+        more_ranking_sub: "Compara Lvl, XP, Entrenos en Vivo e Historial",
         more_settings_sub: "Foto, Nombre, Peso, Metas, Idioma y Diseño",
         btn_close: "Cerrar"
     }
 };
 
-/* --- KONTRAST-ERKENNUNG (LUMINANZ-BERECHNUNG FÜR JEDE HEX-FARBE) --- */
+/* --- KONTRAST-ERKENNUNG --- */
 function hexToRgb(hex) {
     if (!hex || typeof hex !== 'string') return { r: 10, g: 132, b: 255 };
     let c = hex.replace('#', '').trim();
@@ -458,8 +474,9 @@ function getEffectiveIconColor(hex) {
 }
 
 function formatSecondsMMSS(totalSec) {
-    const m = String(Math.floor(totalSec / 60)).padStart(2, '0');
-    const s = String(totalSec % 60).padStart(2, '0');
+    const secSafe = Math.max(0, Math.floor(Number(totalSec) || 0));
+    const m = String(Math.floor(secSafe / 60)).padStart(2, '0');
+    const s = String(secSafe % 60).padStart(2, '0');
     return `${m}:${s}`;
 }
 
@@ -564,7 +581,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     {
         id: 'cat_1',
         name: 'Brust',
-        icon: 'custom_chest',
+        icon: 'shield',
         color: '#0a84ff',
         exercises: [
             { id: 'ex_1', name: 'Bankdrücken', sets: 4, reps: 8, weight: 70 },
@@ -574,7 +591,7 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     {
         id: 'cat_2',
         name: 'Arme',
-        icon: 'custom_biceps',
+        icon: 'bolt',
         color: '#5e5ce6',
         exercises: [
             { id: 'ex_3', name: 'Kurzhantel Curls', sets: 3, reps: 10, weight: 16 },
@@ -583,7 +600,9 @@ let fitnessData = JSON.parse(localStorage.getItem('marlii_fitness_data')) || [
     }
 ];
 fitnessData.forEach(c => {
-    if (!c.icon || c.icon === 'fitness_center') c.icon = 'custom_dumbbell';
+    if (!c.icon || LEGACY_ICON_FALLBACK[c.icon]) {
+        c.icon = LEGACY_ICON_FALLBACK[c.icon] || 'fitness_center';
+    }
     if (!c.color) c.color = '#0a84ff';
 });
 
@@ -609,12 +628,22 @@ let editingHabitCategoryId = null;
 let selectedHabitColor = '#0a84ff';
 let selectedHabitIcon = 'custom_supp';
 let selectedFitColor = '#0a84ff';
-let selectedFitIcon = 'custom_dumbbell';
+let selectedFitIcon = 'fitness_center';
 let selectedJournalFilter = 'ALL';
 let currentSharedCategory = null;
 
-let activeWorkout = null;
+// Laufendes Workout (inkl. Hintergrund-Zeitstempel) aus dem Speicher wiederherstellen
+let activeWorkout = JSON.parse(localStorage.getItem('apexfit_active_workout')) || null;
 let workoutTimerInterval = null;
+let wakeLockSentinel = null;
+
+function saveActiveWorkoutState() {
+    if (activeWorkout) {
+        localStorage.setItem('apexfit_active_workout', JSON.stringify(activeWorkout));
+    } else {
+        localStorage.removeItem('apexfit_active_workout');
+    }
+}
 
 function saveAll() {
     localStorage.setItem('apexfit_username', userName);
@@ -626,6 +655,7 @@ function saveAll() {
     localStorage.setItem('apexfit_friend_ids', JSON.stringify(friendIds));
     localStorage.setItem('apexfit_notes', JSON.stringify(notesData));
     localStorage.setItem('apexfit_nutrition', JSON.stringify(nutritionData));
+    saveActiveWorkoutState();
     syncMyProfileToFirebase();
 }
 
@@ -642,7 +672,7 @@ function initPickers() {
         const isSel = (ic === selectedFitIcon) || (idx === 0 && !FITNESS_ICONS.includes(selectedFitIcon));
         fitIconContainer.innerHTML += `
             <div class="icon-option ${isSel ? 'selected' : ''}" data-icon="${ic}" onclick="selectFitIcon(this)">
-                ${renderIconMarkup(ic, 22)}
+                ${renderIconMarkup(ic, 24)}
             </div>`;
     });
 
@@ -650,7 +680,7 @@ function initPickers() {
         const isSel = (ic === selectedHabitIcon) || (idx === 0 && !HABIT_ICONS.includes(selectedHabitIcon));
         habitIconContainer.innerHTML += `
             <div class="icon-option ${isSel ? 'selected' : ''}" data-icon="${ic}" onclick="selectHabitIcon(this)">
-                ${renderIconMarkup(ic, 22)}
+                ${renderIconMarkup(ic, 24)}
             </div>`;
     });
 
@@ -672,7 +702,7 @@ function initPickers() {
     });
 }
 
-/* --- LEVEL & XP BERECHNUNG (BIS LVL 100) --- */
+/* --- LEVEL & XP BERECHNUNG + INTERAKTIVE LEVEL-ROADMAP (LVL 1 BIS 100) --- */
 function calculateTotalXP() {
     let totalXP = 0;
     habitsList.forEach(h => {
@@ -736,17 +766,78 @@ function renderLevelCard() {
     if (currentLevel >= MAX_LEVEL) {
         document.getElementById('lvl-progress-bar').style.width = '100%';
         document.getElementById('lvl-progress-text').innerText = 'MAX LVL 100 ERREICHT';
-        document.getElementById('lvl-next-hint').innerText = 'Apex God Status';
+        document.getElementById('lvl-next-hint').innerText = 'Apex God • Roadmap ansehen ›';
     } else {
         const xpIntoLevel = totalXP % XP_PER_LEVEL;
         const xpMissing = XP_PER_LEVEL - xpIntoLevel;
         const pct = Math.round((xpIntoLevel / XP_PER_LEVEL) * 100);
-        const nextMilestoneLvl = Math.min(MAX_LEVEL, Math.floor(currentLevel / 5) * 5 + 5);
 
         document.getElementById('lvl-progress-bar').style.width = `${pct}%`;
         document.getElementById('lvl-progress-text').innerText = `${xpIntoLevel} / ${XP_PER_LEVEL} XP (${pct}%)`;
-        document.getElementById('lvl-next-hint').innerText = `Noch ${xpMissing} XP bis Lvl ${currentLevel + 1} (Rang: Lvl ${nextMilestoneLvl})`;
+        document.getElementById('lvl-next-hint').innerText = `Noch ${xpMissing} XP bis Lvl ${currentLevel + 1} • Roadmap ›`;
     }
+}
+
+/* --- NEU: INTERAKTIVE LEVEL-ROADMAP (ALLE 21 RÄNGE VON LVL 1 BIS 100) --- */
+function openLevelRoadmapModal() {
+    const totalXP = calculateTotalXP();
+    const currentLevel = getLevelFromXP(totalXP);
+    const currentTier = getLevelTierData(currentLevel);
+
+    document.getElementById('roadmap-current-xp-pill').innerText = `Lvl ${currentLevel} • ${totalXP} XP`;
+
+    const listEl = document.getElementById('level-roadmap-list');
+    let html = '';
+
+    LEVEL_TIERS.forEach((tier, idx) => {
+        const nextTier = LEVEL_TIERS[idx + 1];
+        const lvlRangeText = tier.min === 100
+            ? 'Lvl 100 (MAX)'
+            : `Lvl ${tier.min} – ${(nextTier ? nextTier.min - 1 : 99)}`;
+        const requiredXP = (tier.min - 1) * XP_PER_LEVEL;
+
+        const isCurrent = (tier.min === currentTier.min);
+        const isUnlocked = (currentLevel >= tier.min);
+
+        let cardClass = 'locked';
+        let statusBadge = `<span class="roadmap-status-pill status-locked"><span class="material-symbols-rounded" style="font-size:13px;">lock</span> Ab ${requiredXP} XP</span>`;
+
+        if (isCurrent) {
+            cardClass = 'current-tier';
+            statusBadge = `<span class="roadmap-status-pill status-current">Aktueller Rang</span>`;
+        } else if (isUnlocked) {
+            cardClass = 'unlocked';
+            statusBadge = `<span class="roadmap-status-pill status-unlocked">✓ Freigeschaltet</span>`;
+        }
+
+        html += `
+        <div class="roadmap-tier-card ${cardClass}" id="roadmap-tier-${tier.min}">
+            <div class="roadmap-left">
+                <div class="lvl-unique-slot" style="width:42px; height:42px;">
+                    <div class="lvl-badge-wrap ${tier.fx}">${tier.svg}</div>
+                </div>
+                <div>
+                    <div style="font-size:15px; font-weight:800; display:flex; align-items:center; gap:6px;">
+                        <span>${tier.title}</span>
+                        <span style="font-size:11.5px; font-weight:600; color:var(--text-muted);">(${lvlRangeText})</span>
+                    </div>
+                    <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">
+                        ${tier.desc}
+                    </div>
+                </div>
+            </div>
+            <div>${statusBadge}</div>
+        </div>`;
+    });
+
+    listEl.innerHTML = html;
+    document.getElementById('modal-level-roadmap').classList.add('open');
+
+    // Automatisch zum aktuellen Rang scrollen
+    setTimeout(() => {
+        const curEl = document.getElementById(`roadmap-tier-${currentTier.min}`);
+        if (curEl) curEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 120);
 }
 
 /* --- NOTIZEN SYSTEM --- */
@@ -965,7 +1056,6 @@ function renderHome() {
         gWrap.style.display = 'none';
     }
 
-    // 7-Tage Habit Matrix: Sortiert nach Kategorien-Reihenfolge
     const matrixContainer = document.getElementById('matrix-container');
     if (habitsList.length === 0) {
         matrixContainer.innerHTML = `<p class="empty-hint">Noch keine Ziele im Reiter „Habits“ angelegt.</p>`;
@@ -1098,7 +1188,7 @@ function renderHabits() {
                     <span class="badge-count">${doneCount}/${catHabits.length}</span>
                 </div>
                 <div class="category-actions">
-                    <button class="btn-edit-icon" onclick="openHabitCategoryModal('${cat.id}')" title="Kategorie bearbeiten (Name, Icon, Farbe)">
+                    <button class="btn-edit-icon" onclick="openHabitCategoryModal('${cat.id}')" title="Kategorie bearbeiten">
                         <span class="material-symbols-rounded" style="font-size:19px;">edit</span>
                     </button>
                     <button class="btn-delete-icon" onclick="deleteHabitCategory('${cat.id}')" title="Kategorie löschen">
@@ -1253,7 +1343,7 @@ function deleteHabit(habitId) {
     renderHome();
 }
 
-/* --- 3. FITNESS REITER, FITNESS-MATRIX & PLÄNE TEILEN --- */
+/* --- 3. FITNESS REITER, INTERAKTIVE MUSKEL-HEATMAP & PLÄNE TEILEN --- */
 function selectFitIcon(el) {
     document.querySelectorAll('#fit-icon-picker .icon-option').forEach(i => i.classList.remove('selected'));
     el.classList.add('selected');
@@ -1264,6 +1354,118 @@ function selectFitColor(el) {
     document.querySelectorAll('#fit-color-picker .color-swatch').forEach(s => s.classList.remove('selected'));
     el.classList.add('selected');
     selectedFitColor = el.getAttribute('data-color');
+}
+
+/* --- NEU: INTERAKTIVE MUSKEL-HEATMAP (RECOVERY-STATUS BERECHNUNG) --- */
+function renderMuscleRecoveryHeatmap() {
+    const container = document.getElementById('muscle-recovery-container');
+    const subEl = document.getElementById('recovery-ready-subtitle');
+    if (!container) return;
+
+    if (fitnessData.length === 0) {
+        container.innerHTML = `<p class="empty-hint">Lege mit dem <b>+</b> Muskelgruppen an, um deinen Recovery-Status zu sehen.</p>`;
+        return;
+    }
+
+    const nowMs = Date.now();
+    const readyMuscles = [];
+    let html = `<div class="recovery-grid">`;
+
+    fitnessData.forEach(cat => {
+        // Letztes Workout für diese Muskelgruppe im Journal finden
+        const lastEntry = journalData.find(j => j.catName === cat.name || j.catId === cat.id);
+        let recoveryPct = 100;
+        let lastTrainedLabel = 'Bereit (Frisch)';
+        let statusLabel = '100% Leistung';
+
+        if (lastEntry && lastEntry.dateISO) {
+            const entryTime = new Date(lastEntry.dateISO).getTime();
+            const hoursAgo = Math.max(0, (nowMs - entryTime) / (1000 * 60 * 60));
+
+            let setsDone = 0;
+            (lastEntry.exercises || []).forEach(ex => { setsDone += (ex.sets ? ex.sets.length : 0); });
+            // Regenerations-Fenster: Basis 48h + 1.5h pro Satz (max 72h)
+            const fullRecoveryHours = Math.min(72, Math.max(36, 42 + setsDone * 1.5));
+
+            recoveryPct = Math.min(100, Math.max(12, Math.round((hoursAgo / fullRecoveryHours) * 100)));
+
+            const daysAgo = Math.floor(hoursAgo / 24);
+            if (hoursAgo < 1) {
+                lastTrainedLabel = 'Gerade eben';
+            } else if (hoursAgo < 24) {
+                lastTrainedLabel = `Vor ${Math.round(hoursAgo)} Std.`;
+            } else if (daysAgo === 1) {
+                lastTrainedLabel = 'Vor 1 Tag';
+            } else {
+                lastTrainedLabel = `Vor ${daysAgo} Tagen`;
+            }
+
+            if (recoveryPct >= 90) {
+                statusLabel = 'Voll erholt';
+            } else if (recoveryPct >= 55) {
+                statusLabel = 'Regeneriert...';
+            } else {
+                statusLabel = 'Erholung nötig';
+            }
+        }
+
+        if (recoveryPct >= 88) {
+            readyMuscles.push(cat.name);
+        }
+
+        let barColor = '#30d158';
+        let badgeBg = 'rgba(48, 209, 88, 0.18)';
+        let badgeCol = '#4ade80';
+
+        if (recoveryPct < 50) {
+            barColor = '#ff453a';
+            badgeBg = 'rgba(255, 69, 58, 0.18)';
+            badgeCol = '#ff6961';
+        } else if (recoveryPct < 85) {
+            barColor = '#ff9f0a';
+            badgeBg = 'rgba(255, 159, 10, 0.18)';
+            badgeCol = '#fbbf24';
+        }
+
+        if (userSettings.theme === 'monochrome') {
+            barColor = '#ffffff';
+            badgeBg = 'rgba(255, 255, 255, 0.16)';
+            badgeCol = '#ffffff';
+        }
+
+        const iconCol = getEffectiveIconColor(cat.color || '#0a84ff');
+
+        html += `
+        <div class="recovery-card" onclick="startLiveWorkout('${cat.id}')" title="Tippen, um ${cat.name} direkt zu trainieren">
+            <div class="recovery-top">
+                <div class="recovery-name-wrap">
+                    <span class="card-corner-icon" style="--icon-color:${iconCol};">
+                        ${renderIconMarkup(cat.icon || 'fitness_center', 19)}
+                    </span>
+                    <span class="recovery-muscle-name">${cat.name}</span>
+                </div>
+                <span class="recovery-pct-badge" style="background:${badgeBg}; color:${badgeCol};">${recoveryPct}%</span>
+            </div>
+            <div class="recovery-bar-track">
+                <div class="recovery-bar-fill" style="width:${recoveryPct}%; background:${barColor};"></div>
+            </div>
+            <div class="recovery-sub-meta">
+                <span>${lastTrainedLabel}</span>
+                <span>${statusLabel}</span>
+            </div>
+        </div>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+
+    if (subEl) {
+        if (readyMuscles.length > 0) {
+            subEl.innerText = `Bereit für 100% Leistung: ${readyMuscles.slice(0, 3).join(', ')}`;
+        } else {
+            subEl.innerText = 'Deine Muskeln befinden sich aktuell in der Regeneration';
+        }
+    }
 }
 
 function renderFitnessMatrixAndChart() {
@@ -1302,7 +1504,7 @@ function renderFitnessMatrixAndChart() {
         const iconCol = getEffectiveIconColor(rawColor);
         const cBorder = getBorderForColor(cColor);
         const cText = getContrastText(cColor);
-        const cIcon = cat.icon || 'custom_dumbbell';
+        const cIcon = cat.icon || 'fitness_center';
 
         tableHTML += `
             <tr class="matrix-row">
@@ -1358,6 +1560,7 @@ function renderFitnessMatrixAndChart() {
 
 function renderFitness() {
     renderActiveWorkoutBanner();
+    renderMuscleRecoveryHeatmap();
     renderFitnessMatrixAndChart();
 
     const container = document.getElementById('fitness-categories-container');
@@ -1374,7 +1577,7 @@ function renderFitness() {
     fitnessData.forEach(cat => {
         const rawColor = cat.color || '#0a84ff';
         const btnColor = (userSettings.theme === 'monochrome') ? '#ffffff' : rawColor;
-        const cIcon = cat.icon || 'custom_dumbbell';
+        const cIcon = cat.icon || 'fitness_center';
         const cText = getContrastText(btnColor);
         const cBorder = getBorderForColor(btnColor);
         const iconCol = getEffectiveIconColor(rawColor);
@@ -1444,7 +1647,7 @@ function renderFitness() {
 function encodePlanPayload(catObj) {
     const cleanPlan = {
         name: catObj.name,
-        icon: catObj.icon || 'custom_dumbbell',
+        icon: catObj.icon || 'fitness_center',
         color: catObj.color || '#0a84ff',
         exercises: (catObj.exercises || []).map(e => ({
             name: e.name,
@@ -1531,7 +1734,7 @@ function confirmImportFitnessPlan() {
         fitnessData.push({
             id: 'cat_' + Date.now(),
             name: parsed.name,
-            icon: parsed.icon || 'custom_dumbbell',
+            icon: parsed.icon || 'fitness_center',
             color: parsed.color || '#0a84ff',
             exercises: (parsed.exercises || []).map((ex, i) => ({
                 id: 'ex_' + Date.now() + '_' + i,
@@ -1552,7 +1755,79 @@ function confirmImportFitnessPlan() {
     }
 }
 
-/* --- LIVE WORKOUT IM GYM --- */
+/* --- ECHTER HINTERGRUND-TIMER (LÄUFT BEI SPOTIFY & STANDBY SEKUNDENGENAU WEITER) --- */
+async function requestScreenWakeLock() {
+    if ('wakeLock' in navigator && activeWorkout) {
+        try {
+            wakeLockSentinel = await navigator.wakeLock.request('screen');
+        } catch (err) {}
+    }
+}
+
+function releaseScreenWakeLock() {
+    if (wakeLockSentinel) {
+        wakeLockSentinel.release().catch(() => {});
+        wakeLockSentinel = null;
+    }
+}
+
+function getLiveTrainSeconds() {
+    if (!activeWorkout) return 0;
+    const base = Number(activeWorkout.baseTrainSec) || 0;
+    if (activeWorkout.isPaused) return base;
+    const phaseStart = Number(activeWorkout.phaseStartTime) || Date.now();
+    const delta = Math.max(0, Math.floor((Date.now() - phaseStart) / 1000));
+    return base + delta;
+}
+
+function getLivePauseSeconds() {
+    if (!activeWorkout) return 0;
+    const base = Number(activeWorkout.basePauseSec) || 0;
+    if (!activeWorkout.isPaused) return base;
+    const phaseStart = Number(activeWorkout.phaseStartTime) || Date.now();
+    const delta = Math.max(0, Math.floor((Date.now() - phaseStart) / 1000));
+    return base + delta;
+}
+
+function setWorkoutPausedState(targetPaused) {
+    if (!activeWorkout) return;
+    const nowTs = Date.now();
+    const phaseStart = Number(activeWorkout.phaseStartTime) || nowTs;
+    const delta = Math.max(0, Math.floor((nowTs - phaseStart) / 1000));
+
+    if (activeWorkout.isPaused) {
+        activeWorkout.basePauseSec = (Number(activeWorkout.basePauseSec) || 0) + delta;
+    } else {
+        activeWorkout.baseTrainSec = (Number(activeWorkout.baseTrainSec) || 0) + delta;
+    }
+
+    activeWorkout.isPaused = !!targetPaused;
+    activeWorkout.phaseStartTime = nowTs;
+    saveActiveWorkoutState();
+}
+
+function updateLiveTimerDOMElements() {
+    if (!activeWorkout) return;
+    const tEl = document.getElementById('live-workout-timer');
+    const pEl = document.getElementById('live-pause-timer');
+    if (tEl) tEl.innerText = formatSecondsMMSS(getLiveTrainSeconds());
+    if (pEl) pEl.innerText = formatSecondsMMSS(getLivePauseSeconds());
+}
+
+// Wenn der Nutzer von Spotify zurückkehrt oder das Handy entsperrt -> sofort Zeit aktualisieren
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && activeWorkout) {
+        updateLiveTimerDOMElements();
+        requestScreenWakeLock();
+    }
+});
+
+window.addEventListener('focus', () => {
+    if (activeWorkout) {
+        updateLiveTimerDOMElements();
+    }
+});
+
 function openStartWorkoutModal() {
     const listEl = document.getElementById('start-workout-cat-list');
     listEl.innerHTML = '';
@@ -1566,7 +1841,7 @@ function openStartWorkoutModal() {
             <div class="workout-select-item" onclick="startLiveWorkout('${cat.id}')">
                 <div style="display:flex; align-items:center; gap:14px;">
                     <span class="card-corner-icon" style="--icon-color:${iconCol};">
-                        ${renderIconMarkup(cat.icon || 'custom_dumbbell', 26)}
+                        ${renderIconMarkup(cat.icon || 'fitness_center', 26)}
                     </span>
                     <div>
                         <div style="font-size:16px; font-weight:700;">${cat.name}</div>
@@ -1605,17 +1880,21 @@ function startLiveWorkout(catId) {
     activeWorkout = {
         catId: cat.id,
         catName: cat.name,
-        catIcon: cat.icon || 'custom_dumbbell',
+        catIcon: cat.icon || 'fitness_center',
         catColor: cat.color || '#0a84ff',
-        trainSeconds: 0,
-        pauseSeconds: 0,
+        startedAt: Date.now(),
+        baseTrainSec: 0,
+        basePauseSec: 0,
+        phaseStartTime: Date.now(),
         isPaused: false,
         exercises: sessionExercises
     };
 
+    saveAll();
     closeModals();
-    renderFitness();
+    switchTab('fitness', document.getElementById('nav-fitness'));
     startWorkoutStopwatch();
+    requestScreenWakeLock();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1623,21 +1902,13 @@ function startWorkoutStopwatch() {
     if (workoutTimerInterval) clearInterval(workoutTimerInterval);
     workoutTimerInterval = setInterval(() => {
         if (!activeWorkout) return;
-        if (activeWorkout.isPaused) {
-            activeWorkout.pauseSeconds++;
-        } else {
-            activeWorkout.trainSeconds++;
-        }
-        const tEl = document.getElementById('live-workout-timer');
-        const pEl = document.getElementById('live-pause-timer');
-        if (tEl) tEl.innerText = formatSecondsMMSS(activeWorkout.trainSeconds);
-        if (pEl) pEl.innerText = formatSecondsMMSS(activeWorkout.pauseSeconds);
-    }, 1000);
+        updateLiveTimerDOMElements();
+    }, 500);
 }
 
 function toggleWorkoutPauseMode() {
     if (!activeWorkout) return;
-    activeWorkout.isPaused = !activeWorkout.isPaused;
+    setWorkoutPausedState(!activeWorkout.isPaused);
     renderActiveWorkoutBanner();
 }
 
@@ -1699,7 +1970,7 @@ function renderActiveWorkoutBanner() {
         <div class="workout-top-bar">
             <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                 <div>
-                    <div style="font-size:11px; color:#4ade80; font-weight:800; text-transform:uppercase;">AKTIVES TRAINING</div>
+                    <div style="font-size:11px; color:#4ade80; font-weight:800; text-transform:uppercase;">AKTIVES TRAINING (HINTERGRUND-TIMER AKTIV)</div>
                     <h2 style="margin:2px 0 0 0; font-size:21px;">${activeWorkout.catName}</h2>
                 </div>
                 <button class="btn-delete-icon" onclick="cancelActiveWorkout()" title="Training abbrechen">
@@ -1709,11 +1980,11 @@ function renderActiveWorkoutBanner() {
             <div class="timers-row">
                 <div class="timer-pill train-pill ${trainActiveClass}" onclick="if(activeWorkout.isPaused) toggleWorkoutPauseMode()" style="cursor:pointer;">
                     <span class="material-symbols-rounded" style="font-size:16px;">timer</span>
-                    <span>Training: <b id="live-workout-timer">${formatSecondsMMSS(activeWorkout.trainSeconds)}</b></span>
+                    <span>Training: <b id="live-workout-timer">${formatSecondsMMSS(getLiveTrainSeconds())}</b></span>
                 </div>
                 <div class="timer-pill pause-pill ${pauseActiveClass}" onclick="toggleWorkoutPauseMode()">
                     <span class="material-symbols-rounded" style="font-size:16px;">${activeWorkout.isPaused ? 'play_arrow' : 'pause_circle'}</span>
-                    <span>${pauseLabel}: <b id="live-pause-timer">${formatSecondsMMSS(activeWorkout.pauseSeconds)}</b></span>
+                    <span>${pauseLabel}: <b id="live-pause-timer">${formatSecondsMMSS(getLivePauseSeconds())}</b></span>
                 </div>
             </div>
         </div>
@@ -1728,8 +1999,10 @@ function toggleWorkoutSet(exIdx, setIdx) {
     if (!activeWorkout) return;
     const s = activeWorkout.exercises[exIdx].sets[setIdx];
     s.done = !s.done;
-    if (s.done && userSettings.autoPause) {
-        activeWorkout.isPaused = true;
+    if (s.done && userSettings.autoPause && !activeWorkout.isPaused) {
+        setWorkoutPausedState(true);
+    } else {
+        saveActiveWorkoutState();
     }
     renderActiveWorkoutBanner();
 }
@@ -1737,6 +2010,7 @@ function toggleWorkoutSet(exIdx, setIdx) {
 function updateWorkoutSetValue(exIdx, setIdx, field, val) {
     if (!activeWorkout) return;
     activeWorkout.exercises[exIdx].sets[setIdx][field] = parseFloat(val) || 0;
+    saveActiveWorkoutState();
 }
 
 function addExtraWorkoutSet(exIdx) {
@@ -1749,6 +2023,7 @@ function addExtraWorkoutSet(exIdx) {
         reps: lastSet.reps,
         done: false
     });
+    saveActiveWorkoutState();
     renderActiveWorkoutBanner();
 }
 
@@ -1757,6 +2032,7 @@ function removeWorkoutSet(exIdx, setIdx) {
     const setsArr = activeWorkout.exercises[exIdx].sets;
     setsArr.splice(setIdx, 1);
     setsArr.forEach((s, i) => { s.setNum = i + 1; });
+    saveActiveWorkoutState();
     renderActiveWorkoutBanner();
 }
 
@@ -1764,6 +2040,8 @@ function cancelActiveWorkout() {
     if (confirm('Aktuelles Training wirklich ohne Speichern abbrechen?')) {
         activeWorkout = null;
         if (workoutTimerInterval) clearInterval(workoutTimerInterval);
+        releaseScreenWakeLock();
+        saveAll();
         renderActiveWorkoutBanner();
     }
 }
@@ -1785,10 +2063,13 @@ function spawnConfettiParticles() {
 function finishWorkoutWithCelebration() {
     if (!activeWorkout) return;
     if (workoutTimerInterval) clearInterval(workoutTimerInterval);
+    releaseScreenWakeLock();
 
-    const trainTimeFormatted = formatSecondsMMSS(activeWorkout.trainSeconds);
-    const pauseTimeFormatted = formatSecondsMMSS(activeWorkout.pauseSeconds);
-    const durationMins = Math.max(1, Math.round(activeWorkout.trainSeconds / 60));
+    const finalTrainSec = getLiveTrainSeconds();
+    const finalPauseSec = getLivePauseSeconds();
+    const trainTimeFormatted = formatSecondsMMSS(finalTrainSec);
+    const pauseTimeFormatted = formatSecondsMMSS(finalPauseSec);
+    const durationMins = Math.max(1, Math.round(finalTrainSec / 60));
 
     let anyChecked = false;
     activeWorkout.exercises.forEach(ex => {
@@ -2032,7 +2313,7 @@ function renderJournal() {
             <div class="category-header" style="margin-bottom:8px;">
                 <div class="category-title-group">
                     <span class="card-corner-icon floating-card-icon" style="--icon-color:${iconCol};">
-                        ${renderIconMarkup(entry.catIcon || 'custom_dumbbell', 25)}
+                        ${renderIconMarkup(entry.catIcon || 'fitness_center', 25)}
                     </span>
                     <div>
                         <div style="display:flex; align-items:center; gap:8px;">
@@ -2457,7 +2738,6 @@ function applyVisualSettings() {
 
     document.getElementById('display-username').innerText = userName;
 
-    // Alle Benutzer-Avatare im Header (Home, Habits, Journal, FitTracker) sowie in Einstellungen synchronisieren
     const allSyncImgs = document.querySelectorAll('.user-avatar-sync-img');
     const allSyncIcons = document.querySelectorAll('.user-avatar-sync-icon');
     const settingsImg = document.getElementById('settings-avatar-img');
@@ -2677,7 +2957,54 @@ function importBackupJSON(event) {
     reader.readAsText(file);
 }
 
-/* --- 7. LIVE FIREBASE RANKING (MIT ECHTEN PROFILBILDERN / AVATAREN & 7-TAGE XP-HISTORY) --- */
+/* --- 7. LIVE FIREBASE RANKING (MIT LIVE GYM-FEED, LETZTEM WORKOUT & PROFILBILD) --- */
+function getMyLatestWorkoutSummary() {
+    if (!journalData || journalData.length === 0) return null;
+    const latest = journalData[0];
+    let setsCount = 0;
+    (latest.exercises || []).forEach(ex => { setsCount += (ex.sets ? ex.sets.length : 0); });
+    return {
+        catName: latest.catName,
+        xp: setsCount * XP_PER_WORKOUT_SET,
+        dateKey: latest.dateKey || (latest.dateISO ? getDateKey(new Date(latest.dateISO)) : todayKey),
+        dateISO: latest.dateISO || new Date().toISOString()
+    };
+}
+
+function formatGymStatusBadge(player) {
+    // 1. Prüfen, ob der Spieler GERADE LIVE im Gym trainiert (und Start nicht älter als 4 Stunden ist)
+    if (player.liveWorkout && player.liveWorkout.catName) {
+        const startedAt = Number(player.liveWorkout.startedAt) || Date.now();
+        const ageMinutes = (Date.now() - startedAt) / 60000;
+        if (ageMinutes < 240) {
+            return `<div class="lb-gym-status live-training">🔥 Trainiert gerade: ${player.liveWorkout.catName}</div>`;
+        }
+    }
+
+    // 2. Ansonsten das letzte abgeschlossene Workout anzeigen
+    if (player.lastWorkout && player.lastWorkout.catName) {
+        const lw = player.lastWorkout;
+        const tKey = getDateKey(new Date());
+        const yDate = new Date();
+        yDate.setDate(yDate.getDate() - 1);
+        const yKey = getDateKey(yDate);
+
+        let dayWord = lw.dateKey || '';
+        if (lw.dateKey === tKey) dayWord = 'Heute';
+        else if (lw.dateKey === yKey) dayWord = 'Gestern';
+        else if (lw.dateISO) {
+            const dObj = new Date(lw.dateISO);
+            if (!isNaN(dObj)) {
+                dayWord = dObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+            }
+        }
+
+        return `<div class="lb-gym-status last-workout">Letztes Workout: ${dayWord} (${lw.catName} • +${lw.xp || 0} XP)</div>`;
+    }
+
+    return '';
+}
+
 async function syncMyProfileToFirebase() {
     const myXP = calculateTotalXP();
     const myLvl = getLevelFromXP(myXP);
@@ -2689,6 +3016,8 @@ async function syncMyProfileToFirebase() {
         level: myLvl,
         rank: tierData.title,
         avatar: userSettings.avatarDataUrl || '',
+        liveWorkout: activeWorkout ? { catName: activeWorkout.catName, startedAt: activeWorkout.startedAt || Date.now() } : null,
+        lastWorkout: getMyLatestWorkoutSummary(),
         dailyXP: calculateMyLast7DaysXPMap(),
         updatedAt: Date.now()
     };
@@ -2745,6 +3074,8 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
                 name: userName,
                 xp: calculateTotalXP(),
                 avatar: userSettings.avatarDataUrl || '',
+                liveWorkout: activeWorkout ? { catName: activeWorkout.catName, startedAt: activeWorkout.startedAt || Date.now() } : null,
+                lastWorkout: getMyLatestWorkoutSummary(),
                 dailyXP: myDailyMap,
                 isMe: true
             }
@@ -2760,6 +3091,8 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
                         name: pData.name,
                         xp: Number(pData.xp) || 0,
                         avatar: pData.avatar || '',
+                        liveWorkout: pData.liveWorkout || null,
+                        lastWorkout: pData.lastWorkout || null,
                         dailyXP: pData.dailyXP || {},
                         isMe: false
                     });
@@ -2777,7 +3110,16 @@ async function syncAndLoadLeaderboard(showSpinner = false) {
         }
     } catch (err) {
         const fallbackPlayers = [
-            { id: myUserId, name: userName, xp: calculateTotalXP(), avatar: userSettings.avatarDataUrl || '', dailyXP: myDailyMap, isMe: true }
+            {
+                id: myUserId,
+                name: userName,
+                xp: calculateTotalXP(),
+                avatar: userSettings.avatarDataUrl || '',
+                liveWorkout: activeWorkout ? { catName: activeWorkout.catName, startedAt: activeWorkout.startedAt || Date.now() } : null,
+                lastWorkout: getMyLatestWorkoutSummary(),
+                dailyXP: myDailyMap,
+                isMe: true
+            }
         ];
         renderLeaderboardDOM(fallbackPlayers);
         renderLeaderboard7DayHistory(fallbackPlayers);
@@ -2803,11 +3145,12 @@ function renderLeaderboardDOM(players) {
             ? `<img src="${p.avatar}" alt="${p.name}">`
             : `<span class="material-symbols-rounded" style="font-size:20px;">person</span>`;
 
+        const gymStatusHTML = formatGymStatusBadge(p);
+
         html += `
         <div class="leaderboard-row ${p.isMe ? 'is-me' : ''}">
             <div class="lb-left">
                 <div class="lb-rank-badge ${badgeClass}">${rankNum}</div>
-                <!-- Benutzer-Avatar (Profilbild oder Benutzer-Icon) -->
                 <div class="lb-avatar-wrap">${avatarMarkup}</div>
                 <div class="lb-user-info">
                     <div class="lb-name">
@@ -2815,6 +3158,7 @@ function renderLeaderboardDOM(players) {
                         ${p.isMe ? `<span style="font-size:10px; background:var(--accent-blue); color:var(--btn-primary-text); font-weight:800; padding:2px 6px; border-radius:8px;">DU</span>` : ''}
                     </div>
                     <div class="lb-sub">Lvl ${lvl} • ${tierData.title}</div>
+                    ${gymStatusHTML}
                 </div>
             </div>
             <div class="lb-right">
@@ -3024,7 +3368,7 @@ async function checkIncomingLinks() {
                 fitnessData.push({
                     id: 'cat_' + Date.now(),
                     name: parsed.name,
-                    icon: parsed.icon || 'custom_dumbbell',
+                    icon: parsed.icon || 'fitness_center',
                     color: parsed.color || '#0a84ff',
                     exercises: (parsed.exercises || []).map((ex, i) => ({
                         id: 'ex_' + Date.now() + '_' + i,
@@ -3103,5 +3447,8 @@ renderFitness();
 renderHabits();
 renderJournal();
 renderFitTracker();
+if (activeWorkout) {
+    startWorkoutStopwatch();
+}
 syncAndLoadLeaderboard(false);
 checkIncomingLinks();
