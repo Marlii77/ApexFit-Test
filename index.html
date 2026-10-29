@@ -22,7 +22,7 @@
 <body>
 
     <!-- ==========================================
-         1. HOME REITER (DASHBOARD, LEVEL BIS 100, MATRIZEN)
+         1. HOME REITER (DASHBOARD, LEVEL ROADMAP, MATRIZEN)
          ========================================== -->
     <div id="view-home" class="view active">
         <div class="page-header">
@@ -49,8 +49,8 @@
         </div>
 
         <div class="container">
-            <!-- LEVEL SYSTEM HERO CARD (MIT ANIMIERTEN LEVEL-ICONS BIS LVL 100) -->
-            <div class="level-hero-card">
+            <!-- LEVEL SYSTEM HERO CARD (ANTIPPBAR FÜR DIE LVL 1-100 ROADMAP) -->
+            <div class="level-hero-card" onclick="openLevelRoadmapModal()" style="cursor:pointer;" title="Tippen für Level 1–100 Roadmap">
                 <div class="level-top-row">
                     <div class="level-big-number">
                         <div id="lvl-unique-icon-slot" class="lvl-unique-slot"></div>
@@ -59,14 +59,17 @@
                             <span class="lvl-rank" id="lvl-rank-title">• Rookie</span>
                         </div>
                     </div>
-                    <div class="xp-badge-pill" id="total-xp-badge">0 XP Gesamt</div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <div class="xp-badge-pill" id="total-xp-badge">0 XP</div>
+                        <span class="material-symbols-rounded" style="font-size:18px; color:var(--text-muted);">chevron_right</span>
+                    </div>
                 </div>
                 <div class="level-progress-track">
                     <div class="level-progress-fill" id="lvl-progress-bar"></div>
                 </div>
                 <div class="level-sub-info">
                     <span id="lvl-progress-text">0 / 250 XP</span>
-                    <span id="lvl-next-hint">Noch 250 XP bis Lvl 2</span>
+                    <span id="lvl-next-hint">Tippe für alle 100 Level ›</span>
                 </div>
             </div>
 
@@ -174,7 +177,7 @@
     </div>
 
     <!-- ==========================================
-         2. FITNESS REITER (OHNE AVATAR/LOGO FÜR MAXIMALEN PLATZ)
+         2. FITNESS REITER (INKL. INTERAKTIVER MUSKEL-HEATMAP / RECOVERY-STATUS)
          ========================================== -->
     <div id="view-fitness" class="view">
         <div class="page-header">
@@ -196,7 +199,24 @@
         </div>
 
         <div class="container">
+            <!-- LAUFENDES LIVE-TRAINING (MIT HINTERGRUND-TIMER) -->
             <div id="active-workout-container"></div>
+
+            <!-- NEU: INTERAKTIVE MUSKEL-HEATMAP & RECOVERY-STATUS -->
+            <div class="bevel-card" id="muscle-recovery-card">
+                <div class="card-title-row">
+                    <div>
+                        <h3 data-i18n="recovery_title">Muskel-Heatmap & Recovery</h3>
+                        <span class="card-subtitle" id="recovery-ready-subtitle">Regenerations-Status deiner Muskelgruppen</span>
+                    </div>
+                    <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-green);">
+                        <span class="material-symbols-rounded">vital_signs</span>
+                    </span>
+                </div>
+                <div id="muscle-recovery-container"></div>
+            </div>
+
+            <!-- MUSKELGRUPPEN & TRAININGSPLÄNE -->
             <div id="fitness-categories-container"></div>
         </div>
     </div>
@@ -336,7 +356,7 @@
                 </div>
             </div>
 
-            <!-- KATEGORIE 1: ESSEN MANUELL EINTRAGEN (WERTE UNTEREINANDER) -->
+            <!-- KATEGORIE 1: ESSEN MANUELL EINTRAGEN -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -411,7 +431,7 @@
                 <div id="today-meals-list" style="margin-top:16px;"></div>
             </div>
 
-            <!-- KATEGORIE 2: TRINKEN HINZUFÜGEN (ML / LITER) -->
+            <!-- KATEGORIE 2: TRINKEN HINZUFÜGEN -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
@@ -485,7 +505,7 @@
     </div>
 
     <!-- ==========================================
-         6. LEADERBOARD / RANKING REITER (LIVE BENUTZER-AVATARE & 7-TAGE XP-HISTORY)
+         6. LEADERBOARD / RANKING REITER (INKL. LIVE GYM-STATUS & LETZTES WORKOUT)
          ========================================== -->
     <div id="view-leaderboard" class="view">
         <div class="page-header">
@@ -510,15 +530,15 @@
                 </button>
             </div>
 
-            <!-- LIVE RANGLISTE (MIT LIVE BENUTZER-PROFILBILD STATT LEVEL-ICON) -->
+            <!-- LIVE RANGLISTE (MIT BENUTZER-AVATAR & LIVE GYM-STATUS) -->
             <div class="bevel-card">
                 <div class="card-title-row">
                     <div>
                         <h3 style="display:flex; align-items:center; gap:8px;">
-                            <span>Live Leaderboard</span>
+                            <span>Live Leaderboard & Gym-Feed</span>
                             <span class="live-dot" title="Verbunden mit Firebase"></span>
                         </h3>
-                        <span class="card-subtitle" id="lb-sync-status">Habits + 50 XP je Trainings-Satz</span>
+                        <span class="card-subtitle" id="lb-sync-status">Live-Workouts, Lvl & XP deiner Freunde</span>
                     </div>
                     <span class="card-corner-icon floating-card-icon" style="--icon-color: var(--accent-gold);">
                         <span class="material-symbols-rounded">emoji_events</span>
@@ -773,6 +793,24 @@
          MODALS
          ========================================== -->
 
+    <!-- NEU: Modal für Interaktive Level-Roadmap (Lvl 1 bis Lvl 100) -->
+    <div id="modal-level-roadmap" class="modal-overlay" onclick="closeModals()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-handle"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <h3 class="sheet-title" style="margin:0;">Level-Roadmap (Lvl 1 – 100)</h3>
+                <span class="xp-badge-pill" id="roadmap-current-xp-pill">0 XP</span>
+            </div>
+            <p style="color:var(--text-muted); font-size:12.5px; margin:0 0 14px 0;">
+                Schalte alle 5 Level ein neues animiertes Rang-Icon und stärkere Effekte frei:
+            </p>
+            <div id="level-roadmap-list" class="roadmap-scroll-list"></div>
+            <div class="sheet-actions">
+                <button class="btn-secondary" style="width:100%;" onclick="closeModals()">Schließen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: "+ MEHR" NAVIGATION -->
     <div id="modal-more-menu" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
@@ -799,7 +837,7 @@
                         </span>
                         <div>
                             <div style="font-size:16px; font-weight:700;" data-i18n="nav_ranking">Ranking (Live Leaderboard)</div>
-                            <div style="font-size:12px; color:var(--text-muted);" data-i18n="more_ranking_sub">Vergleiche Lvl, XP & 7-Tage-History mit Freunden</div>
+                            <div style="font-size:12px; color:var(--text-muted);" data-i18n="more_ranking_sub">Vergleiche Lvl, XP, Live-Workouts & 7-Tage-History</div>
                         </div>
                     </div>
                     <span class="material-symbols-rounded" style="color:var(--text-muted);">chevron_right</span>
@@ -946,7 +984,7 @@
         </div>
     </div>
 
-    <!-- Modal: Fitness-Kategorie -->
+    <!-- Modal: Fitness-Kategorie (ÜBERARBEITETE, CLEAN DESIGNTE FITNESS-ICONS) -->
     <div id="modal-fit-category" class="modal-overlay" onclick="closeModals()">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
@@ -956,7 +994,7 @@
                 <input type="text" id="input-fit-cat-name" class="form-input" placeholder="z.B. Brust, Arme, Rücken, Beine, Cardio...">
             </div>
             <div class="form-field">
-                <label>Gym- & Muskel-Icon wählen (20 Icons)</label>
+                <label>Fitness-Icon wählen (20 Icons)</label>
                 <div class="icon-picker-grid" id="fit-icon-picker"></div>
             </div>
             <div class="form-field">
@@ -1064,7 +1102,7 @@
             <div class="sheet-handle"></div>
             <h3 class="sheet-title">Freunde ins Ranking einladen</h3>
             <p style="color:var(--text-muted); font-size:13px; margin:-8px 0 16px 0; line-height:1.4;">
-                Teile deinen persönlichen Link oder Freundes-Code. Eure XP, Lvl, Profilbilder und die 7-Tage-History synchronisieren sich vollautomatisch in Echtzeit!
+                Teile deinen persönlichen Link oder Freundes-Code. Eure XP, Lvl, Live-Workouts und die 7-Tage-History synchronisieren sich vollautomatisch in Echtzeit!
             </p>
             <div class="form-field">
                 <label>Dein persönlicher Freundes-Code</label>
