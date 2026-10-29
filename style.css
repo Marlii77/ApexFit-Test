@@ -1,5 +1,5 @@
 /* =========================================================
-   APEXFIT – STYLE.CSS (LIQUID GLASS, 3 THEMES & LVL 1-100 FX)
+   APEXFIT – STYLE.CSS (LIQUID GLASS, 3 THEMES, HEATMAP & ROADMAP)
    ========================================================= */
 
 :root {
@@ -276,8 +276,6 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
     50% { transform: translateY(-5px) scale(1.22) rotate(8deg); filter: hue-rotate(90deg) drop-shadow(0 0 22px #ff375f) drop-shadow(0 0 38px #ffd60a); }
     100% { transform: translateY(0) scale(1) rotate(0deg); filter: hue-rotate(0deg) drop-shadow(0 0 14px #ffd60a) drop-shadow(0 0 28px #0a84ff); }
 }
-
-/* NEU: ULTRA-HIGH-TIER ANIMATIONEN FÜR LVL 80 BIS LVL 100 */
 @keyframes lvlLoopPlasmaVortex {
     0% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 14px #00f5d4) drop-shadow(0 0 28px #7b2cbf); }
     50% { transform: scale(1.25) rotate(180deg); filter: drop-shadow(0 0 24px #00bbf9) drop-shadow(0 0 42px #f15bb5); }
@@ -512,6 +510,11 @@ html[data-theme="monochrome"][data-glow="on"] .card-corner-icon {
         inset 0 1.5px 1px rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(28px) saturate(190%);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
+    transition: transform 0.18s ease;
+}
+
+.level-hero-card:active {
+    transform: scale(0.985);
 }
 
 html[data-theme="monochrome"] .level-hero-card,
@@ -604,6 +607,154 @@ html[data-theme="custom"] .level-progress-fill {
     font-size: 11.5px;
     color: var(--text-muted);
     font-weight: 500;
+}
+
+/* --- INTERAKTIVE LEVEL-ROADMAP (LVL 1 BIS 100 MODAL) --- */
+.roadmap-scroll-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 58vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.roadmap-tier-card {
+    background: rgba(0, 0, 0, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 18px;
+    padding: 13px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.roadmap-tier-card.unlocked {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.roadmap-tier-card.current-tier {
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.22) 0%, rgba(94, 92, 230, 0.22) 100%);
+    border: 1.5px solid var(--accent-blue);
+    box-shadow: 0 0 20px rgba(10, 132, 255, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.roadmap-tier-card.locked {
+    opacity: 0.58;
+}
+
+.roadmap-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.roadmap-status-pill {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.roadmap-status-pill.status-current {
+    background: var(--accent-blue);
+    color: var(--btn-primary-text);
+}
+
+.roadmap-status-pill.status-unlocked {
+    background: rgba(48, 209, 88, 0.18);
+    border: 1px solid rgba(48, 209, 88, 0.4);
+    color: #4ade80;
+}
+
+.roadmap-status-pill.status-locked {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* --- INTERAKTIVE MUSKEL-HEATMAP & RECOVERY-STATUS --- */
+.recovery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.recovery-card {
+    background: var(--liquid-inner);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 12px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    cursor: pointer;
+    transition: transform 0.16s ease, border-color 0.2s ease;
+}
+
+.recovery-card:active {
+    transform: scale(0.97);
+}
+
+.recovery-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.recovery-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+}
+
+.recovery-muscle-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recovery-pct-badge {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.recovery-bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.recovery-bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.recovery-sub-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    font-weight: 600;
 }
 
 /* --- BENTO GRID & RINGS --- */
@@ -1754,7 +1905,7 @@ input::-webkit-inner-spin-button {
     line-height: 1.5;
 }
 
-/* --- LEADERBOARD REITER (MIT BENUTZER-AVATAR & 7-TAGE HISTORY TABELLE) --- */
+/* --- LEADERBOARD REITER (MIT BENUTZER-AVATAR, LIVE GYM-STATUS & 7-TAGE HISTORY) --- */
 .leaderboard-row {
     position: relative;
     z-index: 1;
@@ -1783,6 +1934,8 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
     display: flex;
     align-items: center;
     gap: 11px;
+    min-width: 0;
+    flex: 1;
 }
 
 .lb-rank-badge {
@@ -1803,10 +1956,9 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
 .lb-rank-2 { background: linear-gradient(135deg, #e5e5ea, #8e8e93); color: #000; }
 .lb-rank-3 { background: linear-gradient(135deg, #eca163, #a25b2a); color: #000; }
 
-/* Benutzer-Avatar im Ranking */
 .lb-avatar-wrap {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
     border: 1.5px solid rgba(255, 255, 255, 0.22);
@@ -1828,6 +1980,7 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
 .lb-user-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .lb-name {
@@ -1836,6 +1989,7 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
 }
 
 .lb-sub {
@@ -1845,11 +1999,39 @@ html[data-theme="monochrome"] .leaderboard-row.is-me {
     margin-top: 2px;
 }
 
+/* Live Gym-Status im Ranking */
+.lb-gym-status {
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.lb-gym-status.live-training {
+    background: rgba(48, 209, 88, 0.18);
+    border: 1px solid rgba(48, 209, 88, 0.45);
+    color: #4ade80;
+    animation: pulseGlow 1.5s infinite alternate;
+}
+
+.lb-gym-status.last-workout {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
 .lb-right {
     display: flex;
     align-items: center;
     gap: 8px;
     text-align: right;
+    flex-shrink: 0;
 }
 
 .lb-xp-val {
@@ -1974,7 +2156,7 @@ html[data-theme="monochrome"] .lb-history-day-pill.has-xp {
     100% { transform: translateY(340px) rotate(540deg); opacity: 0; }
 }
 
-/* --- MODALS, COLOR & ICON PICKER --- */
+/* --- MODALS, COLOR & ICON PICKER (OPTIMIERTE ICON-DARSTELLUNG) --- */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -2067,33 +2249,39 @@ html[data-theme="monochrome"] .lb-history-day-pill.has-xp {
 .icon-picker-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 9px;
     margin-top: 6px;
 }
 
 .icon-option {
-    height: 44px;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.38);
+    border: 1.5px solid rgba(255, 255, 255, 0.09);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--text-muted);
-    transition: all 0.15s ease;
+    color: #b4b8c8;
+    transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.icon-option .material-symbols-rounded {
+    font-size: 24px !important;
 }
 
 .icon-option svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     fill: currentColor;
 }
 
 .icon-option.selected {
     background: rgba(10, 132, 255, 0.22);
     border-color: var(--accent-blue);
-    color: #fff;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(10, 132, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
 }
 
 .workout-select-item {
